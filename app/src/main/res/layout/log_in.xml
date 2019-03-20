@@ -6,15 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_sign_in">
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:text="Welcome !"
-        android:textStyle="bold"
-        android:textSize="65sp"
-        android:gravity="center"
-        android:textColor="#040b25"/>
+        android:layout_height="50dp"/>
     <LinearLayout
         android:layout_width="250dp"
         android:layout_height="0dp"
@@ -28,17 +22,17 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/mailbox"/>
+                android:background="@drawable/user_128"/>
             <TextView
                 android:layout_width="6dp"
                 android:layout_height="match_parent" />
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="45sp"
+                android:layout_height="40sp"
                 android:background="@drawable/rounded_edittext"
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ed_email"/>
+                android:id="@+id/ed_account"/>
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"
@@ -50,17 +44,17 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/code_128"/>
+                android:background="@drawable/password_128"/>
             <TextView
                 android:layout_width="6dp"
                 android:layout_height="match_parent" />
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="45sp"
+                android:layout_height="40sp"
                 android:background="@drawable/rounded_edittext"
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/ed_code"/>
+                android:id="@+id/ed_password"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -72,11 +66,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="下一步"
+            android:text="登录"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="#040b25"
+            android:textColor="#ffffff"
             android:bottomRightRadius="50dp"
-            android:background="@drawable/rounded_btn"/>
+            android:background="@drawable/rounded_btn"
+            android:id="@+id/btn_login"/>
     </LinearLayout>
 </LinearLayout>
