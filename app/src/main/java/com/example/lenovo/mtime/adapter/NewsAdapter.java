@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.News;
 
 import java.util.List;
@@ -64,7 +65,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
                 News news = list.get(position);
                 String newsId = news.getNewsId();
                 Intent intent = new Intent();
-                intent.setClass(view .getContext(),ShowNews.class );
+//                intent.setClass(view .getContext(),ShowNews.class );
                 intent.putExtra("newsId", newsId);
                 intent.putExtra("userName", userName);
                 view.getContext().startActivity(intent);

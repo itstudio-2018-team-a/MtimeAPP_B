@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
 import com.example.lenovo.mtime.adapter.NewsAdapter;
 import com.example.lenovo.mtime.bean.Movie;

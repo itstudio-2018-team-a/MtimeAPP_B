@@ -37,6 +37,8 @@ public class RegisterInfor_Activity extends AppCompatActivity implements View.On
         String code = ed_code.getText().toString();
         String email = ed_email.getText().toString();
 
+
+
         btn_register.setOnClickListener(this);
         btn_get_code.setOnClickListener(this);
     }
