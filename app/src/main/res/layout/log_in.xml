@@ -69,9 +69,19 @@
             android:text="登录"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="#ffffff"
+            android:textColor="#040b25"
             android:bottomRightRadius="50dp"
             android:background="@drawable/rounded_btn"
             android:id="@+id/btn_login"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="没有账号？注册一个"
+            android:textSize="15sp"
+            android:textColor="#040b25"
+            android:bottomRightRadius="50dp"
+            android:background="@drawable/rounded_btn"
+            android:id="@+id/btn_register"/>
     </LinearLayout>
 </LinearLayout>

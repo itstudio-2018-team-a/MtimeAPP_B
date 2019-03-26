@@ -25,6 +25,8 @@ public class UserFragment extends Fragment {
     Button btn_movieComments;
     LinearLayout btn_findPassword;
     LinearLayout btn_logout;
+    LinearLayout btn_changePassword;
+    LinearLayout btn_changeName;
 
     @Nullable
     @Override
@@ -38,8 +40,58 @@ public class UserFragment extends Fragment {
         btn_newsComments = (Button) view.findViewById(R.id.btn_newsComments);
         btn_logout = (LinearLayout) view.findViewById(R.id.btn_logout);
         btn_findPassword = (LinearLayout) view.findViewById(R.id.btn_findPassword);
+        btn_changeName = (LinearLayout) view.findViewById(R.id.btn_changeName);
+        btn_changePassword = (LinearLayout) view.findViewById(R.id.btn_changePassword);
 
         btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_movieComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_newsComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_findPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_changeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(UserFragment.this,.class);
+                //intent.putExtra("userName",userName);
+                //startActivity(intent);
+            }
+        });
+        btn_changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Intent intent = new Intent(UserFragment.this,.class);

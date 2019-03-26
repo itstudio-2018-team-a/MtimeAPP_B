@@ -7,6 +7,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.lenovo.mtime.adapter.ViewPagerAdapter;
 import com.example.lenovo.mtime.fragment.CommentsFragment;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
 
         tabLayout.setupWithViewPager(viewPager);
+        changeIconImgBottomMargin(tabLayout,4);
         //底部导航栏的图片切换
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
@@ -64,6 +68,20 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
             tab.setIcon(d);
+        }
+    }
+
+    private void changeIconImgBottomMargin(ViewGroup parent, int px){
+        for(int i = 0; i < parent.getChildCount(); i++){
+            View child = parent.getChildAt(i);
+            if(child instanceof ViewGroup){
+                changeIconImgBottomMargin((ViewGroup) child, px);
+            }
+            else if(child instanceof ImageView){
+                ViewGroup.MarginLayoutParams lp = ((ViewGroup.MarginLayoutParams) child.getLayoutParams());
+                lp.bottomMargin = 0;
+                child.requestLayout();
+            }
         }
     }
 }

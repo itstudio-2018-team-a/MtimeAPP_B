@@ -14,6 +14,18 @@ public class Comments {
 
     private Bitmap authorImage;
 
+    private String summary;
+
+    private String context;
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
     public Bitmap getAuthorImage() {
         return authorImage;
     }
@@ -21,8 +33,6 @@ public class Comments {
     public void setAuthorImage(Bitmap authorImage) {
         this.authorImage = authorImage;
     }
-
-    private String summary;
 
     public String getTitle() {
         return title;

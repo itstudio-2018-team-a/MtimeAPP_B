@@ -15,24 +15,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="作者"
+            android:text="Mtime"
             android:textColor="#F7FFFFFF"
             android:textSize="20sp"/>
     </android.support.v7.widget.Toolbar>
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/fab"
-            android:layout_margin="20dp"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/comment_64"
-            app:elevation="8dp"
-            app:backgroundTint="#FF7900"/>
-    </android.support.design.widget.CoordinatorLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

@@ -20,6 +20,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterInfor_Activity" />
+        <activity android:name=".MakeNewsCom" />
+        <activity android:name=".ChangePassword" />
+        <activity android:name=".NewsDetail" />
 </application>
 
 </manifest>
