@@ -1,8 +1,10 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,12 +64,24 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                             .add("password",password)
                             .build();
 
+                    //从sharedpreferences获取cookie
+                    SharedPreferences preferences = getSharedPreferences("data",MODE_PRIVATE);
+                    String cookie = preferences.getString("cookie","");
+
+                    Log.d("cookie",cookie);
+
                     Request request = new Request.Builder()
-                            .url("106.13.106.1/account/i/login")   //网址有待改动
+                            .url("http://106.13.106.1/to_post")   //网址有待改动
                             .post(requestBody)
+                            .addHeader("cookie",cookie)
                             .build();
 
                     Response response = client.newCall(request).execute();
+                    cookie = response.header("Set-Cookie");  //获取cookie
+
+                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                    editor.putString("cookie",cookie);
+
                     String responseDate = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseDate);
                     String result = jsonObject.getString("result");

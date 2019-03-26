@@ -1,5 +1,6 @@
 package com.example.lenovo.mtime.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,9 +24,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.Cookie;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MovieFragment extends Fragment {
 
@@ -66,6 +70,14 @@ public class MovieFragment extends Fragment {
                             .build();
 
                     Response response = client.newCall(request).execute();
+                    String cookie = response.header("Set-Cookie");  //获取cookie
+
+                    //将cookie储存到sharedpreference
+                   SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
+                   editor.putString("cookie",cookie);
+                   editor.apply();
+
+                   // Cookie cookie = client.cookieJar().saveFromResponse("http://www/film/i/film_lsit",cookies);
                     String responseDate = response.body().string();
                     showResponse(responseDate);
 
