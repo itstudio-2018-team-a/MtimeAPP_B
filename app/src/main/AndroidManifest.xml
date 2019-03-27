@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterInfor_Activity" />
+        <activity android:name=".register_Infor" />
         <activity android:name=".MakeNewsCom" />
         <activity android:name=".ChangePassword" />
         <activity android:name=".NewsDetail" />

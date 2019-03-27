@@ -25,6 +25,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
     private EditText ed_password;
     private String user_id;
     private String password;
+    public static String flag; //用于判断是否登录
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     JSONObject jsonObject = new JSONObject(responseDate);
                     String result = jsonObject.getString("result");
                     if (result.equals("0")){
-                        Toast.makeText(Login_Activity.this,"注册成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login_Activity.this,"登录成功",Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(Login_Activity.this,MainActivity.class);
+                        intent.putExtra("extra_data",user_id);
+                        flag = "1" ; //用于个人中心判断是否以及登录
                         startActivity(intent);
                         finish();
                     }else if (result.equals("1")){
