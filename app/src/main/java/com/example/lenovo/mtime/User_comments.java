@@ -32,6 +32,7 @@ public class User_comments extends AppCompatActivity {
     private CommentsAdapter commentsAdapter;
     private String user_id;
     private String url;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +42,15 @@ public class User_comments extends AppCompatActivity {
         recyclerView = findViewById(R.id.Recycleview);
         Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
-        url = "106.13.106.1/account/i/user/comments_filmreview/" + user_id;
+        type = intent.getStringExtra("类型");
+        if (type.equals("电影评论")){
+            url = "106.13.106.1/account/i/user/comments_filmreview/" + user_id;
+        }else if (type.equals("新闻评论")){
+            url = "106.13.106.1/account/i/user/comments_news/" + user_id;
+        }
+
         sendRequestWithOkHttp();
 
-//        LinearLayoutManager manager=new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(manager);
-//
-//        commentsAdapter = new CommentsAdapter(comments);
-//
-//        recyclerView.setAdapter(commentsAdapter);
     }
 
     private void sendRequestWithOkHttp(){
@@ -101,14 +102,14 @@ public class User_comments extends AppCompatActivity {
             public void run(){
                 //设置ui
 
-//                LinearLayoutManager manager=new LinearLayoutManager(this);
-//                recyclerView.setLayoutManager(manager);
-//
-//                commentsAdapter = new CommentsAdapter(this, comments);
-//
-//                recyclerView.setAdapter(commentsAdapter);
+                LinearLayoutManager manager=new LinearLayoutManager(User_comments.this);
+                recyclerView.setLayoutManager(manager);
 
-                //写到个人中心的评论，未知bug未解决
+                commentsAdapter = new CommentsAdapter(comments);
+
+                recyclerView.setAdapter(commentsAdapter);
+
+//                写到个人中心的评论，未知bug未解决
             }
         });
     }

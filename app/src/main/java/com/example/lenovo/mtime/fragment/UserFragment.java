@@ -115,6 +115,7 @@ public class UserFragment extends Fragment {
                     Toast.makeText(getContext(),"请先登录",Toast.LENGTH_SHORT).show();
                 }else {
                     Intent intent = new Intent(getContext(), User_comments.class);
+                    intent.putExtra("类型","电影评论");
                     intent.putExtra("user_id", user_id);
                     startActivity(intent);
                 }
@@ -127,6 +128,7 @@ public class UserFragment extends Fragment {
                     Toast.makeText(getContext(),"请先登录",Toast.LENGTH_SHORT).show();
                 }else {
                     Intent intent = new Intent(getContext(), User_comments.class);
+                    intent.putExtra("类型","新闻评论");
                     intent.putExtra("user_id", user_id);
                     startActivity(intent);
                 }

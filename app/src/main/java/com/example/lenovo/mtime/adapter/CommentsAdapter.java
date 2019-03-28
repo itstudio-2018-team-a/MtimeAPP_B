@@ -19,10 +19,10 @@ import java.util.List;
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHolder> {
     private List<Comments> list;
     private Context context;
-    public String userName;
+    public String user_id;
 
-    public CommentsAdapter(List<Comments> list, String userName1, Context context){
-        userName = userName1;
+    public CommentsAdapter(List<Comments> list, String user_id, Context context){
+        this.user_id = user_id;
         this.list = list;
         this.context = context;
     }

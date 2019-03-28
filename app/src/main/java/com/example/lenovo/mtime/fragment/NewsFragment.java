@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,7 @@ public class NewsFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<News> newsList;
     private NewsAdapter newsAdapter;
-    String userName;
+    String user_id;
     private Button btn;
     @Nullable
     @Override
@@ -48,7 +49,7 @@ public class NewsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(view.getContext(), NewsDetail.class);
-                intent.putExtra("userName",userName);
+                intent.putExtra("user_id",user_id);
                 startActivity(intent);
             }
         });
@@ -71,7 +72,7 @@ public class NewsFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://www/film/i/film_lsit")   //网址有待改动
+                            .url("http://106.13.106.1/news/i/hotpot_list")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -92,10 +93,10 @@ public class NewsFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             int num = jsonObject.getInt("num");
             String list = jsonObject.getString("list");
-            String statues = jsonObject.getString("statues");
-
-            newsList = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
-
+            String statues = jsonObject.getString("status");
+            Log.d("hhh",num+"");
+            newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
+            Log.d("list",newsList.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -108,7 +109,7 @@ public class NewsFragment extends Fragment {
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
 
-                newsAdapter = new NewsAdapter(newsList,userName,getContext());
+                newsAdapter = new NewsAdapter(newsList,user_id,getContext());
 
                 recyclerView.setAdapter(newsAdapter);
             }
