@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login_Activity"></activity>
+        <activity android:name=".User_comments"></activity>
+        <activity android:name=".Login_Activity" />
         <activity android:name=".Movie_Details" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -23,7 +24,8 @@
         <activity android:name=".register_Infor" />
         <activity android:name=".MakeNewsCom" />
         <activity android:name=".ChangePassword" />
+        <activity android:name=".ChangeName" />
         <activity android:name=".NewsDetail" />
-</application>
+    </application>
 
 </manifest>

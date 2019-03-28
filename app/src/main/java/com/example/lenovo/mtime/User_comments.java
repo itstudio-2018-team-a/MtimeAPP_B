@@ -2,55 +2,54 @@ package com.example.lenovo.mtime;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputFilter;
-import android.text.method.PasswordTransformationMethod;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.lenovo.mtime.adapter.CommentsAdapter;
+import com.example.lenovo.mtime.adapter.MovieAdapter;
+import com.example.lenovo.mtime.bean.Comments;
+import com.example.lenovo.mtime.bean.Movie;
 import com.example.lenovo.mtime.bean.User;
-import com.example.lenovo.mtime.fragment.UserFragment;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ChangeName extends AppCompatActivity {
-
+public class User_comments extends AppCompatActivity {
+    private RecyclerView recyclerView;
+    private List<Comments> comments = new ArrayList<>();
+    private CommentsAdapter commentsAdapter;
+    private String user_id;
     private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_name);
-        EditText et_newName = findViewById(R.id.et_newName);
-        Button btn_reset = (Button) findViewById(R.id.btn_reset);
-        Button btn_out = (Button) findViewById(R.id.btn_out);
-        final String user_id;
+        setContentView(R.layout.activity_user_comments);
+
+        recyclerView = findViewById(R.id.Recycleview);
         Intent intent = getIntent();
-        //获取到修改后的用户名以便发送到服务器
-        String newName = et_newName.getText().toString();
         user_id = intent.getStringExtra("user_id");
-        btn_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
+        url = "106.13.106.1/account/i/user/comments_filmreview/" + user_id;
+        sendRequestWithOkHttp();
 
-            }
-        });
-        btn_reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                url = "106.13.106.1/account/i/user/info/" + user_id;
-                sendRequestWithOkHttp();  //发起网络请求从服务器获取相关用户数据
-
-            }
-        });
+//        LinearLayoutManager manager=new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(manager);
+//
+//        commentsAdapter = new CommentsAdapter(comments);
+//
+//        recyclerView.setAdapter(commentsAdapter);
     }
 
     private void sendRequestWithOkHttp(){
@@ -83,22 +82,33 @@ public class ChangeName extends AppCompatActivity {
     }
 
     private void showResponse(final String response){
-
         Gson gson = new Gson();
-        final User user = gson.fromJson(response,User.class);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            int num = jsonObject.getInt("num");
+            String list = jsonObject.getString("list");
+            String statues = jsonObject.getString("statues");
+
+            comments = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
             @Override
             public void run(){
                 //设置ui
 
-//                Glide.with(getContext()) //显示头像
-//                        .load(user.getHeadImage_url())
-//                        .placeholder(R.drawable.logo)
-//                        .error(R.drawable.logo)
-//                        .into(user_image);
+//                LinearLayoutManager manager=new LinearLayoutManager(this);
+//                recyclerView.setLayoutManager(manager);
 //
-//                tv_userName.setText(user.getUser_Name());
+//                commentsAdapter = new CommentsAdapter(this, comments);
+//
+//                recyclerView.setAdapter(commentsAdapter);
+
+                //写到个人中心的评论，未知bug未解决
             }
         });
     }

@@ -21,6 +21,7 @@ import okhttp3.Response;
 public class Login_Activity extends AppCompatActivity implements View.OnClickListener{
 
     private Button button_Login;
+    private Button button_register;
     private EditText ed_account;
     private EditText ed_password;
     private String user_id;
@@ -33,20 +34,26 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.log_in);
 
         button_Login = findViewById(R.id.btn_login);
+        button_register = findViewById(R.id.btn_register);
         ed_account = findViewById(R.id.ed_account);
         ed_password = findViewById(R.id.ed_password);
 
         button_Login.setOnClickListener(this);
+        button_register.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_register:
+            case R.id.btn_login:
                 user_id = ed_account.getText().toString();
                 password = ed_password.getText().toString();
                 sendRequestWithOkHttp();
                 break;
+
+            case R.id.btn_register:
+                Intent intent = new Intent(Login_Activity.this,register_Infor.class);
+                startActivity(intent);
             default:
                 break;
 

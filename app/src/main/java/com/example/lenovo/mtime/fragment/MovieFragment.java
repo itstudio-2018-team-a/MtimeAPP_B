@@ -112,11 +112,6 @@ public class MovieFragment extends Fragment {
         //tab与viewpager绑定
         tabLayout.setupWithViewPager(viewPager);
 
-//        LinearLayoutManager manager=new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(manager);
-//        movieAdapter = new MovieAdapter(getContext(), movies);
-//        recyclerView.setAdapter(movieAdapter);
-
 
       // sendRequestWithOkHttp();
 
