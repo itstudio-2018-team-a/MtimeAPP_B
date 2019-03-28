@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         MovieFragment movieFragment = new MovieFragment();
         NewsFragment newsFragment = new NewsFragment();
         UserFragment userFragment = new UserFragment();
+        fragments.add(newsFragment);
         fragments.add(commentsFragment);
         fragments.add(movieFragment);
-        fragments.add(newsFragment);
         fragments.add(userFragment);
         adapter = new ViewPagerAdapter(getSupportFragmentManager(), fragments,new String[]{"新闻", "影评", "购票", "我的"});
         viewPager.setAdapter(adapter);
