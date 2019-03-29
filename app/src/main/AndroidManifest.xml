@@ -28,6 +28,7 @@
         <activity android:name=".ChangePassword" />
         <activity android:name=".ChangeName" />
         <activity android:name=".NewsDetail" />
+        <activity android:name=".FindPasswordActivity" />
     </application>
 
 </manifest>

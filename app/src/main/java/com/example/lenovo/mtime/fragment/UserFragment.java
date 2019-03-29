@@ -162,15 +162,6 @@ public class UserFragment extends Fragment {
             }
         });
 
-        btn_findPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Intent intent = new Intent(UserFragment.this,.class);
-                //intent.putExtra("userName",userName);
-                //startActivity(intent);
-            }
-        });
-
         btn_changeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

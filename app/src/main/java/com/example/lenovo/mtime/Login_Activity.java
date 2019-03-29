@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +43,9 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -119,4 +125,28 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         }).start();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_findpassword, menu);
+        final MenuItem item = menu.findItem(R.id.btn_findPassword);
+        item.getActionView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(item);
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.btn_findPassword:
+                Intent intent = new Intent(Login_Activity.this, FindPasswordActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
 }
