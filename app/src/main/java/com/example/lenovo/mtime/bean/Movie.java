@@ -2,17 +2,17 @@ package com.example.lenovo.mtime.bean;
 
 public class Movie {
 
-    private String MovieName;
+    private String title;
 
     private String image;   //image是传送地址过来吗？
 
-    private String MovieInfo;
+    private String info;
 
-    private String Time;
+    private String release_date;
 
-    private String MovieId;
+    private String film_id;
 
-    private String Mark;
+    private String mark;
 
 
     public String getImage() {
@@ -20,19 +20,19 @@ public class Movie {
     }
 
     public String getMovieId() {
-        return MovieId;
+        return film_id;
     }
 
     public String getMovieInfo() {
-        return MovieInfo;
+        return info;
     }
 
     public String getMovieName() {
-        return MovieName;
+        return title;
     }
 
     public String getTime() {
-        return Time;
+        return release_date;
     }
 
     public void setImage(String image) {
@@ -40,27 +40,27 @@ public class Movie {
     }
 
     public void setMovieId(String movieId) {
-        MovieId = movieId;
+        film_id = movieId;
     }
 
     public void setMovieInfo(String movieInfo) {
-        MovieInfo = movieInfo;
+        info = movieInfo;
     }
 
     public void setMovieName(String movieName) {
-        MovieName = movieName;
+        title = movieName;
     }
 
     public void setTime(String time) {
-        Time = time;
+        release_date = time;
     }
 
 
     public String getMark() {
-        return Mark;
+        return mark;
     }
 
     public void setMark(String mark) {
-        Mark = mark;
+        mark = mark;
     }
 }

@@ -24,6 +24,7 @@ import com.example.lenovo.mtime.ChangeName;
 import com.example.lenovo.mtime.ChangePassword;
 import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.R;
+import com.example.lenovo.mtime.Show_HeadImage;
 import com.example.lenovo.mtime.User_comments;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
 import com.example.lenovo.mtime.bean.Movie;
@@ -103,6 +104,8 @@ public class UserFragment extends Fragment {
 
                 }else {
                     //这里展示高清头像
+                    Intent intent = new Intent(getContext(), Show_HeadImage.class);
+                    startActivity(intent);
 
                 }
 

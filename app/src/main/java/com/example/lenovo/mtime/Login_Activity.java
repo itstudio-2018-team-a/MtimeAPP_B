@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.lenovo.mtime.uitl.SpaceFilter;
 
 import org.json.JSONObject;
 
@@ -40,6 +43,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         button_register = findViewById(R.id.btn_register);
         ed_account = findViewById(R.id.ed_account);
         ed_password = findViewById(R.id.ed_password);
+
+        //禁止输入空格
+        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
+        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
