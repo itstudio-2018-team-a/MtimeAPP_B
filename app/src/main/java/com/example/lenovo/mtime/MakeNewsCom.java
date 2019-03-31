@@ -28,6 +28,10 @@ public class MakeNewsCom extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_news_com);
+
+        Intent intent = new Intent();
+        user_id = intent.getStringExtra("user_id");
+
         btn_publish = (Button) findViewById(R.id.btn_publish);
         et_comments = (EditText) findViewById(R.id.et_comments);
         et_comments.setFilters(new InputFilter[] { new InputFilter.LengthFilter(1000) });

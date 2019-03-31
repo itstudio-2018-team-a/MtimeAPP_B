@@ -12,11 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CommentsCom"></activity>
+        <activity android:name=".MakeMovieCom"></activity>
+        <activity android:name=".CommentsCom" />
         <activity android:name=".CommentsDetail" />
         <activity android:name=".User_comments" />
         <activity android:name=".Login_Activity" />
-        <activity android:name=".Movie_Details" />
+        <activity android:name=".Movie_Details_Activity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

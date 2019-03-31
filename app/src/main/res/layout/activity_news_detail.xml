@@ -22,9 +22,39 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_newsTitle"
+                android:textColor="#000000"
+                android:gravity="start"
+                android:text="勇气可嘉！毕志飞导演来领金扫帚奖"
+                android:singleLine="true"
+                android:layout_margin="10dp"
+                android:textSize="23sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="31分钟前"
+                android:gravity="start"
+                android:layout_margin="10dp"
+                android:id="@+id/tv_pubTime"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:layout_margin="10dp"
+                android:background="@drawable/eg"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_content"
+                android:lineSpacingExtra = "10dp"/>
+        </LinearLayout>
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
