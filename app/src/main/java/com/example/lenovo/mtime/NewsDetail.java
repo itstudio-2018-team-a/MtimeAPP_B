@@ -6,12 +6,22 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class NewsDetail extends AppCompatActivity {
 
@@ -48,6 +58,8 @@ public class NewsDetail extends AppCompatActivity {
             }
         });
 
+        sendRequestWithOkHttp();
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,5 +86,51 @@ public class NewsDetail extends AppCompatActivity {
                 break;
         }
         return true;
+    }
+
+    private void sendRequestWithOkHttp(){
+        //开启现线程发起网络请求
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url("http://106.13.106.1/news/i/news/?news_id="+newsId)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    String responseDate = response.body().string();
+                    showResponse(responseDate);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void showResponse(final String response){
+
+        Gson gson = new Gson();
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String title = jsonObject.getString("title");
+            String news_id = jsonObject.getString("news_id");
+            String pub_time = jsonObject.getString("pub_time");
+            String update_time = jsonObject.getString("update_time");
+            String comment_num = jsonObject.getString("comment_num");
+            String picture = jsonObject.getString("picure");
+            String status = jsonObject.getString("status");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
+            @Override
+            public void run(){
+                //设置ui
+
+            }
+        });
     }
 }

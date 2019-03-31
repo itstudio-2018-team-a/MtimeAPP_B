@@ -56,7 +56,7 @@ public class NewsComActivity extends AppCompatActivity {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://106.13.106.1/news/i/comment_list/"+newsId)   //网址有待改动
+                            .url("http://39.96.208.176/news/i/comment_list/?news_id="+newsId)   //网址有待改动
                             .build();
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();

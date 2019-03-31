@@ -2,11 +2,14 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle" android:padding="10dp">
-            <solid android:color="#040b25"/>
-            <corners android:topLeftRadius="10dp"
-                android:topRightRadius="10dp"
-                android:bottomRightRadius="10dp"
-                android:bottomLeftRadius="10dp"/>
+            <solid android:color="#A3040B25"/>
+            <corners android:topLeftRadius="35dp"
+                android:topRightRadius="35dp"
+                android:bottomRightRadius="35dp"
+                android:bottomLeftRadius="35dp"/>
+            <stroke
+                android:width="3px"
+                android:color="#00040B25"/>
             <!--圆角矩形白色背景-->
         </shape>
     </item>
