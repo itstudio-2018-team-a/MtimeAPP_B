@@ -37,22 +37,12 @@ public class NewsFragment extends Fragment {
     private List<News> newsList;
     private NewsAdapter newsAdapter;
     String user_id;
-    private Button btn;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_news,container,false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        btn = (Button) view.findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), NewsDetail.class);
-                intent.putExtra("user_id",user_id);
-                startActivity(intent);
-            }
-        });
         return view;
     }
 
@@ -74,7 +64,6 @@ public class NewsFragment extends Fragment {
                     Request request = new Request.Builder()
                             .url("http://106.13.106.1/news/i/hotpot_list")   //网址有待改动
                             .build();
-
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
                     showResponse(responseDate);
