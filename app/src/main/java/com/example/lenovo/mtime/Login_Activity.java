@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.lenovo.mtime.uitl.SpaceFilter;
 
 import org.json.JSONObject;
 
@@ -37,6 +40,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         button_register = findViewById(R.id.btn_register);
         ed_account = findViewById(R.id.ed_account);
         ed_password = findViewById(R.id.ed_password);
+
+        //禁止输入空格
+        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
+        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
@@ -79,7 +86,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     Log.d("cookie",cookie);
 
                     Request request = new Request.Builder()
-                            .url("http://106.13.106.1/to_post")   //网址有待改动
+                            .url("http://39.96.208.176/to_post")   //网址有待改动
                             .post(requestBody)
                             .addHeader("cookie",cookie)
                             .build();

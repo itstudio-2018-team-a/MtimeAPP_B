@@ -53,21 +53,20 @@ public class MovieComingFragment extends Fragment {
 
 
         //测试用
-        for (int i = 0; i <= 10 ; i++){
-            Movie movie = new Movie();
-            movie.setMark("9.8");
-            movie.setMovieId(i+"");
-            movie.setMovieName("复仇者联盟4：终局之战");
-            movie.setTime("2019.06.07");
-            movies.add(movie);
-        }
+//        for (int i = 0; i <= 10 ; i++){
+//            Movie movie = new Movie();
+//            movie.setMark("9.8");
+//            movie.setMovieId(i+"");
+//            movie.setMovieName("复仇者联盟4：终局之战");
+//            movie.setTime("2019.06.07");
+//            movies.add(movie);
+//        }
 
-
-        LinearLayoutManager manager=new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(manager);
-        movieAdapter = new MovieAdapter(getContext(), movies);
-        recyclerView.setAdapter(movieAdapter);
-         //sendRequestWithOkHttp();
+//        LinearLayoutManager manager=new LinearLayoutManager(getContext());
+//        recyclerView.setLayoutManager(manager);
+//        movieAdapter = new MovieAdapter(getContext(), movies);
+//        recyclerView.setAdapter(movieAdapter);
+        sendRequestWithOkHttp();
     }
 
     private void sendRequestWithOkHttp(){
@@ -78,7 +77,7 @@ public class MovieComingFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://www/film/i/film_lsit")   //网址有待改动
+                            .url("http://39.96.208.176/film/i/coming_film")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -107,7 +106,7 @@ public class MovieComingFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             int num = jsonObject.getInt("num");
             String list = jsonObject.getString("list");
-            String statues = jsonObject.getString("statues");
+            String status = jsonObject.getString("status");
 
             movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
 
@@ -122,9 +121,7 @@ public class MovieComingFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-
                 movieAdapter = new MovieAdapter(getContext(), movies);
-
                 recyclerView.setAdapter(movieAdapter);
             }
         });

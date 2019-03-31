@@ -6,13 +6,23 @@ public class News {
 
     private String title;
 
-    private Bitmap newsImage;
+    private Bitmap picture;
 
     private String author;
 
-    private String time;
+    private String pub_time;
 
-    private String newsId;
+    private String news_id;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    private String content;
 
     public String getTitle() {
         return title;
@@ -23,11 +33,11 @@ public class News {
     }
 
     public Bitmap getNewsImage() {
-        return newsImage;
+        return picture;
     }
 
     public void setNewsImage(Bitmap newsImage) {
-        this.newsImage = newsImage;
+        this.picture = newsImage;
     }
 
     public String getAuthor() {
@@ -39,18 +49,18 @@ public class News {
     }
 
     public String getTime() {
-        return time;
+        return pub_time;
     }
 
     public void setTime(String time) {
-        this.time = time;
+        this.pub_time = time;
     }
 
     public String getNewsId() {
-        return newsId;
+        return news_id;
     }
 
     public void setNewsId(String newsId) {
-        this.newsId = newsId;
+        this.news_id = newsId;
     }
 }

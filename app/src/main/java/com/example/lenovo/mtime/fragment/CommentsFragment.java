@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.lenovo.mtime.R;
+import com.example.lenovo.mtime.adapter.CommentsAdapter;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
+import com.example.lenovo.mtime.bean.Comments;
 import com.example.lenovo.mtime.bean.Movie;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,8 +28,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class CommentsFragment extends Fragment {
-
+    List<Comments>Comments_list;
+    private CommentsAdapter commentsAdapter;
     View view;
+    String user_id;
     RecyclerView recyclerView;
 
     @Nullable
@@ -54,7 +58,7 @@ public class CommentsFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://www/film/i/film_lsit")   //网址有待改动
+                            .url("http://39.96.208.176/film/i/hot_reviews_list")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -76,7 +80,7 @@ public class CommentsFragment extends Fragment {
             String list = jsonObject.getString("list");
             String statues = jsonObject.getString("statues");
 
-            //movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
+            Comments_list = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
 
 
         } catch (JSONException e) {
@@ -89,10 +93,8 @@ public class CommentsFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-
-               // movieAdapter = new MovieAdapter(getContext(), movies);
-
-                //recyclerView.setAdapter(movieAdapter);
+                commentsAdapter = new CommentsAdapter(Comments_list,user_id,getContext());
+                recyclerView.setAdapter(commentsAdapter);
             }
         });
     }

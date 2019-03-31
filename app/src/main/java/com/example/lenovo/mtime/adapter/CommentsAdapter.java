@@ -83,6 +83,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, int i) {
         Comments comments = list.get(i);
         viewHolder.tv_movieTitle.setText(comments.getMovieTitle());
+
         viewHolder.iv_movie.setImageBitmap(comments.getMovieImage());
         viewHolder.iv_author.setImageBitmap(comments.getAuthorImage());
         viewHolder.tv_commentsAuthor.setText(comments.getAuthor());

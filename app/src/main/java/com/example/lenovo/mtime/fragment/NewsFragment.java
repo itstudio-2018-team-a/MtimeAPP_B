@@ -93,10 +93,10 @@ public class NewsFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             int num = jsonObject.getInt("num");
             String list = jsonObject.getString("list");
-            String statues = jsonObject.getString("status");
+            String status = jsonObject.getString("status");
             Log.d("hhh",num+"");
             newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
-            Log.d("list",newsList.toString());
+            Log.d("listhhh",newsList.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
