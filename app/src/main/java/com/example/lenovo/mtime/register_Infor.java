@@ -94,7 +94,7 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("user_id",user_id)
-                            .add("user_name","哈哈哈")
+                            .add("user_name","某不知名网友")
                             .add("password",password)
                             .add("verify_id",code)
                             .build();

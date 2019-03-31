@@ -1,33 +1,28 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-public class NewsDetail extends AppCompatActivity {
+public class CommentsDetail extends AppCompatActivity {
 
-    String newsId;
-    String user_id;
+    String commentsId;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_detail);
-
-        Intent intent = getIntent();
-        newsId = intent.getStringExtra("newsId");
-        user_id = intent.getStringExtra("user_id");
+        setContentView(R.layout.activity_comments_detail);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent intent = new Intent();
+        commentsId = intent.getStringExtra("commentsId");
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -45,16 +40,9 @@ public class NewsDetail extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.comment:
-                Intent intent = new Intent(NewsDetail.this, NewsComActivity.class);
-                intent.putExtra("user_id",user_id);
-                intent.putExtra("newsId",newsId);
+                Intent intent = new Intent(CommentsDetail.this,NewsComActivity .class);
+                intent.putExtra("commentsId",commentsId);
                 startActivity(intent);
-                break;
-            case R.id.fab:
-                Intent intent1 = new Intent(NewsDetail.this,MakeNewsCom .class);
-                intent1.putExtra("user_id",user_id);
-                intent1.putExtra("newsId",newsId);
-                startActivity(intent1);
                 break;
             default:
                 break;

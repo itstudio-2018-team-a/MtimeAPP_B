@@ -6,8 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:padding="10dp"
-        android:id="@+id/btn_login">
+        android:padding="10dp">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

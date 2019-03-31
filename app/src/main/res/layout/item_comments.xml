@@ -35,7 +35,8 @@
                 android:layout_weight="1"
                 android:id="@+id/iv_movie"
                 android:layout_margin="6dp"
-                android:background="@drawable/code_128"/>
+                android:background="@drawable/code_128"
+                android:scaleType="fitXY"/>
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -52,6 +53,7 @@
                 android:layout_width="12sp"
                 android:layout_height="12sp"
                 android:background="@drawable/user_128"
+                android:scaleType="fitXY"
                 android:id="@+id/iv_author"/>
             <TextView
                 android:layout_width="wrap_content"

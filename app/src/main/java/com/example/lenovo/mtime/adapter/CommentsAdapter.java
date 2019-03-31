@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.lenovo.mtime.CommentsDetail;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.Comments;
 
@@ -68,12 +71,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 Comments comments = list.get(position);
-               // String newsId = news.getNewsId();
-                //Intent intent = new Intent();
-                //intent.setClass(view .getContext(),ShowNews.class );
-                //intent.putExtra("newsId", newsId);
-               // intent.putExtra("userName", userName);
-              //  view.getContext().startActivity(intent);
+                String commentId = comments.getComment_id();
+                Intent intent = new Intent();
+                intent.setClass(view .getContext(), CommentsDetail.class );
+                intent.putExtra("commentsId", commentId);
+                intent.putExtra("user_id", user_id);
+                view.getContext().startActivity(intent);
             }
         });
         return holder;
@@ -82,17 +85,19 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, int i) {
         Comments comments = list.get(i);
-        viewHolder.tv_movieTitle.setText(comments.getMovieTitle());
-        viewHolder.iv_movie.setImageBitmap(comments.getMovieImage());
-        viewHolder.iv_author.setImageBitmap(comments.getAuthorImage());
-        viewHolder.tv_commentsAuthor.setText(comments.getAuthor());
+        //viewHolder.tv_movieTitle.setText(comments.get);
+        Log.d("hhh",comments.getAuthor_head());
+        Glide.with(context).load("http://39.96.208.176"+comments.getImage()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+        Glide.with(context).load("http://39.96.208.176"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
         viewHolder.tv_commentsTitle.setText(comments.getTitle());
-        viewHolder.tv_summary.setText(comments.getSummary());
+        viewHolder.tv_summary.setText(comments.getSubtitle());
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(null==list) return 0;
+        else return list.size();
     }
     @Override
     public long getItemId(int position) {

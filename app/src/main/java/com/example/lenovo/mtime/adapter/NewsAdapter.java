@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.lenovo.mtime.NewsDetail;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.News;
@@ -21,10 +22,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
     private List<News> list;
     private Context context;
-    public String userName;
+    public String user_id;
 
     public NewsAdapter(List<News> list,String userName1,Context context){
-        userName = userName1;
+        user_id = userName1;
         this.list = list;
         this.context = context;
     }
@@ -64,11 +65,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 News news = list.get(position);
-                //String newsId = news.getNewsId();
+                String newsId = news.getNew_id();
                 Intent intent = new Intent();
                 intent.setClass(view .getContext(), NewsDetail.class );
-                //intent.putExtra("newsId", newsId);
-                //intent.putExtra("userName", userName);
+                intent.putExtra("newsId", newsId);
+                intent.putExtra("user_id", user_id);
                 view.getContext().startActivity(intent);
             }
         });
@@ -79,13 +80,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, int i) {
         News news = list.get(i);
         viewHolder.tv_newsTitle.setText(news.getTitle());
-        viewHolder.iv_news.setImageBitmap(news.getNewsImage());
-        viewHolder.tv_newsAuthor.setText(news.getAuthor());
+        viewHolder.tv_newsAuthor.setText(news.getPub_time());
+        Glide.with(context).load("http://39.96.208.176"+news.getPicture()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_news);
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(null==list) return 0;
+        else return list.size();
     }
     @Override
     public long getItemId(int position) {

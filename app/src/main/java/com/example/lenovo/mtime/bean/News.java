@@ -3,16 +3,10 @@ package com.example.lenovo.mtime.bean;
 import android.graphics.Bitmap;
 
 public class News {
-
     private String title;
-
-    private Bitmap newsImage;
-
-    private String author;
-
-    private String time;
-
-    private String newsId;
+    private String picture;
+    private String pub_time;
+    private String new_id;
 
     public String getTitle() {
         return title;
@@ -22,35 +16,27 @@ public class News {
         this.title = title;
     }
 
-    public Bitmap getNewsImage() {
-        return newsImage;
+    public String getPicture() {
+        return picture;
     }
 
-    public void setNewsImage(Bitmap newsImage) {
-        this.newsImage = newsImage;
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getPub_time() {
+        return pub_time;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setPub_time(String pub_time) {
+        this.pub_time = pub_time;
     }
 
-    public String getTime() {
-        return time;
+    public String getNew_id() {
+        return new_id;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getNewsId() {
-        return newsId;
-    }
-
-    public void setNewsId(String newsId) {
-        this.newsId = newsId;
+    public void setNew_id(String new_id) {
+        this.new_id = new_id;
     }
 }

@@ -6,13 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.lenovo.mtime.R;
-import com.example.lenovo.mtime.adapter.MovieAdapter;
-import com.example.lenovo.mtime.bean.Movie;
+import com.example.lenovo.mtime.adapter.CommentsAdapter;
+import com.example.lenovo.mtime.bean.Comments;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,6 +30,9 @@ public class CommentsFragment extends Fragment {
 
     View view;
     RecyclerView recyclerView;
+    private List<Comments> commentsList;
+    private CommentsAdapter commentsAdapter;
+    String user_id;
 
     @Nullable
     @Override
@@ -54,10 +58,11 @@ public class CommentsFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://www/film/i/film_lsit")   //网址有待改动
+                            .url("http://39.96.208.176/film/i/hot_review_list")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
+                    Log.e("response",response.toString());
                     String responseDate = response.body().string();
                     showResponse(responseDate);
 
@@ -72,11 +77,12 @@ public class CommentsFragment extends Fragment {
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
+            Log.e("response",response);
             int num = jsonObject.getInt("num");
             String list = jsonObject.getString("list");
-            String statues = jsonObject.getString("statues");
+            //String statues = jsonObject.getString("statues");
 
-            //movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
+            commentsList = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
 
 
         } catch (JSONException e) {
@@ -90,9 +96,9 @@ public class CommentsFragment extends Fragment {
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
 
-               // movieAdapter = new MovieAdapter(getContext(), movies);
+                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext());
 
-                //recyclerView.setAdapter(movieAdapter);
+                recyclerView.setAdapter(commentsAdapter);
             }
         });
     }

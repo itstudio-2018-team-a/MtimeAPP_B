@@ -1,13 +1,10 @@
 package com.example.lenovo.mtime.bean;
 
-import android.graphics.Bitmap;
-
-public class NewsCom {
+public class ComCom {
     private String content;
     private String author_id;
     private String author_name;
     private String author_head;
-    private String time;
 
     public String getContent() {
         return content;
@@ -39,13 +36,5 @@ public class NewsCom {
 
     public void setAuthor_head(String author_head) {
         this.author_head = author_head;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 }
