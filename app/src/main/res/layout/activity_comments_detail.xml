@@ -19,12 +19,91 @@
             android:textColor="#F7FFFFFF"
             android:textSize="20sp"/>
     </android.support.v7.widget.Toolbar>
+
     <android.support.design.widget.CoordinatorLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/tv_newsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="start"
+                android:text="这里是标题！"
+                android:textColor="#000000"
+                android:textSize="23sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#F1F1F1"
+                android:layout_margin="5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_author"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/eg" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tv_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="作者"
+                            android:textColor="#000000" />
+                        <TextView
+                            android:id="@+id/tv_movieTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:text="评《小飞象》" />
+                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/iv_movie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:background="@drawable/email_128" />
+                    <TextView
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_content"
+                android:textColor="#000000"
+                android:layout_margin="10dp"
+                android:text="这部电影很好看这部电影很好看这部电影很好看这部电影很好看这部电影很好看这部电影很好看这部电影很好看这部电影很好看这部电影很好看"/>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

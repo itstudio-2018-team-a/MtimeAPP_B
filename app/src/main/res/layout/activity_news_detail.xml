@@ -33,7 +33,6 @@
                 android:textColor="#000000"
                 android:gravity="start"
                 android:text="勇气可嘉！毕志飞导演来领金扫帚奖"
-                android:singleLine="true"
                 android:layout_margin="10dp"
                 android:textSize="23sp"/>
             <TextView
