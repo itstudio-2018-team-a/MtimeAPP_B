@@ -12,7 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MakeMovieCom"></activity>
+        <activity android:name=".MakeLongCom"></activity>
+        <activity android:name=".MakeShortCom" />
+        <activity android:name=".MarkActivity" />
+        <activity android:name=".MakeMovieCom" />
         <activity android:name=".CommentsCom" />
         <activity android:name=".CommentsDetail" />
         <activity android:name=".User_comments" />

@@ -65,7 +65,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 News news = list.get(position);
-                String newsId = news.getNews_id();
+                String newsId = String.valueOf(news.getId());
                 Intent intent = new Intent();
                 intent.setClass(view .getContext(), NewsDetail.class );
                 intent.putExtra("newsId", newsId);
@@ -80,8 +80,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull NewsAdapter.ViewHolder viewHolder, int i) {
         News news = list.get(i);
         viewHolder.tv_newsTitle.setText(news.getTitle());
-        viewHolder.tv_newsAuthor.setText(news.getPub_time());
-        Glide.with(context).load("http://39.96.208.176"+news.getPicture()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_news);
+        viewHolder.tv_newsAuthor.setText(news.getAuthor());
+        Glide.with(context).load("http://39.96.208.176"+news.getPhoto()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_news);
     }
 
     @Override

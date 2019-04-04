@@ -13,11 +13,16 @@ import android.widget.Toast;
 public class Movie_Details_Activity extends AppCompatActivity {
     FloatingActionButton fab;
     String user_id;
+    String movie_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie__details);
+
+        Intent intent = new Intent();
+        user_id = intent.getStringExtra("user_id");
+        movie_id = intent.getStringExtra("movie_id");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -31,8 +36,9 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 }
                 else
                 {
-                    Intent intent1 = new Intent(Movie_Details_Activity.this,MakeMovieCom .class);
+                    Intent intent1 = new Intent(Movie_Details_Activity.this,MarkActivity .class);
                     intent1.putExtra("user_id",user_id);
+                    intent1.putExtra("movie_id",movie_id);
                     startActivity(intent1);
                 }
             }

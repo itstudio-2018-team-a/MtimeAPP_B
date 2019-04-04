@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Mtime"
+            android:textColor="#F7FFFFFF"
+            android:textSize="20sp"/>
+    </android.support.v7.widget.Toolbar>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,15 +36,22 @@
             android:hint="请输入新昵称"/>
 
         <Button
-            android:layout_width="160dp"
+            android:layout_width="220dp"
             android:layout_height="50dp"
             android:text="保存"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_btn2"
+            android:textStyle="bold"
+            android:layout_margin="30dp"
             android:id="@+id/btn_reset"
             android:layout_gravity="center"/>
         <Button
-            android:layout_width="160dp"
+            android:layout_width="220dp"
             android:layout_height="50dp"
             android:text="取消"
+            android:background="@drawable/btn_white"
+            android:textColor="#040B25"
+            android:textStyle="bold"
             android:id="@+id/btn_out"
             android:layout_gravity="center"/>
     </LinearLayout>

@@ -23,6 +23,7 @@ public class MakeNewsCom extends AppCompatActivity {
     Button btn_publish;
     String comments;
     String user_id;
+    String newsId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MakeNewsCom extends AppCompatActivity {
 
         Intent intent = new Intent();
         user_id = intent.getStringExtra("user_id");
+        newsId = intent.getStringExtra("newsId");
 
         btn_publish = (Button) findViewById(R.id.btn_publish);
         et_comments = (EditText) findViewById(R.id.et_comments);

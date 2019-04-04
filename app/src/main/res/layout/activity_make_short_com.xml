@@ -35,8 +35,8 @@
         android:text="发表"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:background="@drawable/rounded_btn2"
         android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_btn2"
         android:layout_gravity="center_horizontal"
         android:id="@+id/btn_publish"/>
 </LinearLayout>

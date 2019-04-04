@@ -10,6 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="这里是标题"
+            android:textColor="#000000"
             android:id="@+id/tv_newsTitle"
             android:layout_margin="10dp"/>
         <ImageView
@@ -23,5 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="这里是作者"
-            android:id="@+id/tv_newsAuthor"/>
+            android:textSize="12sp"
+            android:id="@+id/tv_newsAuthor"
+            android:layout_margin="10dp"/>
 </LinearLayout>

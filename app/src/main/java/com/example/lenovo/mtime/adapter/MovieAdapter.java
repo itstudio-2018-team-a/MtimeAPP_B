@@ -22,10 +22,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     private List<Movie>mMovieList;
     private Context context;
+    private String user_id;
 
-    public MovieAdapter(Context context,List<Movie>movieList){
+    public MovieAdapter(Context context,List<Movie>movieList,String user_id){
         this.context = context;
         mMovieList = movieList;
+        this.user_id = user_id;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -55,11 +57,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             public void onClick(View v) {
                 //写到item点击事件，可以参考知乎日报
                 int position = holder.getAdapterPosition();
-                String Movie_id = (String) mMovieList.get(position).getMovieId();
-                String Url = "106.13.106.1/film/i/film/" + Movie_id;
+                String movie_id = (String) mMovieList.get(position).getMovieId();
+                String Url = "106.13.106.1/film/i/film/" + movie_id;
 
                 Intent intent = new Intent(context, Movie_Details_Activity.class);
                 intent.putExtra("Url",Url);
+                intent.putExtra("user_id",user_id);
+                intent.putExtra("movie_id",movie_id);
                 context.startActivity(intent);
             }
         });

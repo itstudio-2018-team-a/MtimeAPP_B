@@ -40,8 +40,8 @@ public class ComComAdapter extends RecyclerView.Adapter<ComComAdapter.ViewHolder
             super(view);
             comComView = view;
             iv_author = (ImageView) view.findViewById(R.id.iv_author);
-            tv_commentator = (TextView) view.findViewById(R.id.tv_commentator);
-            tv_context = (TextView) view.findViewById(R.id.tv_context);
+            tv_commentator = (TextView) view.findViewById(R.id.tv_author);
+            tv_context = (TextView) view.findViewById(R.id.tv_content);
             tv_time = (TextView) view.findViewById(R.id.tv_time);
         }
     }
