@@ -39,7 +39,7 @@ public class MarkActivity extends AppCompatActivity {
         btn_longComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(MarkActivity.this,MakeShortCom.class);
+                Intent intent1 = new Intent(MarkActivity.this,MakeLongCom.class);
                 intent1.putExtra("user_id",user_id);
                 intent1.putExtra("movie_id",movie_id);
                 startActivity(intent1);
