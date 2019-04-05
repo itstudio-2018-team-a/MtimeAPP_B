@@ -1,5 +1,6 @@
 package com.example.lenovo.mtime;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,11 +25,15 @@ public class MainActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
     ViewPagerAdapter adapter;
+    String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
 
         //绑监听
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -69,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
             }
             tab.setIcon(d);
         }
+
+        //从登陆界面获取userid
+        Intent intent = getIntent();
+        user_id = intent.getStringExtra("extra_data");
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id",user_id);
+        //将user_id发送到各个fragment
+        newsFragment.setArguments(bundle);
+        movieFragment.setArguments(bundle);
+        commentsFragment.setArguments(bundle);
+        userFragment.setArguments(bundle);
     }
 
     private void changeIconImgBottomMargin(ViewGroup parent, int px){

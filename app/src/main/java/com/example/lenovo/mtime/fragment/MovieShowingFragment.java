@@ -36,6 +36,7 @@ public class MovieShowingFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Movie> movies=new ArrayList<>();
     private MovieAdapter movieAdapter;
+    private String user_id;
 
     @Nullable
     @Override
@@ -50,6 +51,8 @@ public class MovieShowingFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Bundle bundle = getArguments();
+        if(bundle != null) user_id = bundle.getString("user_id");
 
 
         sendRequestWithOkHttp();
@@ -110,7 +113,7 @@ public class MovieShowingFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                movieAdapter = new MovieAdapter(getContext(), movies);
+                movieAdapter = new MovieAdapter(getContext(), movies,user_id);
                 recyclerView.setAdapter(movieAdapter);
             }
         });

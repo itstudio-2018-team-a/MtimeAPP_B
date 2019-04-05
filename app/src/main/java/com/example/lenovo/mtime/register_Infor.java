@@ -1,6 +1,8 @@
 package com.example.lenovo.mtime;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
 import com.example.lenovo.mtime.bean.Movie;
 import com.example.lenovo.mtime.uitl.SpaceFilter;
@@ -19,12 +22,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
 import okhttp3.FormBody;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -46,6 +51,7 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
     private String code;
     private String email;
     private int flag = 0;  //用于判断获取验证码按钮是否按下
+    private String session;
 
 
     @Override
@@ -65,6 +71,12 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
         ed_email.setFilters(new InputFilter[]{new SpaceFilter()});
         ed_code.setFilters(new InputFilter[]{new SpaceFilter()});
         ed_password_sure.setFilters(new InputFilter[]{new SpaceFilter()});
+         //限制最大输入长度
+        ed_account.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_password.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_email.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_code.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_password_sure.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
 
         btn_register = findViewById(R.id.btn_register);
         btn_get_code = findViewById(R.id.btn_get_code);
@@ -92,12 +104,15 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                     code = ed_code.getText().toString();
                     email = ed_email.getText().toString();
 
-                    if (user_id.equals("") ){
-                        Toast.makeText(this,"请输入账号",Toast.LENGTH_SHORT).show();
-                    }else if (password.equals("") ){
-                        Toast.makeText(this,"请输入密码",Toast.LENGTH_SHORT).show();
-                    }else if (password_sure.equals("") ){
-                        Toast.makeText(this,"请确认密码",Toast.LENGTH_SHORT).show();
+                    int len_id = user_id.length();
+                    int len_pass = user_id.length();
+
+                    if (len_id<6){
+                        Toast.makeText(this,"请输入6-16位账号",Toast.LENGTH_SHORT).show();
+                    }else if (len_pass<6){
+                        Toast.makeText(this,"请输入6-16位密码",Toast.LENGTH_SHORT).show();
+                    }else if (!password_sure.equals(password) ){
+                        Toast.makeText(this,"两次密码不一致",Toast.LENGTH_SHORT).show();
                     }else if ( code.equals("") ){
                         Toast.makeText(this,"请输入验证码",Toast.LENGTH_SHORT).show();
                     }else if ( email.equals("") ){
@@ -131,47 +146,62 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
             public void run(){
                 try{
                     OkHttpClient client = new OkHttpClient();
-                    RequestBody requestBody = new FormBody.Builder()
-                            .add("user_id",user_id)
-                            .add("user_name","某不知名网友")
-                            .add("password",password)
-                            .add("verify_id",code)
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("username",user_id)
+                            .addFormDataPart("nickname","一位不愿透露姓名的网友")
+                            .addFormDataPart("password",password)
+                            .addFormDataPart("vericode",code)
+                            .addFormDataPart("email",email)
                             .build();
 
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/account/i/register")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/register/")
                             .post(requestBody)
+                            .addHeader("Connection","close")
                             .build();
 
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
+//                    session = response.header("Set-Cookie");  //获取cookie
+
+
 
                     JSONTokener(responseDate);
                     Log.d("hahaha",responseDate);
                     JSONObject jsonObject = new JSONObject(responseDate);
 
-                    String result = jsonObject.getString("result");
-                    if (result.equals("0")){
-                        Toast.makeText(register_Infor.this,"注册成功",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(register_Infor.this,Login_Activity.class);
-                        startActivity(intent);
-                        finish();
-                    }else if (result.equals("1")){
-                        Toast.makeText(register_Infor.this,"很抱歉，该账号已存在",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("2")){
-                        Toast.makeText(register_Infor.this,"很抱歉，该邮箱已被注册",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("3")){
-                        Toast.makeText(register_Infor.this,"验证码错误",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("4")){
-                        Toast.makeText(register_Infor.this,"无效的用户名，请修改后再试",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("5")){
-                        Toast.makeText(register_Infor.this,"无效的密码，请修改后再试",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("6")){
-                        Toast.makeText(register_Infor.this,"未知错误导致注册失败，请稍后再试",Toast.LENGTH_LONG).show();
-                    }
+                    final String result = jsonObject.getString("state");
+                    session = jsonObject.getString("session");
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (result.equals("1")){
+                                Toast.makeText(register_Infor.this,"注册成功",Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(register_Infor.this,Login_Activity.class);
+                                //把session储存到本地
+                                SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                                editor.putString("cookie",session);
+
+                                startActivity(intent);
+                                finish();
+                            }
+                            else if (result.equals("-1")){
+                                Toast.makeText(register_Infor.this,"很抱歉，该验证码已过期",Toast.LENGTH_LONG).show();
+                            }else if (result.equals("-2")){
+                                Toast.makeText(register_Infor.this,"很抱歉，验证码错误",Toast.LENGTH_LONG).show();
+                            }else if (result.equals("404")){
+                                Toast.makeText(register_Infor.this,"非法请求导致注册失败",Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+
 
                 }catch (Exception e){
                     e.printStackTrace();
+                    sendRequestWithOkHttp();
                 }
             }
         }).start();
@@ -187,27 +217,45 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                 try{
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new FormBody.Builder()
-                            .add("use","register")
                             .add("email",email)
                             .build();
 
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/i/email_verify_code")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/sendCheckCode/")
                             .post(requestBody)
+                            .addHeader("Connection","close")
                             .build();
 
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
                     JSONTokener(responseDate);
-                    JSONObject jsonObject = new JSONObject(responseDate);
-                    String id = jsonObject.getString("id");
-                    String wait = jsonObject.getString("wait");
-                    Toast.makeText(register_Infor.this,"验证码已发送，请注意查收",Toast.LENGTH_LONG).show();
+                    JSONArray jsonArray = new JSONArray(responseDate);
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    final String statu = jsonObject.getString("statu");
+                    String msg = jsonObject.getString("msg");
+                    final String code = jsonObject.getString("code");
+                    runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
+                        @Override
+                        public void run(){
+                            //设置ui
+
+                            if (statu.equals("1")){
+                                Toast.makeText(register_Infor.this,"验证码已发送，请注意查收",Toast.LENGTH_LONG).show();
+                                ed_code.setText(code);
+                            }else if (statu.equals("-1")) {
+                                Toast.makeText(register_Infor.this, "该邮箱已被注册", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    });
+
 
                     //这里后期考虑在界面动态显示验证码发送时间倒计时
 
                 }catch (Exception e){
                     e.printStackTrace();
+
+                    sendRequestWithOkHttp_getCode();
                 }
             }
         }).start();

@@ -4,7 +4,7 @@ public class Movie {
 
     private String title;
 
-    private String image;   //image是传送地址过来吗？
+    private String image;
 
     private String info;
 

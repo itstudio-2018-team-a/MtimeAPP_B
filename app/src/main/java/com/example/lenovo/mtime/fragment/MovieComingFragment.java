@@ -36,6 +36,7 @@ public class MovieComingFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Movie> movies=new ArrayList<>();
     private MovieAdapter movieAdapter;
+    private String user_id;
 
     @Nullable
     @Override
@@ -51,7 +52,8 @@ public class MovieComingFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
+        Bundle bundle = getArguments();
+        if(bundle != null) user_id = bundle.getString("user_id");
         //测试用
 //        for (int i = 0; i <= 10 ; i++){
 //            Movie movie = new Movie();
@@ -77,16 +79,16 @@ public class MovieComingFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/film/i/coming_film")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/getFilmList/")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
-                    String cookie = response.header("Set-Cookie");  //获取cookie
+//                    String cookie = response.header("Set-Cookie");  //获取cookie
 
                     //将cookie储存到sharedpreference
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
-                    editor.putString("cookie",cookie);
-                    editor.apply();
+//                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
+//                    editor.putString("cookie",cookie);
+//                    editor.apply();
 
                     // Cookie cookie = client.cookieJar().saveFromResponse("http://www/film/i/film_lsit",cookies);
                     String responseDate = response.body().string();
@@ -104,8 +106,8 @@ public class MovieComingFragment extends Fragment {
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
+            int state = jsonObject.getInt("state");
+            String list = jsonObject.getString("result");
             String status = jsonObject.getString("status");
 
             movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
@@ -121,7 +123,7 @@ public class MovieComingFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                movieAdapter = new MovieAdapter(getContext(), movies);
+                movieAdapter = new MovieAdapter(getContext(), movies,user_id);
                 recyclerView.setAdapter(movieAdapter);
             }
         });

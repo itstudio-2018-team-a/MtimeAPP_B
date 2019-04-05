@@ -47,6 +47,7 @@ public class MovieFragment extends Fragment {
     private ArrayList<String> TitleList = new ArrayList<>();  //页卡标题集合
     private ArrayList<Fragment> ViewList = new ArrayList<>();   //页卡视图集合
     private Fragment movieComingFragment,movieShowingFragment;  //页卡视图
+    private String user_id;
 
     @Nullable
     @Override
@@ -66,7 +67,8 @@ public class MovieFragment extends Fragment {
        super.onActivityCreated(savedInstanceState);
 
 
-
+        Bundle bundle = getArguments();
+        if(bundle != null) user_id = bundle.getString("user_id");
 
         movieShowingFragment = new MovieShowingFragment();
         movieComingFragment = new MovieComingFragment();
@@ -170,7 +172,7 @@ public class MovieFragment extends Fragment {
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
 
-                movieAdapter = new MovieAdapter(getContext(), movies);
+                movieAdapter = new MovieAdapter(getContext(), movies, user_id);
 
                 recyclerView.setAdapter(movieAdapter);
             }

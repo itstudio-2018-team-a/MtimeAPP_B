@@ -1,6 +1,7 @@
 package com.example.lenovo.mtime.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -61,9 +62,11 @@ public class NewsFragment extends Fragment {
             public void run(){
                 try{
                     OkHttpClient client = new OkHttpClient();
+//                    client.retryOnConnectionFailure();
                     Request request = new Request.Builder()
                             .url("http://39.96.208.176/news/i/hotpot_list")   //网址有待改动
                             .build();
+
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
                     showResponse(responseDate);

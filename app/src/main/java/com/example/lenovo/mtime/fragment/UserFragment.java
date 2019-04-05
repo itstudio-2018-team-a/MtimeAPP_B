@@ -105,6 +105,8 @@ public class UserFragment extends Fragment {
                 }else {
                     //这里展示高清头像
                     Intent intent = new Intent(getContext(), Show_HeadImage.class);
+//                    intent.putExtra("")
+                    //貌似没有获取头像的接口
                     startActivity(intent);
 
                 }

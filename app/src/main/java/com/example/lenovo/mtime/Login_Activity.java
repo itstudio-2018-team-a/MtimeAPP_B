@@ -11,14 +11,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.lenovo.mtime.uitl.SpaceFilter;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -33,6 +37,9 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
     private String user_id;
     private String password;
     public static String flag; //用于判断是否登录
+    private String result;
+    private CheckBox checkBox;
+    private String msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +50,29 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         button_register = findViewById(R.id.btn_register);
         ed_account = findViewById(R.id.ed_account);
         ed_password = findViewById(R.id.ed_password);
+        checkBox = findViewById(R.id.remember_password);
 
         //禁止输入空格
         ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
         ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
+        //限制输入最大长度
+        ed_account.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_password.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
+
+//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked){
+//                    if_check = 1;
+//                    /*ckOK.setEnabled(false);*/
+//                }else{
+//                    if_check = 0;
+//                }
+//            }
+//        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,7 +84,19 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_login:
                 user_id = ed_account.getText().toString();
                 password = ed_password.getText().toString();
-                sendRequestWithOkHttp();
+                int len_id = user_id.length();
+                int len_pass = password.length();
+                if (len_id<6){
+                    Toast.makeText(this,"请输入6-16位账号",Toast.LENGTH_SHORT).show();
+                }else {
+                    if (len_pass<6){
+                        Toast.makeText(this,"请输入6-16位密码",Toast.LENGTH_SHORT).show();
+                    }else {
+
+                        sendRequestWithOkHttp();
+                    }
+                }
+
                 break;
 
             case R.id.btn_register:
@@ -80,58 +115,89 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
             public void run(){
                 try{
                     OkHttpClient client = new OkHttpClient();
-                    RequestBody requestBody = new FormBody.Builder()
-                            .add("user_id",user_id)
-                            .add("password",password)
+                    RequestBody requestBody = new MultipartBody.Builder()
+                            .setType(MultipartBody.FORM)
+                            .addFormDataPart("username",user_id)
+                            .addFormDataPart("password",password)
                             .build();
 
                     //从sharedpreferences获取cookie
-                    SharedPreferences preferences = getSharedPreferences("data",MODE_PRIVATE);
-                    String cookie = preferences.getString("cookie","");
+//                    SharedPreferences preferences = getSharedPreferences("data",MODE_PRIVATE);
+//                    String cookie = preferences.getString("cookie","");
 
-                    Log.d("cookie",cookie);
+//                    Log.d("cookie",cookie);
 
                     Request request = new Request.Builder()
-                            .url("http://106.13.106.1/to_post")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/login/")   //网址有待改动
                             .post(requestBody)
-                            .addHeader("cookie",cookie)
+                            .addHeader("Connection","close")
+//                            .addHeader("cookie",cookie)
                             .build();
 
                     Response response = client.newCall(request).execute();
-                    cookie = response.header("Set-Cookie");  //获取cookie
+//                    cookie = response.header("Set-Cookie");  //获取cookie
 
-                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                    editor.putString("cookie",cookie);
+//                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+//                    editor.putString("cookie",cookie);
 
                     String responseDate = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseDate);
-                    String result = jsonObject.getString("result");
-                    if (result.equals("0")){
-                        Toast.makeText(Login_Activity.this,"登录成功",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(Login_Activity.this,MainActivity.class);
-                        intent.putExtra("extra_data",user_id);
-                        flag = "1" ; //用于个人中心判断是否以及登录
-                        startActivity(intent);
-                        finish();
-                    }else if (result.equals("1")){
-                        Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("2")){
-                        Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("4")){
-                        Toast.makeText(Login_Activity.this,"该账号已被冻结",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("5")){
-                        Toast.makeText(Login_Activity.this,"无效的密码，请修改后再试",Toast.LENGTH_LONG).show();
-                    }else if (result.equals("6")){
-                        Toast.makeText(Login_Activity.this,"未知错误导致登陆失败，请稍后再试",Toast.LENGTH_LONG).show();
-                    }
+                    JSONArray jsonArray = new JSONArray(responseDate);
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    result = jsonObject.getString("statu");
+                    msg = jsonObject.getString("msg");
+
+                    showResult();
+
 
                 }catch (Exception e){
                     e.printStackTrace();
+                    sendRequestWithOkHttp();
+                    //如果抛出异常则重新请求一次
                 }
             }
         }).start();
     }
 
+    void showResult(){
+        runOnUiThread(new Runnable() {
+
+            private SharedPreferences.Editor editor;
+
+            @Override
+            public void run() {
+                if (result.equals("1")){
+
+                    if (checkBox.isChecked()){
+                        editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                        editor.putString("user_id",user_id);
+                        editor.putString("password",password);
+                    }else {
+//                        editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                        editor.clear();
+                    }
+                    Toast.makeText(Login_Activity.this,"登录成功",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(Login_Activity.this,MainActivity.class);
+                    intent.putExtra("extra_data",user_id);
+                    flag = "1" ; //用于个人中心判断是否以及登录
+                    startActivity(intent);
+                    finish();
+                }else {
+                            Toast.makeText(Login_Activity.this,msg,Toast.LENGTH_SHORT).show();
+                }
+//                else if (result.equals("1")){
+//                    Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
+//                }else if (result.equals("2")){
+//                    Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
+//                }else if (result.equals("4")){
+//                    Toast.makeText(Login_Activity.this,"该账号已被冻结",Toast.LENGTH_LONG).show();
+//                }else if (result.equals("5")){
+//                    Toast.makeText(Login_Activity.this,"无效的密码，请修改后再试",Toast.LENGTH_LONG).show();
+//                }else if (result.equals("6")){
+//                    Toast.makeText(Login_Activity.this,"未知错误导致登陆失败，请稍后再试",Toast.LENGTH_LONG).show();
+//                }
+            }
+        });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_findpassword, menu);

@@ -48,12 +48,12 @@
                 android:layout_width="6dp"
                 android:layout_height="match_parent" />
             <EditText
-                android:inputType="text"
+                android:inputType="number"
                 android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="40sp"
                 android:theme="@style/MyEditText"
-                android:hint="用户名"
+                android:hint="账号"
                 android:textSize="16sp"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/ed_account"/>
@@ -73,7 +73,7 @@
                 android:layout_width="6dp"
                 android:layout_height="match_parent" />
             <EditText
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:singleLine="true"
                 android:layout_width="match_parent"
                 android:layout_height="40sp"

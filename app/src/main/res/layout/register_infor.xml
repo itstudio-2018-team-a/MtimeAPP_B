@@ -40,7 +40,8 @@
                 android:theme="@style/MyEditText"
                 android:textSize="16sp"
                 android:maxLength="16"
-                android:hint="6-16位用户名"
+                android:inputType="number"
+                android:hint="6-16位数字账号"
                 android:id="@+id/ed_account"/>
         </LinearLayout>
         <TextView
@@ -62,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40sp"
                 android:theme="@style/MyEditText"
+                android:inputType="textPassword"
                 android:textSize="16sp"
                 android:maxLength="16"
                 android:hint="6-16位密码"
@@ -89,6 +91,7 @@
                 android:theme="@style/MyEditText"
                 android:textSize="16sp"
                 android:hint="确认密码"
+                android:inputType="textPassword"
                 android:id="@+id/ed_password_sure"/>
         </LinearLayout>
         <TextView
