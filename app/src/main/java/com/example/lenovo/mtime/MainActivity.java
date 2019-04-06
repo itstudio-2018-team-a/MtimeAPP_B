@@ -77,9 +77,18 @@ public class MainActivity extends AppCompatActivity {
 
         //从登陆界面获取userid
         Intent intent = getIntent();
-        user_id = intent.getStringExtra("extra_data");
+        user_id = intent.getStringExtra("user_id");
+        String session = intent.getStringExtra("session");
+        String nickName = intent.getStringExtra("nickName");
+        String headImage = intent.getStringExtra("headImage");
+        String email = intent.getStringExtra("email");
+
         Bundle bundle = new Bundle();
         bundle.putString("user_id",user_id);
+        bundle.putString("session",session);
+        bundle.putString("nickName",nickName);
+        bundle.putString("headImage",headImage);
+        bundle.putString("email",email);
         //将user_id发送到各个fragment
         newsFragment.setArguments(bundle);
         movieFragment.setArguments(bundle);

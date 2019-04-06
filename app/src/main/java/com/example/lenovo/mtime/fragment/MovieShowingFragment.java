@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -64,21 +65,28 @@ public class MovieShowingFragment extends Fragment {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
+
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/film/i/ticketing_film")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/getFilmList/")
+                            .addHeader("head","1")
+                            .addHeader("type","1")
+                            .addHeader("number","12")
                             .build();
 
 //                    if (Build.VERSION.SDK != null && Build.VERSION.SDK_INT > 13) {
 //                        request.addHeader("Connection", "close");
 //                    }
                     Response response = client.newCall(request).execute();
-                    String cookie = response.header("Set-Cookie");  //获取cookie
+//                    String cookie = response.header("Set-Cookie");  //获取cookie
 
                     //将cookie储存到sharedpreference
-                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
-                    editor.putString("cookie",cookie);
-                    editor.apply();
+//                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
+//                    editor.putString("cookie",cookie);
+//                    editor.apply();
 
                     // Cookie cookie = client.cookieJar().saveFromResponse("http://www/film/i/film_lsit",cookies);
                     String responseDate = response.body().string();
@@ -96,9 +104,9 @@ public class MovieShowingFragment extends Fragment {
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
-            String status = jsonObject.getString("status");
+            int state = jsonObject.getInt("state");
+            String list = jsonObject.getString("result");
+//            String status = jsonObject.getString("status");
 
             movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
 

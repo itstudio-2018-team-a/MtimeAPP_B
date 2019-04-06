@@ -4,7 +4,6 @@ public class User {
 
     private String username;
     private String User_id;
-    //private String Password;
     private String head;
     private String email;
     private String status;
@@ -24,15 +23,6 @@ public class User {
     public void setUser_Account(String user_Account) {
         User_id = user_Account;
     }
-
-    //关于密码的操作后期记得加以限制
-   // public String getPassword() {
-       // return Password;
-    //}
-
-    //public void setPassword(String password) {
-       // Password = password;
-    //}
 
     public String getHeadImage_url() {
         return head;

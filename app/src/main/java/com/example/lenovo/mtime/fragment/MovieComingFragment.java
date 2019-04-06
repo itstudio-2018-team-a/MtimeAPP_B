@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -77,9 +78,17 @@ public class MovieComingFragment extends Fragment {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+//                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
+
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/getFilmList/")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/getFilmList/")
+                            .addHeader("head","1")
+                            .addHeader("type","0")
+                            .addHeader("number","12")
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -108,7 +117,7 @@ public class MovieComingFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             int state = jsonObject.getInt("state");
             String list = jsonObject.getString("result");
-            String status = jsonObject.getString("status");
+//            String status = jsonObject.getString("status");
 
             movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
 

@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +24,8 @@ import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.Show_HeadImage;
 import com.example.lenovo.mtime.User_comments;
-import com.example.lenovo.mtime.adapter.MovieAdapter;
-import com.example.lenovo.mtime.bean.Movie;
 import com.example.lenovo.mtime.bean.User;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.OkHttpClient;
@@ -66,6 +56,7 @@ public class UserFragment extends Fragment {
 
         //绑监听
         user_image = (CircleImageView) view.findViewById(R.id.user_image);
+        user_image.setImageResource(R.drawable.user_128);
         btn_login = (RelativeLayout) view.findViewById(R.id.btn_login);
         btn_movieComments = (Button) view.findViewById(R.id.btn_movieComments);
         btn_newsComments = (Button) view.findViewById(R.id.btn_newsComments);
@@ -86,11 +77,21 @@ public class UserFragment extends Fragment {
             tv_userName.setText("未登录");
 
         }else {
-            Intent intent = getActivity().getIntent();
-            //根据登陆界面传过来的账号获取用户信息
-            user_id = intent.getStringExtra("extra_data");
-            url = "106.13.106.1/account/i/user/info/" + user_id;
-            sendRequestWithOkHttp();  //发起网络请求从服务器获取相关用户数据
+            Bundle bundle = getArguments();
+            if(bundle != null) {
+                user_id = bundle.getString("user_id");
+                String nickName = bundle.getString("nickName");
+                String headImage = bundle.getString("headImage");
+                String email = bundle.getString("email");
+             if (headImage.equals("default/1.png")){
+                 user_image.setImageResource(R.drawable.firstheadimage);
+             }else {
+                 Glide.with(this).load(headImage).placeholder(R.drawable.firstheadimage).error(R.drawable.user_128).into(user_image);
+             }
+                tv_userName.setText(nickName);
+            }
+
+//            sendRequestWithOkHttp();  //发起网络请求从服务器获取相关用户数据
 
         }
 

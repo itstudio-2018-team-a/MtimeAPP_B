@@ -21,6 +21,13 @@ import com.example.lenovo.mtime.uitl.SpaceFilter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -40,6 +47,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
     private String result;
     private CheckBox checkBox;
     private String msg;
+    private String session;
+    private String nickName;
+    private String headImage;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +72,6 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
-
-//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if(isChecked){
-//                    if_check = 1;
-//                    /*ckOK.setEnabled(false);*/
-//                }else{
-//                    if_check = 0;
-//                }
-//            }
-//        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -113,8 +112,12 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         new Thread(new Runnable(){
             @Override
             public void run(){
-                try{
-                    OkHttpClient client = new OkHttpClient();
+
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
+
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("username",user_id)
@@ -134,25 +137,41 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 //                            .addHeader("cookie",cookie)
                             .build();
 
-                    Response response = client.newCall(request).execute();
-//                    cookie = response.header("Set-Cookie");  //获取cookie
+                    Call call = client.newCall(request);
 
+                    try{
+                        Response response = call.execute();
+                        String responseDate = response.body().string();
+
+//                    cookie = response.header("Set-Cookie");  //获取cookie
 //                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
 //                    editor.putString("cookie",cookie);
 
-                    String responseDate = response.body().string();
                     JSONArray jsonArray = new JSONArray(responseDate);
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                     result = jsonObject.getString("statu");
-                    msg = jsonObject.getString("msg");
 
+                    if(result.equals("1")){ //如果登陆成功，则读取以下数据
+                        session = jsonObject.getString("session");
+                        nickName = jsonObject.getString("nickName");
+                        user_id = jsonObject.getString("username");
+                        headImage = jsonObject.getString("headImage");
+                        email = jsonObject.getString("email");
+
+                    }else {  //若登陆失败则toast失败原因
+                        msg = jsonObject.getString("msg");
+                    }
                     showResult();
 
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    sendRequestWithOkHttp();
-                    //如果抛出异常则重新请求一次
+                    if (e instanceof SocketTimeoutException){
+                        Toast.makeText(Login_Activity.this,"连接超时",Toast.LENGTH_SHORT).show();
+                    }
+                    if (e instanceof ConnectException){
+                        Toast.makeText(Login_Activity.this,"连接异常",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }).start();
@@ -171,30 +190,25 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                         editor = getSharedPreferences("data",MODE_PRIVATE).edit();
                         editor.putString("user_id",user_id);
                         editor.putString("password",password);
+                        editor.putString("session",session);
+                        editor.apply();
                     }else {
-//                        editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                        editor = getSharedPreferences("data",MODE_PRIVATE).edit();
                         editor.clear();
                     }
                     Toast.makeText(Login_Activity.this,"登录成功",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(Login_Activity.this,MainActivity.class);
-                    intent.putExtra("extra_data",user_id);
+                    intent.putExtra("user_id",user_id);
+                    intent.putExtra("session",session);
+                    intent.putExtra("nickName",nickName);
+                    intent.putExtra("headImage",headImage);
+                    intent.putExtra("email",email);
                     flag = "1" ; //用于个人中心判断是否以及登录
                     startActivity(intent);
                     finish();
                 }else {
                             Toast.makeText(Login_Activity.this,msg,Toast.LENGTH_SHORT).show();
                 }
-//                else if (result.equals("1")){
-//                    Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
-//                }else if (result.equals("2")){
-//                    Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
-//                }else if (result.equals("4")){
-//                    Toast.makeText(Login_Activity.this,"该账号已被冻结",Toast.LENGTH_LONG).show();
-//                }else if (result.equals("5")){
-//                    Toast.makeText(Login_Activity.this,"无效的密码，请修改后再试",Toast.LENGTH_LONG).show();
-//                }else if (result.equals("6")){
-//                    Toast.makeText(Login_Activity.this,"未知错误导致登陆失败，请稍后再试",Toast.LENGTH_LONG).show();
-//                }
             }
         });
     }

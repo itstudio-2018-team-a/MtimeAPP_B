@@ -14,6 +14,10 @@ public class Movie {
 
     private String mark;
 
+    private String marked_members;
+
+    private String commented_members;
+
 
     public String getImage() {
         return image;
@@ -62,5 +66,21 @@ public class Movie {
 
     public void setMark(String mark) {
         mark = mark;
+    }
+
+    public String getMarked_members() {
+        return marked_members;
+    }
+
+    public void setMarked_members(String marked_members) {
+        this.marked_members = marked_members;
+    }
+
+    public String getCommented_members() {
+        return commented_members;
+    }
+
+    public void setCommented_members(String commented_members) {
+        this.commented_members = commented_members;
     }
 }
