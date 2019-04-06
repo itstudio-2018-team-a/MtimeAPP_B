@@ -26,6 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -199,9 +202,24 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                     });
 
 
-                }catch (Exception e){
+                }catch (final Exception e){
                     e.printStackTrace();
-                    sendRequestWithOkHttp();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(register_Infor.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(register_Infor.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(register_Infor.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

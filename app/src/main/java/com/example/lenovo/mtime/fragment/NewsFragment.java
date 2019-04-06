@@ -98,9 +98,7 @@ public class NewsFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-
                 newsAdapter = new NewsAdapter(newsList,user_id,getContext());
-
                 recyclerView.setAdapter(newsAdapter);
             }
         });

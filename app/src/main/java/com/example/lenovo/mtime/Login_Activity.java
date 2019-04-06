@@ -2,6 +2,8 @@ package com.example.lenovo.mtime;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -23,7 +25,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -110,10 +114,12 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
     private void sendRequestWithOkHttp(){
         //开启现线程发起网络请求
         new Thread(new Runnable(){
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void run(){
 
                     OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
                             .connectTimeout(10, TimeUnit.SECONDS)
                             .readTimeout(20,TimeUnit.SECONDS)
                             .build();
@@ -138,11 +144,16 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                             .build();
 
                     Call call = client.newCall(request);
-
+                    String responseDate = "";
                     try{
                         Response response = call.execute();
-                        String responseDate = response.body().string();
+//                        String str = " ";
+//                        str = response.header("content-length");
+//                        Log.e("HHH",str);
+//                        Log.e("HHH", "length = " + response.toString().getBytes(StandardCharsets.UTF_8).length);
+                        responseDate = response.body().string();
 
+                        Log.d("ZGH",responseDate);
 //                    cookie = response.header("Set-Cookie");  //获取cookie
 //                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
 //                    editor.putString("cookie",cookie);
@@ -164,14 +175,25 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     showResult();
 
 
-                }catch (Exception e){
-                    e.printStackTrace();
-                    if (e instanceof SocketTimeoutException){
-                        Toast.makeText(Login_Activity.this,"连接超时",Toast.LENGTH_SHORT).show();
-                    }
-                    if (e instanceof ConnectException){
-                        Toast.makeText(Login_Activity.this,"连接异常",Toast.LENGTH_SHORT).show();
-                    }
+                }catch (final Exception e){
+                    Log.e("ZGHhh", responseDate);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(Login_Activity.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(Login_Activity.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(Login_Activity.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
             }
         }).start();
