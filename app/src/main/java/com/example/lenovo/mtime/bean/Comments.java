@@ -3,27 +3,43 @@ package com.example.lenovo.mtime.bean;
 
 public class Comments {
 
-    private String comment_id;
+    private int comment_id;
 
     private String title;
 
     private String subtitle;
 
-    private String author_id;
+    private int author_id;
 
     private String author_name;
 
     private String author_head;
 
-    private String comment_num;
+    private int comment_num;
 
     private String image;
 
-    public String getComment_id() {
+    public int getAuthor_id() {
+        return author_id;
+    }
+
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
+    }
+
+    public int getComment_num() {
+        return comment_num;
+    }
+
+    public void setComment_num(int comment_num) {
+        this.comment_num = comment_num;
+    }
+
+    public int getComment_id() {
         return comment_id;
     }
 
-    public void setComment_id(String comment_id) {
+    public void setComment_id(int comment_id) {
         this.comment_id = comment_id;
     }
 
@@ -43,13 +59,6 @@ public class Comments {
         this.subtitle = subtitle;
     }
 
-    public String getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(String author_id) {
-        this.author_id = author_id;
-    }
 
     public String getAuthor_name() {
         return author_name;
@@ -67,13 +76,6 @@ public class Comments {
         this.author_head = author_head;
     }
 
-    public String getComment_num() {
-        return comment_num;
-    }
-
-    public void setComment_num(String comment_num) {
-        this.comment_num = comment_num;
-    }
 
     public String getImage() {
         return image;

@@ -79,7 +79,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
         News news = list.get(i);
         viewHolder.tv_newsTitle.setText(news.getTitle());
         viewHolder.tv_newsAuthor.setText(news.getAuthor());
-        Glide.with(context).load("http://39.96.208.176"+news.getPhoto()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_news);
+        Glide.with(context).load("http://132.232.78.106:8001/media/"+news.getPhoto()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_news);
     }
 
     @Override

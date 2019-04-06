@@ -71,7 +71,7 @@ public class NewsComActivity extends AppCompatActivity {
                 LinearLayoutManager manager=new LinearLayoutManager(context);
                 recyclerView.setLayoutManager(manager);
 
-                newsComAdapter = new NewsComAdapter(newsComList,user_id,context);
+                newsComAdapter = new NewsComAdapter(newsComList,user_id,context,newsId);
 
                 recyclerView.setAdapter(newsComAdapter);
             }

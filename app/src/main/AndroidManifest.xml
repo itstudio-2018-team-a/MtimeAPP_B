@@ -15,8 +15,6 @@
         <activity android:name=".MakeLongCom"></activity>
         <activity android:name=".MakeShortCom" />
         <activity android:name=".MarkActivity" />
-        <activity android:name=".MakeMovieCom" />
-        <activity android:name=".CommentsCom" />
         <activity android:name=".CommentsDetail" />
         <activity android:name=".User_comments" />
         <activity android:name=".Login_Activity" />

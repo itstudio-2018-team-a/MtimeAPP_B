@@ -56,7 +56,7 @@ public class CommentsDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments_detail);
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         commentsId = intent.getStringExtra("commentsId");
 
         tv_author = (TextView) findViewById(R.id.tv_author);
@@ -78,7 +78,7 @@ public class CommentsDetail extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",commentsId)
-                            .add("session",session)
+                            .add("session","9Mb5B9P7o7pb5tEBTAYNQsnDm6hMfI")
                             .build();
 
                     Request request = new Request.Builder()
@@ -90,11 +90,11 @@ public class CommentsDetail extends AppCompatActivity {
                     String responseDate = response.body().string();
 
                     JSONObject jsonObject = new JSONObject(responseDate);
+                    Log.d("hahaha",responseDate);
                     int state = jsonObject.getInt("state");
                     String result = jsonObject.getString("result");
 
                     parseJSONWithGSON(result);
-
 
                     JSONTokener(responseDate);
                     Log.d("hahaha",responseDate);
@@ -139,7 +139,7 @@ public class CommentsDetail extends AppCompatActivity {
             content = jsonObject.getString("content");
             isGood = jsonObject.getBoolean("isGood");
             replys = jsonObject.getJSONArray("replys").toString();
-            bitmap = getHttpBitmap(photo);
+            bitmap = getHttpBitmap("http://132.232.78.106:8001/media/"+photo);
             Log.d("hhh",content);
             showResponse();
             //newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());

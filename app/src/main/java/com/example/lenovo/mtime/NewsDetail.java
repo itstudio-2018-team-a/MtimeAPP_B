@@ -133,7 +133,7 @@ public class NewsDetail extends AppCompatActivity {
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",newsId)
                             .add("operaType","1")
-                            //.add("session",session)
+                            .add("session","9Mb5B9P7o7pb5tEBTAYNQsnDm6hMfI")
                             .build();
 
                     Request request = new Request.Builder()
@@ -193,7 +193,7 @@ public class NewsDetail extends AppCompatActivity {
             content = jsonObject.getString("content");
             isGood = jsonObject.getBoolean("isGood");
             replys = jsonObject.getJSONArray("replys").toString();
-            bitmap = getHttpBitmap(photo);
+            bitmap = getHttpBitmap("http://132.232.78.106:8001/media/"+photo);
             Log.d("hhh",content);
             showResponse();
 

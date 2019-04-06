@@ -10,77 +10,75 @@ public class Movie {
 
     private String release_date;
 
-    private String film_id;
+    private int film_id;
 
-    private String mark;
+    private int mark;
 
-    private String marked_members;
+    private int marked_members;
 
-    private String commented_members;
+    private int commented_members;
 
-
-    public String getImage() {
-        return image;
-    }
-
-    public String getMovieId() {
-        return film_id;
-    }
-
-    public String getMovieInfo() {
-        return info;
-    }
-
-    public String getMovieName() {
+    public String getTitle() {
         return title;
     }
 
-    public String getTime() {
-        return release_date;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public void setImage(String image) {
         this.image = image;
     }
 
-    public void setMovieId(String movieId) {
-        film_id = movieId;
+    public String getInfo() {
+        return info;
     }
 
-    public void setMovieInfo(String movieInfo) {
-        info = movieInfo;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
-    public void setMovieName(String movieName) {
-        title = movieName;
+    public String getRelease_date() {
+        return release_date;
     }
 
-    public void setTime(String time) {
-        release_date = time;
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
     }
 
+    public int getFilm_id() {
+        return film_id;
+    }
 
-    public String getMark() {
+    public void setFilm_id(int film_id) {
+        this.film_id = film_id;
+    }
+
+    public int getMark() {
         return mark;
     }
 
-    public void setMark(String mark) {
-        mark = mark;
+    public void setMark(int mark) {
+        this.mark = mark;
     }
 
-    public String getMarked_members() {
+    public int getMarked_members() {
         return marked_members;
     }
 
-    public void setMarked_members(String marked_members) {
+    public void setMarked_members(int marked_members) {
         this.marked_members = marked_members;
     }
 
-    public String getCommented_members() {
+    public int getCommented_members() {
         return commented_members;
     }
 
-    public void setCommented_members(String commented_members) {
+    public void setCommented_members(int commented_members) {
         this.commented_members = commented_members;
     }
 }

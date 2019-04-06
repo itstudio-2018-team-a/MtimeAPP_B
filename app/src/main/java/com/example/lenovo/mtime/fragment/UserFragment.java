@@ -84,9 +84,9 @@ public class UserFragment extends Fragment {
                 String headImage = bundle.getString("headImage");
                 String email = bundle.getString("email");
              if (headImage.equals("default/1.png")){
-                 user_image.setImageResource(R.drawable.firstheadimage);
+                 user_image.setImageResource(R.drawable.user_128);//R.drawable.firstheadimage
              }else {
-                 Glide.with(this).load(headImage).placeholder(R.drawable.firstheadimage).error(R.drawable.user_128).into(user_image);
+                 Glide.with(this).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.user_128).into(user_image);
              }
                 tv_userName.setText(nickName);
             }

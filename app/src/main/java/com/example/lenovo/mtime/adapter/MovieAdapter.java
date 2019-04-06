@@ -57,7 +57,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             public void onClick(View v) {
                 //写到item点击事件，可以参考知乎日报
                 int position = holder.getAdapterPosition();
-                String movie_id = (String) mMovieList.get(position).getMovieId();
+                Movie movie = mMovieList.get(position);
+                String movie_id = String.valueOf(movie.getFilm_id());
                 String Url = "106.13.106.1/film/i/film/" + movie_id;
 
                 Intent intent = new Intent(context, Movie_Details_Activity.class);
@@ -76,13 +77,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull MovieAdapter.ViewHolder viewHolder, int position) {
           Movie movie = mMovieList.get(position);
 
-          viewHolder.movieTime.setText(movie.getTime());
-          viewHolder.movieInfo.setText(movie.getMovieInfo());
+          viewHolder.movieTime.setText(movie.getRelease_date());
+          viewHolder.movieInfo.setText(movie.getInfo());
 //          viewHolder.movieImage.setImageResource(movie.getImage());
 
-        Glide.with(context).load("http://39.96.208.176"+movie.getImage()).placeholder(R.drawable.eg).error(R.drawable.email_128).into(viewHolder.movieImage);
-        viewHolder.movieMark.setText(movie.getMark());
-        viewHolder.movieName.setText(movie.getMovieName());
+        Glide.with(context).load("http://132.232.78.106:8001"+movie.getImage()).placeholder(R.drawable.eg).error(R.drawable.email_128).into(viewHolder.movieImage);
+        viewHolder.movieMark.setText(String.valueOf(movie.getMark()));
+        viewHolder.movieName.setText(movie.getTitle());
 
     }
 

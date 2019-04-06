@@ -19,34 +19,45 @@ import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.Comments;
 import com.example.lenovo.mtime.bean.News;
 import com.example.lenovo.mtime.bean.NewsCom;
+import com.example.lenovo.mtime.register_Infor;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHolder>{
     private List<NewsCom> list;
     private Context context;
-    public String userName;
+    private String userName;
+    private String session;
+    private String newsId;
 
-    public NewsComAdapter(List<NewsCom> list, String userName1, Context context){
+    public NewsComAdapter(List<NewsCom> list, String userName1, Context context,String newsId){
         userName = userName1;
         this.list = list;
         this.context = context;
+        this.newsId = newsId;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iv_author;
-        TextView tv_commentator;
+        TextView tv_author;
         TextView tv_context;
-        TextView tv_time;
         View newsComView;
 
         public ViewHolder(View view) {
             super(view);
             newsComView = view;
             iv_author = (ImageView) view.findViewById(R.id.iv_author);
-            tv_commentator = (TextView) view.findViewById(R.id.tv_author);
+            tv_author = (TextView) view.findViewById(R.id.tv_author);
             tv_context = (TextView) view.findViewById(R.id.tv_content);
-            tv_time = (TextView) view.findViewById(R.id.tv_time);
         }
     }
 
@@ -56,7 +67,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
     @NonNull
     @Override
-    public NewsComAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public NewsComAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         if (context == null){
             context = viewGroup.getContext();
         }
@@ -67,20 +78,20 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
             @Override
             public boolean onLongClick(View v) {
                 int position = holder.getAdapterPosition();
-                NewsCom newsCom = list.get(position);
-                View newsComView = view;
-                String authorName = newsCom.getAuthor_name();
+                final NewsCom newsCom = list.get(position);
+                String authorName = newsCom.getAuthor();
                 if(userName.equals(authorName))
                 {
-                    Snackbar.make(newsComView,"确定要删除这条评论吗",Snackbar.LENGTH_SHORT)
+                    Snackbar.make(view,"确定要删除这条评论吗",Snackbar.LENGTH_SHORT)
                             .setAction("确定", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-
+                                    sendRequestWithOkHttp(newsCom,view);
                                 }
                             })
                             .show();
                 }
+                else if (userName.equals("")) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
                 else Toast.makeText(v .getContext(), "不是您的评论，不能删除", Toast.LENGTH_SHORT).show();
                 return true;
             }
@@ -91,9 +102,8 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull NewsComAdapter.ViewHolder viewHolder, int i) {
         NewsCom newsCom = list.get(i);
-        Glide.with(context).load("http://39.96.208.176"+newsCom.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
-        viewHolder.tv_commentator.setText(newsCom.getAuthor_name());
-        viewHolder.tv_time.setText(newsCom.getTime());
+        Glide.with(context).load("http://132.232.78.106:8001/media/"+newsCom.getAutherHeadPhoto()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        viewHolder.tv_author.setText(newsCom.getAuthor());
         viewHolder.tv_context.setText(newsCom.getContent());
     }
 
@@ -104,5 +114,57 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    private void sendRequestWithOkHttp(final NewsCom newsCom,final View view){
+        //开启现线程发起网络请求
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("session",session)
+                            .add("id",String.valueOf(newsCom.getId()))
+                            .add("type","1")
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://132.232.78.106:8001/api/deleteMyNewsComment/")
+                            .post(requestBody)
+                            .addHeader("Connection","close")
+                            .build();
+
+                    Response response = client.newCall(request).execute();
+                    String responseDate = response.body().string();
+                    JSONTokener(responseDate);
+                    JSONArray jsonArray = new JSONArray(responseDate);
+                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    final int state = jsonObject.getInt("state");
+                    String msg = jsonObject.getString("msg");
+
+                    if (state == 1){
+                        Toast.makeText(view.getContext(),"删除成功",Toast.LENGTH_LONG).show();
+                    }else if (state == -1) {
+                        Toast.makeText(view.getContext(), "您还没有登录，请先登录", Toast.LENGTH_LONG).show();
+                    }else if (state == -2) {
+                        Toast.makeText(view.getContext(), "删除失败", Toast.LENGTH_LONG).show();
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+
+                    sendRequestWithOkHttp(newsCom,view);
+                }
+            }
+        }).start();
+    }
+
+    private static String JSONTokener(String in) {
+        // consume an optional byte order mark (BOM) if it exists
+        if (in != null && in.startsWith("\ufeff")) {
+            in = in.substring(1);
+        }
+        return in;
     }
 }
