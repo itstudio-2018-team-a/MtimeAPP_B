@@ -31,7 +31,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
+
         ImageView iv_movie;
         TextView tv_commentsTitle;
         TextView tv_summary;
@@ -42,7 +42,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         public ViewHolder(View view) {
             super(view);
-            cardView = (CardView) view;
+
             commentsView = view;
             iv_movie = (ImageView) view.findViewById(R.id.iv_movie);
             iv_author = (ImageView) view.findViewById(R.id.iv_author);
@@ -87,8 +87,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         Comments comments = list.get(i);
         //viewHolder.tv_movieTitle.setText(comments.get);
         Log.d("hhh",comments.getAuthor_head());
-        Glide.with(context).load("http://39.96.208.176"+comments.getImage()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
-        Glide.with(context).load("http://39.96.208.176"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        Glide.with(context).load("http://132.232.78.106:8001/api"+comments.getImage()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+        //Glide.with(context).load("http://132.232.78.106:8001/api"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
         viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
         viewHolder.tv_commentsTitle.setText(comments.getTitle());
         viewHolder.tv_summary.setText(comments.getSubtitle());

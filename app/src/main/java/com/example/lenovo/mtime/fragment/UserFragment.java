@@ -83,7 +83,7 @@ public class UserFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if(Login_Activity.flag == null){
-            tv_userName.setText("欢迎来到时光网");
+            tv_userName.setText("未登录");
 
         }else {
             Intent intent = getActivity().getIntent();

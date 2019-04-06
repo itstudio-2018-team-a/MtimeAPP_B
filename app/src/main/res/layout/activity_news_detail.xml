@@ -17,7 +17,8 @@
             android:gravity="center_horizontal"
             android:text="作者"
             android:textColor="#F7FFFFFF"
-            android:textSize="20sp"/>
+            android:textSize="20sp"
+            android:id="@+id/tv_author"/>
     </android.support.v7.widget.Toolbar>
     <android.support.design.widget.CoordinatorLayout
         android:layout_height="match_parent"
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY"
                 android:layout_margin="10dp"
+                android:id="@+id/iv_photo"
                 android:background="@drawable/eg"/>
             <TextView
                 android:layout_width="match_parent"

@@ -58,7 +58,7 @@ public class CommentsFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient();
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/film/i/hot_review_list")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/getHotFilmReview/")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -78,9 +78,7 @@ public class CommentsFragment extends Fragment {
         try {
             JSONObject jsonObject = new JSONObject(response);
             Log.e("response",response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
-            //String statues = jsonObject.getString("statues");
+            String list = jsonObject.getString("result");
 
             commentsList = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
 
@@ -89,7 +87,7 @@ public class CommentsFragment extends Fragment {
             e.printStackTrace();
         }
 
-        getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
+        getActivity().runOnUiThread(new Runnable(){
             @Override
             public void run(){
                 //设置ui

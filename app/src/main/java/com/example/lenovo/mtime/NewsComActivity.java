@@ -34,6 +34,8 @@ public class NewsComActivity extends AppCompatActivity {
     private NewsComAdapter newsComAdapter;
     private Context context;
 
+    String replys;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,47 +47,24 @@ public class NewsComActivity extends AppCompatActivity {
         Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         newsId = intent.getStringExtra("newsId");
+        replys = intent.getStringExtra("replys");
 
-        sendRequestWithOkHttp();
+        parseJSONWithGSON(replys);
+
     }
-    private void sendRequestWithOkHttp(){
-        //开启现线程发起网络请求
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                try{
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url("http://39.96.208.176/news/i/comment_list/?news_id="+newsId)   //网址有待改动
-                            .build();
-                    Response response = client.newCall(request).execute();
-                    String responseDate = response.body().string();
-                    showResponse(responseDate);
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void showResponse(final String response){
+    private void parseJSONWithGSON(final String response){
 
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
-            String status = jsonObject.getString("status");
-            Log.d("hhh",num+"");
-            newsComList = gson.fromJson(list, new TypeToken<List<NewsCom>>(){}.getType());
-            Log.d("list",newsComList.toString());
+            newsComList = gson.fromJson(response, new TypeToken<List<NewsCom>>(){}.getType());
+            Log.d("listhhh",newsComList.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
+        runOnUiThread(new Runnable(){
             @Override
             public void run(){
                 //设置ui

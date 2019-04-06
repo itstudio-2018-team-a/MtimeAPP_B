@@ -10,6 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="这里是标题"
+            android:textSize="21sp"
             android:textColor="#000000"
             android:id="@+id/tv_newsTitle"
             android:layout_margin="10dp"/>
@@ -24,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="这里是作者"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:id="@+id/tv_newsAuthor"
             android:layout_margin="10dp"/>
 </LinearLayout>

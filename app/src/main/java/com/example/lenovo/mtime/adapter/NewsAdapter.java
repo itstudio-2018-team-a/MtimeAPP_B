@@ -31,7 +31,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
         ImageView iv_news;
         TextView tv_newsTitle;
         View newsView;
@@ -39,7 +38,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
 
         public ViewHolder(View view) {
             super(view);
-            cardView = (CardView) view;
             newsView = view;
             iv_news = (ImageView) view.findViewById(R.id.iv_news);
             tv_newsTitle = (TextView) view.findViewById(R.id.tv_newsTitle);

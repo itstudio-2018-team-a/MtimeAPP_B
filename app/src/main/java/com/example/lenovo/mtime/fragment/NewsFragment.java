@@ -64,7 +64,7 @@ public class NewsFragment extends Fragment {
                     OkHttpClient client = new OkHttpClient();
 //                    client.retryOnConnectionFailure();
                     Request request = new Request.Builder()
-                            .url("http://39.96.208.176/news/i/hotpot_list")   //网址有待改动
+                            .url("http://132.232.78.106:8001/api/getNewsList/")   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -83,10 +83,8 @@ public class NewsFragment extends Fragment {
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
-            String status = jsonObject.getString("status");
-            Log.d("hhh",num+"");
+            String list = jsonObject.getString("result");
+            String state = jsonObject.getString("state");
             newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
             Log.d("listhhh",newsList.toString());
 
