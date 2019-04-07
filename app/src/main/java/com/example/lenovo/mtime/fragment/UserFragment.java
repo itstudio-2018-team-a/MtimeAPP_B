@@ -18,6 +18,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +40,9 @@ import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.User_comments;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,10 +54,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -78,6 +93,8 @@ public class UserFragment extends Fragment {
     public static Bitmap bitmap;
     public int flag;
     private byte[] pic;
+    private String imagePath;
+    private File outputImage;
 
     @Nullable
     @Override
@@ -148,7 +165,7 @@ public class UserFragment extends Fragment {
                     builder.setPositiveButton("相机", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            File outputImage=new File(getActivity().getExternalCacheDir(),"output_image.jpg");
+                            outputImage = new File(getActivity().getExternalCacheDir(),"output_image.jpg");
                             try{
                                 if(outputImage.exists()){
                                     outputImage.delete();
@@ -158,7 +175,7 @@ public class UserFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             if(Build.VERSION.SDK_INT>=24){
-                                imageUri= FileProvider.getUriForFile(getContext(),"com.example.a32936.fileprovider",outputImage);
+                                imageUri= FileProvider.getUriForFile(getContext(),"com.example.a32936.fileprovider", outputImage);
                             }else{
                                 imageUri= Uri.fromFile(outputImage);
                             }
@@ -269,6 +286,7 @@ public class UserFragment extends Fragment {
         });
 
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         switch (requestCode){
@@ -276,22 +294,97 @@ public class UserFragment extends Fragment {
                 if(resultCode==RESULT_OK){
                     try {
                         bitmap= BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(imageUri));
-                        Bitmap Bit=compressImage(bitmap);
-                        user_image.setImageBitmap(Bit);
-                        flag = 1;
-
-                        uploadFile("outputImage",imageUri.toString());
-                    }catch (FileNotFoundException e){
+                    } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                    Bitmap Bit=compressImage(bitmap);
+                    user_image.setImageBitmap(Bit);
+                    flag = 1;
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                    try {
+                        OkHttpClient client = new OkHttpClient.Builder()
+                                .retryOnConnectionFailure(true)
+                                .connectTimeout(20, TimeUnit.SECONDS)
+                                .writeTimeout(20, TimeUnit.SECONDS)
+                                .readTimeout(20, TimeUnit.SECONDS)
+                                .build();
+
+                        RequestBody image = RequestBody.create(MediaType.parse("image/png"),outputImage);
+                        RequestBody requestBody = new MultipartBody.Builder()
+                                .setType(MultipartBody.FORM)
+                                .addFormDataPart("headImage","output_image.jpg" , image)
+                                .addFormDataPart("session",session)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url("http://132.232.78.106:8001/api/changeHeadImage/")
+                                .post(requestBody)
+                                .build();
+
+                        Call call = client.newCall(request);
+                                Response response = null;
+                                    response = call.execute();
+                                    String responseData = response.body().string();
+
+
+                        final JSONObject jsonObject = new JSONObject(responseData);
+                        String state = jsonObject.getString("state");
+                        final String msg = jsonObject.getString("msg");
+                        if(state.equals("1")){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+//                                    String headImages = jsonObject.getString("headImages");
+//                Glide.with(this).load(headImages).placeholder(R.drawable.user_128).error(R.drawable.user_128).into(user_image);
+                                }
+                            });
+
+                        }else {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                                    user_image.setImageResource(R.drawable.user_128);
+                                }
+                            });
+
+                        }
+                            Log.d("ZGH",responseData);
+
+
+
+                    }catch (final Exception e){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                e.printStackTrace();
+                                if (e instanceof SocketTimeoutException){
+                                    Toast.makeText(getContext(),"连接超时",Toast.LENGTH_SHORT).show();
+                                }
+                                if (e instanceof ConnectException){
+                                    Toast.makeText(getContext(),"连接异常",Toast.LENGTH_SHORT).show();
+                                }
+
+                                if (e instanceof ProtocolException) {
+                                    Toast.makeText(getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                        }
+                    }).start();
                 }
                 break;
             case CHOOSE_PHOTO:
                 if (resultCode == RESULT_OK){
-                    if(Build.VERSION.SDK_INT>=19)
+                    if(Build.VERSION.SDK_INT>=19){
                         handleImage(data);
-                    else
+                    uploadFile(imagePath);}
+                    else{
                         handleBeforeImage(data);
+                        uploadFile(imagePath);}
                 }
                 break;
             default:break;
@@ -352,7 +445,7 @@ public class UserFragment extends Fragment {
 
     @TargetApi(19)
     private void handleImage(Intent data) {
-        String imagePath = null;
+        imagePath = null;
         Uri uri = data.getData();
 
         if (DocumentsContract.isDocumentUri(getContext(), uri)) {
@@ -421,100 +514,85 @@ public class UserFragment extends Fragment {
     }
 
 
-    public void uploadFile(String fileName , String filePath) {
-        HttpURLConnection conn = null;
-/// boundary就是request头和上传文件内容的分隔符(可自定义任意一组字符串)
-        String BOUNDARY = "******";
+    public void uploadFile(final String filePath){
 
-        // 用来标识payLoad+文件流的起始位置和终止位置(相当于一个协议,告诉你从哪开始,从哪结束)
-        String preFix = ("\r\n--" + BOUNDARY + "--\r\n");
-        try {
+        final File file = new File(filePath);
+         new Thread(new Runnable() {
+             @Override
+             public void run() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .retryOnConnectionFailure(true)
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .build();
 
-// 上传到服务器
+        RequestBody image = RequestBody.create(MediaType.parse("image/png"), file);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("headImage", filePath, image)
+                .addFormDataPart("session",session)
+                .build();
 
-            URL url = new URL("http://132.232.78.106:8001/api/changeHeadImage/");
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setConnectTimeout(5000);
-            conn.setReadTimeout(30000);
-            conn.setDoOutput(true);   //允许输出流
-            conn.setDoInput(true);     //允许输入流
-            conn.setUseCaches(false);     //网上说是不允许使用缓存的意思，具体我也不太了解
-            // 设置请求方法
-            conn.setRequestMethod("POST");
-            // 设置header
-            conn.setRequestProperty("Accept","*/*");
-            conn.setRequestProperty("Connection", "keep-alive");
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);
-            //multipart/form-data  几部分的数据
+        Request request = new Request.Builder()
+                .url("http://132.232.78.106:8001/api/changeHeadImage/")
+                .post(requestBody)
+                .build();
 
-            // 获取写输入流
-            OutputStream out = new DataOutputStream(conn.getOutputStream());
-            // 获取上传文件
-            File file = new File(filePath);
-            // 要上传的数据
-            StringBuffer strBuf = new StringBuffer();
-            // 标识payLoad + 文件流的起始位置
-            strBuf.append(preFix);
-            // 下面这三行代码,用来标识服务器表单接收文件的name和filename的格式
-            // 在这里,我们是file和filename.后缀[后缀是必须的]。
-            // 这里的fileName必须加个.jpg,因为后台会判断这个东西。
-            // 这里的Content-Type的类型,必须与fileName的后缀一致。
-            // 这里只要把.jpg改成.txt，把Content-Type改成上传文本的类型，就能上传txt文件了。
+        Call call = client.newCall(request);
 
-            strBuf.append("Content-Disposition: form-data; name=\"file\"; filename=\"" + fileName+".jpg" + "\"\r\n");
-            strBuf.append("Content-Type: image/jpeg" + "\r\n\r\n");
-            out.write(strBuf.toString().getBytes());
-            // 获取文件流
-            FileInputStream fileInputStream = new FileInputStream(file);
+        try{
+            Response response = call.execute();
 
-            DataInputStream inputStream = new DataInputStream(fileInputStream);
+            String responseData = response.body().string();
 
-            // 每次上传文件的大小(文件会被拆成几份上传)
-            int bytes = 0;
-            // 计算上传进度
-            float count = 0;
-            // 获取文件总大小
-            int fileSize = fileInputStream.available();
-            // 每次上传的大小
-            byte[] bufferOut = new byte[1024];
-            // 上传文件
-            while ((bytes = inputStream.read(bufferOut)) != -1) {
-                // 上传文件(一份)
-                out.write(bufferOut, 0, bytes);
-                // 计算当前已上传的大小
-                count += bytes;
-                // 打印上传文件进度(已上传除以总大*100就是进度)
-                Log.d("hhh","progress:" +(count / fileSize * 100) +"%");
+            final JSONObject jsonObject = new JSONObject(responseData);
+            String state = jsonObject.getString("state");
+            final String msg = jsonObject.getString("msg");
+            if(state.equals("1")){
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+//                        String headImages = jsonObject.getString("headImages");
+//                Glide.with(this).load(headImages).placeholder(R.drawable.user_128).error(R.drawable.user_128).into(user_image);
+                    }
+                });
+
+            }else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT).show();
+                        user_image.setImageResource(R.drawable.user_128);
+                    }
+                });
+
             }
-            // 关闭文件流
-            inputStream.close();
-            // 标识payLoad + 文件流的结尾位置
-            out.write(preFix.getBytes());
-            // 至此上传代码完毕
-            // 总结上传数据的流程：preFix + payLoad(标识服务器表单接收文件的格式) + 文件(以流的形式) + preFix
-            // 文本与图片的不同,仅仅只在payLoad那一处的后缀的不同而已。
-            // 输出所有数据到服务器
-            out.flush();
-            // 关闭网络输出流
-            out.close();
-            // 重新构造一个StringBuffer,用来存放从服务器获取到的数据
-            strBuf = new StringBuffer();
-            // 打开输入流 , 读取服务器返回的数据
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            // 一行一行的读取服务器返回的数据
-            while ((line = reader.readLine()) != null) {
-                strBuf.append(line).append("\n");
-            }
-            // 关闭输入流
-            reader.close();
-            // 打印服务器返回的数据
-            Log.d("hhh","上传成功:"+strBuf.toString());
-        } catch (Exception e) {
-            Log.d("hhh","上传图片出错:"+e.toString());
-        } finally {
-            if (conn != null) { conn.disconnect();
-            }
+
+        }catch (final Exception e){
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    e.printStackTrace();
+                    if (e instanceof SocketTimeoutException){
+                        Toast.makeText(getContext(),"连接超时",Toast.LENGTH_SHORT).show();
+                    }
+                    if (e instanceof ConnectException){
+                        Toast.makeText(getContext(),"连接异常",Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (e instanceof ProtocolException) {
+                        Toast.makeText(getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         }
     }
+}).start();
+    }
+
+
 }

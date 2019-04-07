@@ -38,6 +38,7 @@ public class MovieShowingFragment extends Fragment {
     private List<Movie> movies=new ArrayList<>();
     private MovieAdapter movieAdapter;
     private String user_id;
+    private String session;
 
     @Nullable
     @Override
@@ -53,8 +54,10 @@ public class MovieShowingFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle bundle = getArguments();
-        if(bundle != null) user_id = bundle.getString("user_id");
-
+        if(bundle != null) {
+            user_id = bundle.getString("user_id");
+            session = bundle.getString("session");
+        }
 
         sendRequestWithOkHttp();
     }
@@ -121,7 +124,7 @@ public class MovieShowingFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                movieAdapter = new MovieAdapter(getContext(), movies,user_id);
+                movieAdapter = new MovieAdapter(getContext(), movies,user_id,session);
                 recyclerView.setAdapter(movieAdapter);
             }
         });

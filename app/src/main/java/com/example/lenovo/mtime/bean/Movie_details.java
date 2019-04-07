@@ -1,33 +1,99 @@
 package com.example.lenovo.mtime.bean;
 
+import org.json.JSONArray;
+
 public class Movie_details {
 
-    private String MovieName;
+    private String title;
 
-    private String image;   //image是传送地址过来吗？
+    private String image;
 
-    private String MovieInfo;
+    private String mark;
 
-    private String Time;
+    private String relase_date;
 
-    private String MovieId;
+    private JSONArray replys;
 
-    private String status;
+    private String displayTime;
+
+    private String comment_members;
+
+    private String isMark;
+
+    private String time;
+
+    private String id;
+
+    private String replyNum;
+
+    private String marked_members;
+
+    public String getMarked_members() {
+        return marked_members;
+    }
+
+    public void setMarked_members(String marked_members) {
+        this.marked_members = marked_members;
+    }
+
+    public String getIsMark() {
+        return isMark;
+    }
+
+    public void setIsMark(String isMark) {
+        this.isMark = isMark;
+    }
+
+    public String getRelase_date() {
+        return relase_date;
+    }
+
+    public void setRelase_date(String relase_date) {
+        this.relase_date = relase_date;
+    }
+
+    public String getComment_members() {
+        return comment_members;
+    }
+
+    public void setComment_members(String comment_members) {
+        this.comment_members = comment_members;
+    }
+
+    public JSONArray getReplys() {
+        return replys;
+    }
+
+    public void setReplys(JSONArray replys) {
+        this.replys = replys;
+    }
+
+    public String getReplyNum() {
+        return replyNum;
+    }
+
+    public void setReplyNum(String replyNum) {
+        this.replyNum = replyNum;
+    }
+
+    public String getDisplayTime() {
+        return displayTime;
+    }
+
+    public void setDisplayTime(String displayTime) {
+        this.displayTime = displayTime;
+    }
 
     public void setTime(String time) {
-        Time = time;
+        this.time = time;
     }
 
     public void setMovieName(String movieName) {
-        MovieName = movieName;
-    }
-
-    public void setMovieInfo(String movieInfo) {
-        MovieInfo = movieInfo;
+        title = movieName;
     }
 
     public void setMovieId(String movieId) {
-        MovieId = movieId;
+        id = movieId;
     }
 
     public void setImage(String image) {
@@ -35,33 +101,28 @@ public class Movie_details {
     }
 
     public String getTime() {
-        return Time;
+        return time;
     }
 
     public String getMovieName() {
-        return MovieName;
-    }
-
-    public String getMovieInfo() {
-        return MovieInfo;
+        return title;
     }
 
     public String getMovieId() {
-        return MovieId;
+        return id;
     }
 
     public String getImage() {
         return image;
     }
 
-    public String getStatus() {
-        return status;
+    public String getMark() {
+        return mark;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setMark(String mark) {
+        this.mark = mark;
     }
-
 }
 
 

@@ -67,11 +67,25 @@ public class MovieFragment extends Fragment {
        super.onActivityCreated(savedInstanceState);
 
 
-        Bundle bundle = getArguments();
-        if(bundle != null) user_id = bundle.getString("user_id");
-
         movieShowingFragment = new MovieShowingFragment();
         movieComingFragment = new MovieComingFragment();
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            user_id = bundle.getString("user_id");
+            String session = bundle.getString("session");
+
+            Bundle bundle1 = new Bundle();
+            bundle1.putString("user_id", user_id);
+            bundle1.putString("session",session);
+
+            movieComingFragment.setArguments(bundle1);
+            movieShowingFragment.setArguments(bundle1);
+        }
+
+
+
+
 
         //添加页卡视图
         ViewList.add(movieShowingFragment);
@@ -114,68 +128,6 @@ public class MovieFragment extends Fragment {
         //tab与viewpager绑定
         tabLayout.setupWithViewPager(viewPager);
 
-
-      // sendRequestWithOkHttp();
-
     }
 
-    private void sendRequestWithOkHttp(){
-        //开启现线程发起网络请求
-        new Thread(new Runnable(){
-            @Override
-            public void run(){
-                try{
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url("http://www/film/i/film_lsit")   //网址有待改动
-                            .build();
-
-                    Response response = client.newCall(request).execute();
-                    String cookie = response.header("Set-Cookie");  //获取cookie
-
-                    //将cookie储存到sharedpreference
-                   SharedPreferences.Editor editor = getActivity().getSharedPreferences("data",MODE_PRIVATE).edit();
-                   editor.putString("cookie",cookie);
-                   editor.apply();
-
-                   // Cookie cookie = client.cookieJar().saveFromResponse("http://www/film/i/film_lsit",cookies);
-                    String responseDate = response.body().string();
-                    showResponse(responseDate);
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private void showResponse(final String response){
-
-        Gson gson = new Gson();
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            int num = jsonObject.getInt("num");
-            String list = jsonObject.getString("list");
-            String statues = jsonObject.getString("statues");
-
-            movies = gson.fromJson(list, new TypeToken<List<Movie>>(){}.getType());
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
-            @Override
-                    public void run(){
-                //设置ui
-                LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-
-                movieAdapter = new MovieAdapter(getContext(), movies, user_id);
-
-                recyclerView.setAdapter(movieAdapter);
-            }
-        });
-    }
 }

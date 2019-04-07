@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.Movie_Details_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.Movie;
@@ -23,11 +25,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     private List<Movie>mMovieList;
     private Context context;
     private String user_id;
+    private final String session;
 
-    public MovieAdapter(Context context,List<Movie>movieList,String user_id){
+    public MovieAdapter(Context context,List<Movie>movieList,String user_id,String session){
         this.context = context;
         mMovieList = movieList;
         this.user_id = user_id;
+        this.session = session;
+        Log.d("hhh","打印MovieAdapter中的user_id="+user_id);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -56,16 +61,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 //写到item点击事件，可以参考知乎日报
+
+                if (Login_Activity.flag==null||Login_Activity.flag.equals("0"))
+                    Toast.makeText(context,"请先登录",Toast.LENGTH_SHORT).show();
+                else {
                 int position = holder.getAdapterPosition();
                 Movie movie = mMovieList.get(position);
                 String movie_id = String.valueOf(movie.getFilm_id());
-                String Url = "106.13.106.1/film/i/film/" + movie_id;
+//                String Url = "106.13.106.1/film/i/film/" + movie_id;
 
                 Intent intent = new Intent(context, Movie_Details_Activity.class);
-                intent.putExtra("Url",Url);
+//                intent.putExtra("Url",Url);
                 intent.putExtra("user_id",user_id);
+                intent.putExtra("session",session);
                 intent.putExtra("movie_id",movie_id);
                 context.startActivity(intent);
+                }
             }
         });
 

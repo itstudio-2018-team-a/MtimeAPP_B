@@ -77,7 +77,7 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
          //限制最大输入长度
         ed_account.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
         ed_password.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
-        ed_email.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
+        ed_email.setFilters( new InputFilter[]{new InputFilter.LengthFilter(30)});
         ed_code.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
         ed_password_sure.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
 
@@ -172,10 +172,10 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
 
                     JSONTokener(responseDate);
                     Log.d("hahaha",responseDate);
-                    JSONObject jsonObject = new JSONObject(responseDate);
+                    final JSONObject jsonObject = new JSONObject(responseDate);
 
                     final String result = jsonObject.getString("state");
-                    session = jsonObject.getString("session");
+
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -184,6 +184,11 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                                 Toast.makeText(register_Infor.this,"注册成功",Toast.LENGTH_LONG).show();
                                 Intent intent = new Intent(register_Infor.this,Login_Activity.class);
                                 //把session储存到本地
+                                try {
+                                    session = jsonObject.getString("session");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
                                 editor.putString("cookie",session);
 
@@ -251,7 +256,7 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
                     final String statu = jsonObject.getString("statu");
                     String msg = jsonObject.getString("msg");
-                    final String code = jsonObject.getString("code");
+
                     runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
                         @Override
                         public void run(){
@@ -259,7 +264,6 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
 
                             if (statu.equals("1")){
                                 Toast.makeText(register_Infor.this,"验证码已发送，请注意查收",Toast.LENGTH_LONG).show();
-                                ed_code.setText(code);
                             }else if (statu.equals("-1")) {
                                 Toast.makeText(register_Infor.this, "该邮箱已被注册", Toast.LENGTH_LONG).show();
                             }
