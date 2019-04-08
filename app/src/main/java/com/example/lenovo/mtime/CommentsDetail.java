@@ -1,11 +1,17 @@
 package com.example.lenovo.mtime;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +19,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -30,8 +37,11 @@ import okhttp3.Response;
 
 public class CommentsDetail extends AppCompatActivity {
 
+    private Context context;
+
     String commentsId;
     String session;
+    String user_id;
 
     int id;
     String author;
@@ -43,11 +53,12 @@ public class CommentsDetail extends AppCompatActivity {
     boolean isGood;
     Bitmap bitmap;
     String replys;
+    String poster;
+    String userImg;
 
     TextView tv_title;
     TextView tv_content;
     TextView tv_author;
-    TextView tv_movieTitle;
     ImageView iv_author;
     ImageView iv_movie;
 
@@ -56,16 +67,23 @@ public class CommentsDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments_detail);
 
+        context = this;
+
         Intent intent = getIntent();
         commentsId = intent.getStringExtra("commentsId");
+        session = intent.getStringExtra("session");
+        user_id = intent.getStringExtra("user_id");
+        userImg = intent.getStringExtra("userImg");
+        poster = intent.getStringExtra("poster");
+
 
         tv_author = (TextView) findViewById(R.id.tv_author);
         tv_content = (TextView) findViewById(R.id.tv_content);
-        tv_movieTitle=(TextView) findViewById(R.id.tv_movieTitle);
         tv_title=(TextView) findViewById(R.id.tv_title);
         iv_author = (ImageView) findViewById(R.id.iv_author);
         iv_movie = (ImageView) findViewById(R.id.iv_movie);
 
+        struct();
 
         sendRequestWithOkHttp();
     }
@@ -78,7 +96,7 @@ public class CommentsDetail extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",commentsId)
-                            .add("session","9Mb5B9P7o7pb5tEBTAYNQsnDm6hMfI")
+                            .add("session",session)
                             .build();
 
                     Request request = new Request.Builder()
@@ -160,12 +178,49 @@ public class CommentsDetail extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tv_content.setText(content);
+                tv_content.setMovementMethod(ScrollingMovementMethod.getInstance());// 设置可滚动
+                tv_content.setMovementMethod(LinkMovementMethod.getInstance());//设置超链接可以打开网页
+                tv_content.setText(Html.fromHtml(content, imgGetter, null));
                 tv_author.setText(author);
                 tv_title.setText(Title);
 
+                Glide.with(context).load("http://132.232.78.106:8001"+poster).placeholder(R.drawable.eg).error(R.drawable.code_128).into(iv_movie);
+                Glide.with(context).load("http://132.232.78.106:8001"+userImg).placeholder(R.drawable.eg).error(R.drawable.code_128).into(iv_author);
             }
         });
     }
+    Html.ImageGetter imgGetter = new Html.ImageGetter() {
+        public Drawable getDrawable(String source) {
+            Log.i("RG", "source---?>>>" + source);
+            Drawable drawable = null;
+            URL url;
+            try {
+                url = new URL(source);
+                Log.i("RG", "url---?>>>" + url);
+                drawable = Drawable.createFromStream(url.openStream(), ""); // 获取网路图片
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight());
+            Log.i("RG", "url---?>>>" + url);
+            return drawable;
+        }
+    };
 
+    public static void struct() {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads().detectDiskWrites().detectNetwork() // or
+                // .detectAll()
+                // for
+                // all
+                // detectable
+                // problems
+                .penaltyLog().build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects() // 探测SQLite数据库操作
+                .penaltyLog() // 打印logcat
+                .penaltyDeath().build());
+    }
 }

@@ -3,6 +3,7 @@ package com.example.lenovo.mtime;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ public class MakeShortCom extends AppCompatActivity {
 
     String user_id;
     String movie_id;
+    String session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,11 @@ public class MakeShortCom extends AppCompatActivity {
         Intent intent = getIntent();
         movie_id = intent.getStringExtra("movie_id");
         user_id = intent.getStringExtra("user_id");
+        session = intent.getStringExtra("session");
 
         ed_comments = (EditText) findViewById(R.id.ed_content);
         btn_publish = (Button) findViewById(R.id.btn_publish);
+        ed_comments.setFilters(new InputFilter[] { new InputFilter.LengthFilter(200) });
 
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +57,7 @@ public class MakeShortCom extends AppCompatActivity {
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",movie_id)
                             .add("content",ed_comments.getText().toString())
-                            .add("session","")
+                            .add("session",session)
                             .build();
 
                     Request request = new Request.Builder()
@@ -71,6 +75,7 @@ public class MakeShortCom extends AppCompatActivity {
                         Intent intent = new Intent(MakeShortCom.this,Movie_Details_Activity.class);
                         intent.putExtra("user_id",user_id);
                         intent.putExtra("movie_id",movie_id);
+                        intent.putExtra("session",session);
                         startActivity(intent);
                         Toast.makeText(MakeShortCom.this,"发表成功",Toast.LENGTH_LONG).show();
                     }

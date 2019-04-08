@@ -3,6 +3,7 @@ package com.example.lenovo.mtime;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ public class MakeLongCom extends AppCompatActivity {
 
     String movie_id;
     String user_id;
+    String session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +38,14 @@ public class MakeLongCom extends AppCompatActivity {
         ed_content = (EditText) findViewById(R.id.ed_content);
         ed_title = (EditText) findViewById(R.id.ed_title);
         ed_subTitle = (EditText) findViewById(R.id.ed_subTitle);
+        ed_subTitle.setFilters(new InputFilter[] { new InputFilter.LengthFilter(50) });
+        ed_title.setFilters(new InputFilter[] { new InputFilter.LengthFilter(30) });
+        ed_content.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2000) });
 
         Intent intent = getIntent();
         movie_id = intent.getStringExtra("movie_id");
         user_id = intent.getStringExtra("user_id");
+        session = intent.getStringExtra("session");
 
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +66,8 @@ public class MakeLongCom extends AppCompatActivity {
                             .add("content",ed_content.getText().toString())
                             .add("title",ed_title.getText().toString())
                             .add("subtitle",ed_subTitle.getText().toString())
-                            .add("thumbnail","")
-                            .add("session","")
+                            .add("thumbnail","lalala")
+                            .add("session",session)
                             .build();
 
                     Request request = new Request.Builder()
@@ -79,15 +85,16 @@ public class MakeLongCom extends AppCompatActivity {
                         Intent intent = new Intent(MakeLongCom.this,Movie_Details_Activity.class);
                         intent.putExtra("user_id",user_id);
                         intent.putExtra("movie_id",movie_id);
+                        intent.putExtra("session",session);
                         startActivity(intent);
-                        Toast.makeText(MakeLongCom.this,"发表成功",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MakeLongCom.this,"发表成功",Toast.LENGTH_SHORT).show();
                     }
                     else if(state == -1)
-                        Toast.makeText(MakeLongCom.this,"您还没有登录，不能发表评论",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MakeLongCom.this,"您还没有登录，不能发表评论",Toast.LENGTH_SHORT).show();
                     else if(state == -2)
-                        Toast.makeText(MakeLongCom.this,"当前帖子不存在",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MakeLongCom.this,"当前帖子不存在",Toast.LENGTH_SHORT).show();
                     else if(state == -3)
-                        Toast.makeText(MakeLongCom.this,"啊哦，出错啦",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MakeLongCom.this,"啊哦，出错啦",Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

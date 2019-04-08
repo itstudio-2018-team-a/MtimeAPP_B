@@ -16,6 +16,7 @@ import com.example.lenovo.mtime.bean.NewsCom;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +36,7 @@ public class NewsComActivity extends AppCompatActivity {
     private Context context;
 
     String replys;
+    String session;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class NewsComActivity extends AppCompatActivity {
         user_id = intent.getStringExtra("user_id");
         newsId = intent.getStringExtra("newsId");
         replys = intent.getStringExtra("replys");
+        session = intent.getStringExtra("session");
 
         parseJSONWithGSON(replys);
 
@@ -56,7 +59,7 @@ public class NewsComActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         try {
-            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = new JSONArray(response);
             newsComList = gson.fromJson(response, new TypeToken<List<NewsCom>>(){}.getType());
             Log.d("listhhh",newsComList.toString());
 
@@ -71,7 +74,7 @@ public class NewsComActivity extends AppCompatActivity {
                 LinearLayoutManager manager=new LinearLayoutManager(context);
                 recyclerView.setLayoutManager(manager);
 
-                newsComAdapter = new NewsComAdapter(newsComList,user_id,context,newsId);
+                newsComAdapter = new NewsComAdapter(newsComList,user_id,context,newsId,session);
 
                 recyclerView.setAdapter(newsComAdapter);
             }

@@ -1,8 +1,10 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RatingBar;
@@ -28,6 +30,7 @@ public class MarkActivity extends AppCompatActivity {
     String user_id;
     String movie_id;
     String mark;
+    private String session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,10 @@ public class MarkActivity extends AppCompatActivity {
         tv_mark = (TextView) findViewById(R.id.tv_mark);
         btn_publish = (Button) findViewById(R.id.btn_publish);
 
-        final Intent intent = getIntent();
+        Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         movie_id = intent.getStringExtra("movie_id");
+        session = intent.getStringExtra("session");
 
         btn_shortComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +53,7 @@ public class MarkActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(MarkActivity.this,MakeShortCom.class);
                 intent1.putExtra("user_id",user_id);
                 intent1.putExtra("movie_id",movie_id);
+                intent1.putExtra("session",session);
                 startActivity(intent1);
             }
         });
@@ -59,6 +64,7 @@ public class MarkActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(MarkActivity.this,MakeLongCom.class);
                 intent1.putExtra("user_id",user_id);
                 intent1.putExtra("movie_id",movie_id);
+                intent1.putExtra("session",session);
                 startActivity(intent1);
             }
         });
@@ -88,7 +94,7 @@ public class MarkActivity extends AppCompatActivity {
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",movie_id)
                             .add("score",tv_mark.getText().toString())
-                            //.add("session",session)
+                            .add("session",session)
                             .build();
 
                     Request request = new Request.Builder()
@@ -97,11 +103,14 @@ public class MarkActivity extends AppCompatActivity {
                             .build();
 
                     Response response = client.newCall(request).execute();
-                    String responseDate = "";
-                    if (response != null) responseDate = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseDate);
+
+                    String responseDate = response.body().string();
+                    Log.d("mark返回数据",responseDate);
+                    JSONTokener(responseDate);
+                    JSONObject jsonObject = new JSONObject(JSONTokener(responseDate));
                     int state = jsonObject.getInt("state");
                     String msg = jsonObject.getString("msg");
+                    Looper.prepare();
                     if(state==1)
                     {
                         Toast.makeText(MarkActivity.this,"评分成功",Toast.LENGTH_LONG).show();
@@ -112,10 +121,18 @@ public class MarkActivity extends AppCompatActivity {
                         Toast.makeText(MarkActivity.this,"当前内容不存在",Toast.LENGTH_LONG).show();
                     else if(state == -3)
                         Toast.makeText(MarkActivity.this,"啊哦，出错啦",Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+    public static String JSONTokener(String in) {
+        // consume an optional byte order mark (BOM) if it exists
+        if (in != null && in.startsWith("\ufeff")) {
+            in = in.substring(1);
+        }
+        return in;
     }
 }

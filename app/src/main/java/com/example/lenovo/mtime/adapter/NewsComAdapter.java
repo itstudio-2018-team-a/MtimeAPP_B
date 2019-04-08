@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +40,12 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
     private String session;
     private String newsId;
 
-    public NewsComAdapter(List<NewsCom> list, String userName1, Context context,String newsId){
+    public NewsComAdapter(List<NewsCom> list, String userName1, Context context,String newsId,String session){
         userName = userName1;
         this.list = list;
         this.context = context;
         this.newsId = newsId;
+        this.session = session;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -80,9 +82,11 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                 int position = holder.getAdapterPosition();
                 final NewsCom newsCom = list.get(position);
                 String authorName = newsCom.getAuthor();
-                if(userName.equals(authorName))
+
+                if (userName == null) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
+                else
                 {
-                    Snackbar.make(view,"确定要删除这条评论吗",Snackbar.LENGTH_SHORT)
+                    Snackbar.make(view,"确定要删除这条评论吗",Snackbar.LENGTH_LONG)
                             .setAction("确定", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -91,8 +95,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                             })
                             .show();
                 }
-                else if (userName.equals("")) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(v .getContext(), "不是您的评论，不能删除", Toast.LENGTH_SHORT).show();
+                Log.d("评论者，用户",userName + authorName);
                 return true;
             }
         });
@@ -109,7 +112,8 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(null==list) return 0;
+        else return list.size();
     }
     @Override
     public long getItemId(int position) {
@@ -137,9 +141,10 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
+                    Log.d("这个评论怎么搞的，返回的是啥",responseDate);
+                    Log.d("这个评论怎么搞的，是id错了吗",String.valueOf(newsCom.getId()));
                     JSONTokener(responseDate);
-                    JSONArray jsonArray = new JSONArray(responseDate);
-                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    JSONObject jsonObject = new JSONObject(responseDate);
                     final int state = jsonObject.getInt("state");
                     String msg = jsonObject.getString("msg");
 
@@ -153,8 +158,6 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
                 }catch (Exception e){
                     e.printStackTrace();
-
-                    sendRequestWithOkHttp(newsCom,view);
                 }
             }
         }).start();
