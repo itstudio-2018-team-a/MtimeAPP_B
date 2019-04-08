@@ -9,12 +9,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/user_128"
-            android:layout_gravity="start"
-            android:id="@+id/iv_author"/>
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="10dp"
+        android:layout_gravity="start"
+        android:id="@+id/iv_author"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="0dp"

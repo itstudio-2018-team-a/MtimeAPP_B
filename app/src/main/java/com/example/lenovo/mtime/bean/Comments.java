@@ -19,6 +19,16 @@ public class Comments {
 
     private String image;
 
+    private String poster;
+
+    public String getPoster() {
+        return poster;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
     public int getAuthor_id() {
         return author_id;
     }

@@ -38,6 +38,7 @@ public class NewsFragment extends Fragment {
     private List<News> newsList;
     private NewsAdapter newsAdapter;
     String user_id;
+    String session;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,6 +51,12 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            user_id = bundle.getString("user_id");
+            session = bundle.getString("session");
+        }
 
         sendRequestWithOkHttp();
 
@@ -98,7 +105,7 @@ public class NewsFragment extends Fragment {
                 //设置ui
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
-                newsAdapter = new NewsAdapter(newsList,user_id,getContext());
+                newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
                 recyclerView.setAdapter(newsAdapter);
             }
         });

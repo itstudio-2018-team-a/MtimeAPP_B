@@ -1,9 +1,12 @@
 package com.example.lenovo.mtime.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -33,12 +37,17 @@ public class CommentsFragment extends Fragment {
     private List<Comments> commentsList;
     private CommentsAdapter commentsAdapter;
     String user_id;
+    String session;
+    SwipeRefreshLayout swipeRefresh;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_comments,container,false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
         return view;
     }
 
@@ -46,8 +55,59 @@ public class CommentsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //下拉刷新功能
+        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            user_id = bundle.getString("user_id");
+            session = bundle.getString("session");
+        }
+        initRefreshLayout();
+
         sendRequestWithOkHttp();
 
+    }
+
+    private void initRefreshLayout() {
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
+                android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // 设置可见
+                swipeRefresh.setRefreshing(true);
+                // 重置adapter的数据源为空
+                commentsAdapter.resetDatas();
+                // 获取第第0条到第PAGE_COUNT（值为10）条的数据
+                updateRecyclerView(0, 10);
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 模拟网络加载时间，设置不可见
+                        swipeRefresh.setRefreshing(false);
+                    }
+                }, 1000);
+            }
+        });
+    }
+    private List<Comments> getDatas(final int firstIndex, final int lastIndex) {
+        List<Comments> resList = new ArrayList<>();
+        for (int i = firstIndex; i < lastIndex; i++) {
+            if (i < commentsList.size()) {
+                resList.add(commentsList.get(i));
+            }
+        }
+        return resList;
+    }
+    private void updateRecyclerView(int fromIndex, int toIndex) {
+        List<Comments> newDatas = getDatas(fromIndex, toIndex);
+        if (newDatas.size() > 0) {
+            commentsAdapter.updateList(newDatas, true);
+        } else {
+            commentsAdapter.updateList(null, false);
+        }
     }
 
     private void sendRequestWithOkHttp(){
@@ -94,7 +154,7 @@ public class CommentsFragment extends Fragment {
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
 
-                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext());
+                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
 
                 recyclerView.setAdapter(commentsAdapter);
             }

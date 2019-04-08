@@ -7,6 +7,15 @@ public class News {
     private String photo;
     private String Time;
     private String Title;
+    private int replyNum;
+
+    public int getReplyNum() {
+        return replyNum;
+    }
+
+    public void setReplyNum(int replyNum) {
+        this.replyNum = replyNum;
+    }
 
     public int getId() {
         return id;

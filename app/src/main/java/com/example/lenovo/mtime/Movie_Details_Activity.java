@@ -1,11 +1,13 @@
 package com.example.lenovo.mtime;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,12 +19,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
+import com.example.lenovo.mtime.adapter.MovieComAdapter;
 import com.example.lenovo.mtime.bean.Movie;
+import com.example.lenovo.mtime.bean.MovieCom;
 import com.example.lenovo.mtime.bean.Movie_details;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,10 +43,15 @@ import okhttp3.Response;
 
 public class Movie_Details_Activity extends AppCompatActivity {
     FloatingActionButton fab;
+    RecyclerView recyclerView;
     String user_id;
     String movie_id;
     private String session;
     private Movie_details movie_details;
+    private List<MovieCom> movieComList;
+    MovieComAdapter movieComAdapter;
+    private Context context;
+    private MovieCom movieCom;
 
     ImageView imageView;
     TextView textView_title;
@@ -58,17 +68,22 @@ public class Movie_Details_Activity extends AppCompatActivity {
     private String id;
     private String replyNum;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie__details);
+
+        context = this;
 
         imageView = findViewById(R.id.iv_movieImg);
         textView_title = findViewById(R.id.tv_movieTitle);
         textView_time = findViewById(R.id.tv_time);
         textView_releaseDate = findViewById(R.id.tv_releaseDate);
         textView_mark = findViewById(R.id.tv_mark);
-        Intent intent = getIntent();
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+
+        final Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         movie_id = intent.getStringExtra("movie_id");
         session = intent.getStringExtra("session");
@@ -89,6 +104,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     Intent intent1 = new Intent(Movie_Details_Activity.this,MarkActivity .class);
                     intent1.putExtra("user_id",user_id);
                     intent1.putExtra("movie_id",movie_id);
+                    intent1.putExtra("session",session);
                     startActivity(intent1);
                 }
             }
@@ -176,11 +192,12 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 image = "http://132.232.78.106:8001"+ image;
                 mark = jsonObject1.getString("mark");
                 relase_date = jsonObject1.getString("relase_date");
-                replys = jsonObject1.getString("replys");
                 displayTime = jsonObject1.getString("displayTime");
                 time = jsonObject1.getString("time");
                 id = jsonObject1.getString("id");
                 replyNum = jsonObject1.getString("replyNum");
+                replys = jsonObject1.getJSONArray("replys").toString();
+                parseJSONWithGSON(replys);
 //                movie_details = gson.fromJson(list, Movie_details.class);
 
                 runOnUiThread(new Runnable(){
@@ -210,5 +227,30 @@ public class Movie_Details_Activity extends AppCompatActivity {
         }
 
 
+    }
+    private void parseJSONWithGSON(final String response){
+
+        Gson gson = new Gson();
+        try {
+            JSONArray jsonArray = new JSONArray(response);
+            movieComList = gson.fromJson(response, new TypeToken<List<MovieCom>>(){}.getType());
+            Log.d("listhhh",movieComList.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable(){
+            @Override
+            public void run(){
+                //设置ui
+                LinearLayoutManager manager=new LinearLayoutManager(context);
+                recyclerView.setLayoutManager(manager);
+
+                movieComAdapter = new MovieComAdapter(movieComList,user_id,context);
+
+                recyclerView.setAdapter(movieComAdapter);
+            }
+        });
     }
 }

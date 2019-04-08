@@ -2,6 +2,7 @@ package com.example.lenovo.mtime;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
@@ -31,9 +32,10 @@ public class MakeNewsCom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_news_com);
 
-        Intent intent = new Intent();
+        Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         newsId = intent.getStringExtra("newsId");
+        session = intent.getStringExtra("session");
 
         btn_publish = (Button) findViewById(R.id.btn_publish);
         et_comments = (EditText) findViewById(R.id.et_comments);
@@ -73,6 +75,7 @@ public class MakeNewsCom extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseDate);
                     int state = jsonObject.getInt("state");
                     String result = jsonObject.getString("result");
+                    Looper.prepare();
                     if(state==1)
                     {
                         Intent intent = new Intent(MakeNewsCom.this,NewsDetail.class);
@@ -85,6 +88,7 @@ public class MakeNewsCom extends AppCompatActivity {
                         Toast.makeText(MakeNewsCom.this,"当前帖子不存在",Toast.LENGTH_LONG).show();
                     else if(state == -3)
                         Toast.makeText(MakeNewsCom.this,"啊哦，出错啦",Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

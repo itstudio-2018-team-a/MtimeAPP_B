@@ -22,6 +22,7 @@ import com.example.lenovo.mtime.bean.Comments;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -36,7 +37,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     public String user_id;
     private String session;
 
-    public CommentsAdapter(List<Comments> list, String user_id, Context context){
+    private boolean hasMore = true;   // 变量，是否有更多数据
+    private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
+
+    public CommentsAdapter(List<Comments> list, String user_id, Context context,String session){
+        this.session = session;
         this.user_id = user_id;
         this.list = list;
         this.context = context;
@@ -84,11 +89,17 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 int position = holder.getAdapterPosition();
                 Comments comments = list.get(position);
                 String commentId = String.valueOf(comments.getComment_id());
-                Intent intent = new Intent();
-                intent.setClass(view .getContext(), CommentsDetail.class );
-                intent.putExtra("commentsId", commentId);
-                intent.putExtra("user_id", user_id);
-                view.getContext().startActivity(intent);
+                if(session == null) Toast.makeText(view.getContext(),"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
+                else {
+                    Intent intent = new Intent();
+                    intent.setClass(view .getContext(), CommentsDetail.class );
+                    intent.putExtra("commentsId", commentId);
+                    intent.putExtra("user_id", user_id);
+                    intent.putExtra("session",session);
+                    intent.putExtra("userImg",comments.getAuthor_head());
+                    intent.putExtra("poster",comments.getPoster());
+                    view.getContext().startActivity(intent);
+                }
             }
         });
         holder.commentsView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -121,11 +132,11 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         Comments comments = list.get(i);
         //viewHolder.tv_movieTitle.setText(comments.get);
         Log.d("hhh",comments.getAuthor_head());
-        Glide.with(context).load("http://132.232.78.106:8001"+comments.getImage()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
-        //Glide.with(context).load("http://132.232.78.106:8001/api"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        Glide.with(context).load("http://132.232.78.106:8001"+comments.getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+        Glide.with(context).load("http://132.232.78.106:8001"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
         viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
         viewHolder.tv_commentsTitle.setText(comments.getTitle());
-        viewHolder.tv_summary.setText(comments.getSubtitle());
+        viewHolder.tv_summary.setText("“"+comments.getSubtitle()+"”");
     }
 
     @Override
@@ -188,5 +199,22 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             in = in.substring(1);
         }
         return in;
+    }
+
+    public void resetDatas() {
+        list = new ArrayList<>();
+    }
+    // 暴露接口，更新数据源，并修改hasMore的值，如果有增加数据，hasMore为true，否则为false
+    public void updateList(List<Comments> newDatas, boolean hasMore) {
+        // 在原有的数据之上增加新数据
+        if (newDatas != null) {
+            list.addAll(newDatas);
+        }
+        this.hasMore = hasMore;
+        notifyDataSetChanged();
+    }
+    // 暴露接口，改变fadeTips的方法
+    public boolean isFadeTips() {
+        return fadeTips;
     }
 }
