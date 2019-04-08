@@ -171,8 +171,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
                     JSONTokener(responseDate);
-                    JSONArray jsonArray = new JSONArray(responseDate);
-                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                    JSONObject jsonObject = new JSONObject(responseDate);
                     final int state = jsonObject.getInt("state");
                     String msg = jsonObject.getString("msg");
 
@@ -187,7 +186,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 }catch (Exception e){
                     e.printStackTrace();
 
-                    sendRequestWithOkHttp(comments,view);
                 }
             }
         }).start();

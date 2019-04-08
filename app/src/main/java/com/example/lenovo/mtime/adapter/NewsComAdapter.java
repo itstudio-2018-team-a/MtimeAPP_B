@@ -2,6 +2,7 @@ package com.example.lenovo.mtime.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -147,14 +148,14 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                     JSONObject jsonObject = new JSONObject(responseDate);
                     final int state = jsonObject.getInt("state");
                     String msg = jsonObject.getString("msg");
-
+                    Looper.prepare();
                     if (state == 1){
                         Toast.makeText(view.getContext(),"删除成功",Toast.LENGTH_LONG).show();
                     }else if (state == -1) {
                         Toast.makeText(view.getContext(), "您还没有登录，请先登录", Toast.LENGTH_LONG).show();
                     }else if (state == -2) {
                         Toast.makeText(view.getContext(), "删除失败", Toast.LENGTH_LONG).show();
-                    }
+                    }Looper.loop();
 
                 }catch (Exception e){
                     e.printStackTrace();

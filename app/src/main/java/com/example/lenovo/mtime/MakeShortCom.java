@@ -1,9 +1,11 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,15 +63,17 @@ public class MakeShortCom extends AppCompatActivity {
                             .build();
 
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/reviewPointFilm/")
+                            .url("http://132.232.78.106:8001/api/replyPointFilm/")
                             .post(requestBody)
                             .build();
 
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
+                    Log.d("为啥短影评有问题",responseDate);
                     JSONObject jsonObject = new JSONObject(responseDate);
                     int state = jsonObject.getInt("state");
                     String result = jsonObject.getString("result");
+                    Looper.prepare();
                     if(state==1)
                     {
                         Intent intent = new Intent(MakeShortCom.this,Movie_Details_Activity.class);
@@ -88,6 +92,7 @@ public class MakeShortCom extends AppCompatActivity {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                Looper.loop();
             }
         }).start();
     }
