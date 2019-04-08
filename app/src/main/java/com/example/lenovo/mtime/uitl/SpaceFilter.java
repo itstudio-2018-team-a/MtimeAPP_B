@@ -2,6 +2,7 @@ package com.example.lenovo.mtime.uitl;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.widget.EditText;
 
 /**
  * 禁止输入空格
@@ -17,5 +18,17 @@ public class SpaceFilter implements InputFilter {
         if (source.equals(" "))
             return "";
         return null;
+    }
+
+    public static void setEditTextInhibitInputSpace(EditText editText){
+        InputFilter filter=new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if(source.equals(" "))
+                    return "";
+                else return null;
+            }
+        };
+        editText.setFilters(new InputFilter[]{filter});
     }
 }

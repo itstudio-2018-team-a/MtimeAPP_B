@@ -186,8 +186,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
                 }catch (Exception e){
                     e.printStackTrace();
-
-                    sendRequestWithOkHttp(comments,view);
+//                    sendRequestWithOkHttp(comments,view);
                 }
             }
         }).start();

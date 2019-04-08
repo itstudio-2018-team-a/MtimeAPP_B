@@ -3,6 +3,7 @@ package com.example.lenovo.mtime;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.lenovo.mtime.uitl.SpaceFilter.setEditTextInhibitInputSpace;
+
 public class Login_Activity extends AppCompatActivity implements View.OnClickListener{
 
     private Button button_Login;
@@ -55,6 +58,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
     private String nickName;
     private String headImage;
     private String email;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +71,21 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         ed_password = findViewById(R.id.ed_password);
         checkBox = findViewById(R.id.remember_password);
 
+        preferences = getSharedPreferences("data",MODE_PRIVATE);
+        boolean isremember = preferences.getBoolean("remember_paeeword",false);
+        if (isremember){
+            user_id = preferences.getString("user_id","");
+            password = preferences.getString("password","");
+            ed_account.setText(user_id);
+            ed_password.setText(password);
+            checkBox.setChecked(true);
+        }
+
         //禁止输入空格
-        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
-        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
+        setEditTextInhibitInputSpace(ed_account);
+        setEditTextInhibitInputSpace(ed_password);
+//        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
+//        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
         //限制输入最大长度
         ed_account.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
         ed_password.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
@@ -130,17 +146,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                             .addFormDataPart("password",password)
                             .build();
 
-                    //从sharedpreferences获取cookie
-//                    SharedPreferences preferences = getSharedPreferences("data",MODE_PRIVATE);
-//                    String cookie = preferences.getString("cookie","");
-
-//                    Log.d("cookie",cookie);
-
                     Request request = new Request.Builder()
                             .url("http://132.232.78.106:8001/api/login/")   //网址有待改动
                             .post(requestBody)
                             .addHeader("Connection","close")
-//                            .addHeader("cookie",cookie)
                             .build();
 
                     Call call = client.newCall(request);
@@ -154,9 +163,6 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                         responseDate = response.body().string();
 
                         Log.d("ZGH",responseDate);
-//                    cookie = response.header("Set-Cookie");  //获取cookie
-//                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-//                    editor.putString("cookie",cookie);
 
                     JSONArray jsonArray = new JSONArray(responseDate);
                     JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -176,7 +182,6 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
 
                 }catch (final Exception e){
-                    Log.e("ZGHhh", responseDate);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -207,16 +212,19 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 if (result.equals("1")){
-
+                    editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+                    editor.putString("user_id",user_id);
+                    editor.putString("password",password);
+                    editor.putString("session",session);
+                    editor.apply();
                     if (checkBox.isChecked()){
                         editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                        editor.putString("user_id",user_id);
-                        editor.putString("password",password);
-                        editor.putString("session",session);
+                        editor.putBoolean("remember_paeeword",true);
                         editor.apply();
                     }else {
                         editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-                        editor.clear();
+                        editor.putBoolean("remember_paeeword",false);
+                        editor.apply();
                     }
                     Toast.makeText(Login_Activity.this,"登录成功",Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(Login_Activity.this,MainActivity.class);

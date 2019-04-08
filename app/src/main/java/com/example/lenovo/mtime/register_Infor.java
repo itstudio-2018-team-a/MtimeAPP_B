@@ -39,6 +39,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.lenovo.mtime.Login_Activity.flag;
+import static com.example.lenovo.mtime.uitl.SpaceFilter.setEditTextInhibitInputSpace;
 
 public class register_Infor extends AppCompatActivity implements View.OnClickListener {
     private EditText ed_account;
@@ -69,11 +70,16 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
         ed_password_sure = findViewById(R.id.ed_password_sure);
 
         //禁止输入空格
-        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
-        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
-        ed_email.setFilters(new InputFilter[]{new SpaceFilter()});
-        ed_code.setFilters(new InputFilter[]{new SpaceFilter()});
-        ed_password_sure.setFilters(new InputFilter[]{new SpaceFilter()});
+        setEditTextInhibitInputSpace(ed_account);
+        setEditTextInhibitInputSpace(ed_password);
+        setEditTextInhibitInputSpace(ed_email);
+        setEditTextInhibitInputSpace(ed_code);
+        setEditTextInhibitInputSpace(ed_password_sure);
+//        ed_account.setFilters(new InputFilter[]{new SpaceFilter()});
+//        ed_password.setFilters(new InputFilter[]{new SpaceFilter()});
+//        ed_email.setFilters(new InputFilter[]{new SpaceFilter()});
+//        ed_code.setFilters(new InputFilter[]{new SpaceFilter()});
+//        ed_password_sure.setFilters(new InputFilter[]{new SpaceFilter()});
          //限制最大输入长度
         ed_account.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});
         ed_password.setFilters( new InputFilter[]{new InputFilter.LengthFilter(16)});

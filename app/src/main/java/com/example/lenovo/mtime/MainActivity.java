@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             tab.setIcon(d);
         }
 
-        sendRequestWithOkHttp();
+//        sendRequestWithOkHttp();
 
         if (Login_Activity.flag != null&&!Login_Activity.flag.equals("1")) {
             //从登陆界面获取userid
