@@ -4,7 +4,15 @@ public class MovieCom {
     private int id;
     private String author;
     private String autherHeadPhoto;
-    private String title;
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public int getId() {
         return id;
@@ -30,11 +38,5 @@ public class MovieCom {
         this.autherHeadPhoto = autherHeadPhoto;
     }
 
-    public String getTitle() {
-        return title;
-    }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
 }

@@ -76,7 +76,7 @@ public class MovieComAdapter extends RecyclerView.Adapter<MovieComAdapter.ViewHo
         MovieCom movieCom = list.get(i);
         Glide.with(context).load("http://132.232.78.106:8001/media/" + movieCom.getAutherHeadPhoto()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
         viewHolder.tv_author.setText(movieCom.getAuthor());
-        viewHolder.tv_context.setText(movieCom.getTitle());
+        viewHolder.tv_context.setText(movieCom.getContent());
     }
 
     @Override
