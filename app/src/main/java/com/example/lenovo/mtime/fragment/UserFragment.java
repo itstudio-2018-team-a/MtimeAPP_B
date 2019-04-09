@@ -377,10 +377,10 @@ public class UserFragment extends Fragment {
                                     public void run() {
                                         e.printStackTrace();
                                         if (e instanceof SocketTimeoutException) {
-                                            Toast.makeText(getContext(), "连接超时", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "连接超时，请检查网络设置", Toast.LENGTH_SHORT).show();
                                         }
                                         if (e instanceof ConnectException) {
-                                            Toast.makeText(getContext(), "连接异常", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "连接异常，请检查网络设置", Toast.LENGTH_SHORT).show();
                                         }
 
                                         if (e instanceof ProtocolException) {

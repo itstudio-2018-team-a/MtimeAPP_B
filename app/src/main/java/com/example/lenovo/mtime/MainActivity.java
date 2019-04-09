@@ -1,12 +1,21 @@
 package com.example.lenovo.mtime;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +35,8 @@ import com.example.lenovo.mtime.fragment.UserFragment;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
@@ -105,9 +116,28 @@ public class MainActivity extends AppCompatActivity {
             tab.setIcon(d);
         }
 
-//        sendRequestWithOkHttp();
 
-        if (Login_Activity.flag != null&&!Login_Activity.flag.equals("1")) {
+        if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
+            //弹出一个选择框
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setTitle("您需要登录吗？");
+            builder.setNegativeButton("朕不需要", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton("废话，赶紧", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this,Login_Activity.class);
+                    startActivity(intent);
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.setCanceledOnTouchOutside(true);      //设置弹出框失去焦点是否隐藏,即点击屏蔽其它地方是否隐藏
+            dialog.show();
+        }
             //从登陆界面获取userid
             Intent intent = getIntent();
             user_id = intent.getStringExtra("user_id");
@@ -115,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             String nickName = intent.getStringExtra("nickName");
             String headImage = intent.getStringExtra("headImage");
             String email = intent.getStringExtra("email");
-        }
+
         Bundle bundle = new Bundle();
         bundle.putString("user_id",user_id);
         bundle.putString("session",session);
@@ -127,112 +157,6 @@ public class MainActivity extends AppCompatActivity {
         movieFragment.setArguments(bundle);
         commentsFragment.setArguments(bundle);
         userFragment.setArguments(bundle);
-
-    }
-
-
-    private void sendRequestWithOkHttp() {
-        //开启现线程发起网络请求
-
-        //从sharedpreferences获取账号密码
-        SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
-
-            user_id = preferences.getString("user_id", "");
-            password = preferences.getString("password", "");
-        if (user_id != null&&password!=null&&!user_id.equals("")&&!password.equals("")) {
-            new Thread(new Runnable() {
-                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-                @Override
-                public void run() {
-
-                    OkHttpClient client = new OkHttpClient.Builder()
-                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题，然并...
-                            .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(20, TimeUnit.SECONDS)
-                            .build();
-
-                    RequestBody requestBody = new MultipartBody.Builder()
-                            .setType(MultipartBody.FORM)
-                            .addFormDataPart("username", user_id)
-                            .addFormDataPart("password", password)
-                            .build();
-
-                    Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/login/")   //网址有待改动
-                            .post(requestBody)
-                            .addHeader("Connection", "close")
-                            .build();
-
-                    Call call = client.newCall(request);
-                    String responseDate = "";
-                    try {
-                        Response response = call.execute();
-                        responseDate = response.body().string();
-
-                        Log.d("ZGH", responseDate);
-//                    cookie = response.header("Set-Cookie");  //获取cookie
-//                    SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
-//                    editor.putString("cookie",cookie);
-
-                        JSONArray jsonArray = new JSONArray(responseDate);
-                        JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        result = jsonObject.getString("statu");
-
-                        if (result.equals("1")) { //如果登陆成功，则读取以下数据
-                            session = jsonObject.getString("session");
-                            nickName = jsonObject.getString("nickName");
-                            user_id = jsonObject.getString("username");
-                            headImage = jsonObject.getString("headImage");
-                            email = jsonObject.getString("email");
-
-                        } else {  //若登陆失败则toast失败原因
-                            msg = jsonObject.getString("msg");
-                        }
-                        showResult();
-
-
-                    } catch (final Exception e) {
-                        Log.e("ZGHhh", responseDate);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                e.printStackTrace();
-                                if (e instanceof SocketTimeoutException) {
-                                    Toast.makeText(MainActivity.this, "连接超时", Toast.LENGTH_SHORT).show();
-                                }
-                                if (e instanceof ConnectException) {
-                                    Toast.makeText(MainActivity.this, "连接异常", Toast.LENGTH_SHORT).show();
-                                }
-
-                                if (e instanceof ProtocolException) {
-                                    Toast.makeText(MainActivity.this, "未知异常，请稍后再试", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
-                    }
-                }
-            }).start();
-        }
-    }
-        void showResult() {
-            runOnUiThread(new Runnable() {
-
-                private SharedPreferences.Editor editor;
-
-                @Override
-                public void run() {
-                    if (result.equals("1")) {
-                        editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-                        editor.putString("session", session);
-                        editor.apply();
-                    Toast.makeText(MainActivity.this, "自动登录成功", Toast.LENGTH_SHORT).show();
-                         Login_Activity.flag = "1";
-                    } else {
-                        Toast.makeText(MainActivity.this, msg+"自动登陆失败，请尝试手动登陆", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
 
     }
     private void changeIconImgBottomMargin(ViewGroup parent, int px){

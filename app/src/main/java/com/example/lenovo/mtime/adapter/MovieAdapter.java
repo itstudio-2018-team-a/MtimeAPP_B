@@ -89,7 +89,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
           viewHolder.movieTime.setText(movie.getRelease_date());
           viewHolder.movieInfo.setText(movie.getInfo());
 //          viewHolder.movieImage.setImageResource(movie.getImage());
-
         Glide.with(context).load("http://132.232.78.106:8001"+movie.getImage()).placeholder(R.drawable.eg).error(R.drawable.email_128).into(viewHolder.movieImage);
         viewHolder.movieMark.setText(String.valueOf(movie.getMark()));
         viewHolder.movieName.setText(movie.getTitle());
