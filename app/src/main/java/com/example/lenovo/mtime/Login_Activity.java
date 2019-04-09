@@ -46,6 +46,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
     private Button button_Login;
     private Button button_register;
+    private Button button_back;
     private EditText ed_account;
     private EditText ed_password;
     private String user_id;
@@ -67,6 +68,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
         button_Login = findViewById(R.id.btn_login);
         button_register = findViewById(R.id.btn_register);
+        button_back = findViewById(R.id.btn_back);
         ed_account = findViewById(R.id.ed_account);
         ed_password = findViewById(R.id.ed_password);
         checkBox = findViewById(R.id.remember_password);
@@ -92,6 +94,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
 
         button_Login.setOnClickListener(this);
         button_register.setOnClickListener(this);
+        button_back.setOnClickListener(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,6 +124,10 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn_register:
                 Intent intent = new Intent(Login_Activity.this,register_Infor.class);
                 startActivity(intent);
+                break;
+            case R.id.btn_back:
+                onBackPressed();
+                break;
             default:
                 break;
 
@@ -216,6 +223,9 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     editor.putString("user_id",user_id);
                     editor.putString("password",password);
                     editor.putString("session",session);
+                    editor.putString("nickName",nickName);
+                    editor.putString("headImage","http://132.232.78.106:8001/media/"+headImage);
+                    editor.putString("email",email);
                     editor.apply();
                     if (checkBox.isChecked()){
                         editor = getSharedPreferences("data",MODE_PRIVATE).edit();

@@ -31,6 +31,8 @@ public class MarkActivity extends AppCompatActivity {
     String movie_id;
     String mark;
     private String session;
+    String score;
+    Boolean isMark;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class MarkActivity extends AppCompatActivity {
         user_id = intent.getStringExtra("user_id");
         movie_id = intent.getStringExtra("movie_id");
         session = intent.getStringExtra("session");
+        isMark = intent.getBooleanExtra("isMark",false);
 
         btn_shortComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +75,8 @@ public class MarkActivity extends AppCompatActivity {
         rb_mark.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                tv_mark.setText(String.valueOf(rating));
+                if(isMark) tv_mark.setText("已评");
+                else tv_mark.setText(String.valueOf(rating));
                 if(fromUser) mark = String.valueOf(rating);
                 else mark = "0";
             }
@@ -80,6 +84,8 @@ public class MarkActivity extends AppCompatActivity {
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                score = tv_mark.getText().toString();
+                score=score.substring(0,score.lastIndexOf('.'));
                 sendRequestWithOkHttp();
             }
         });
@@ -93,7 +99,7 @@ public class MarkActivity extends AppCompatActivity {
                     OkHttpClient client = new OkHttpClient();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",movie_id)
-                            .add("score",tv_mark.getText().toString())
+                            .add("score",score)
                             .add("session",session)
                             .build();
 
@@ -121,6 +127,8 @@ public class MarkActivity extends AppCompatActivity {
                         Toast.makeText(MarkActivity.this,"当前内容不存在",Toast.LENGTH_LONG).show();
                     else if(state == -3)
                         Toast.makeText(MarkActivity.this,"啊哦，出错啦",Toast.LENGTH_LONG).show();
+                    else if(state == -4)
+                        Toast.makeText(MarkActivity.this,"您已经评过分了",Toast.LENGTH_LONG).show();
                     Looper.loop();
                 }catch (Exception e){
                     e.printStackTrace();

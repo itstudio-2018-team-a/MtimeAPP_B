@@ -68,10 +68,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 int position = holder.getAdapterPosition();
                 Movie movie = mMovieList.get(position);
                 String movie_id = String.valueOf(movie.getFilm_id());
-//                String Url = "106.13.106.1/film/i/film/" + movie_id;
 
                 Intent intent = new Intent(context, Movie_Details_Activity.class);
-//                intent.putExtra("Url",Url);
                 intent.putExtra("user_id",user_id);
                 intent.putExtra("session",session);
                 intent.putExtra("movie_id",movie_id);

@@ -11,10 +11,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.lenovo.mtime.adapter.CommentsAdapter;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
+import com.example.lenovo.mtime.adapter.MyMovComAdapter;
+import com.example.lenovo.mtime.adapter.MyNewsComAdapter;
 import com.example.lenovo.mtime.adapter.UserMovComAdapter;
 import com.example.lenovo.mtime.adapter.UserNewsComAdapter;
 import com.example.lenovo.mtime.bean.Comments;
 import com.example.lenovo.mtime.bean.Movie;
+import com.example.lenovo.mtime.bean.MyMovCom;
+import com.example.lenovo.mtime.bean.MyNewsCom;
 import com.example.lenovo.mtime.bean.User;
 import com.example.lenovo.mtime.bean.UserMovCom;
 import com.example.lenovo.mtime.bean.UserNewsCom;
@@ -39,13 +43,14 @@ import okhttp3.Response;
 
 public class User_comments extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<UserMovCom> movComs = new ArrayList<>();
-    private List<UserNewsCom> newsComs = new ArrayList<>();
-    private UserMovComAdapter userMovComAdapter;
-    private UserNewsComAdapter userNewsComAdapter;
+    private List<MyMovCom> myMovComs = new ArrayList<>();
+    private List<MyNewsCom> myNewsComs = new ArrayList<>();
+    private MyNewsComAdapter myNewsComAdapter;
+    private MyMovComAdapter myMovComAdapter;
     private String user_id;
     private String url;
     private String type;
+    private String session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +67,9 @@ public class User_comments extends AppCompatActivity {
         user_id = intent.getStringExtra("user_id");
         type = intent.getStringExtra("类型");
         if (type.equals("电影评论")){
-            url = "http://132.232.78.106:8001/api/getMyNewsComment/";
-        }else if (type.equals("新闻评论")){
             url = "http://132.232.78.106:8001/api/getMyFirmComment/";
+        }else if (type.equals("新闻评论")){
+            url = "http://132.232.78.106:8001/api/getMyNewsComment/";
         }
 
         sendRequestWithOkHttp();
@@ -132,26 +137,26 @@ public class User_comments extends AppCompatActivity {
 //                user_id = intent.getStringExtra("user_id");
 //                type = intent.getStringExtra("类型");
                 if (type.equals("电影评论")){
-                    movComs = gson.fromJson(result, new TypeToken<List<UserMovCom>>(){}.getType());
+                    myMovComs = gson.fromJson(result, new TypeToken<List<MyMovCom>>(){}.getType());
                     runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
                         @Override
                         public void run(){
                             //设置ui
                             LinearLayoutManager manager=new LinearLayoutManager(User_comments.this);
                             recyclerView.setLayoutManager(manager);
-                            userMovComAdapter = new UserMovComAdapter(movComs,user_id,User_comments.this);
-                            recyclerView.setAdapter(userMovComAdapter);
+                            myMovComAdapter = new MyMovComAdapter(myMovComs,user_id,User_comments.this,session);
+                            recyclerView.setAdapter(myMovComAdapter);
                         }
                     });
                 }else if (type.equals("新闻评论")){
-                    newsComs = gson.fromJson(result, new TypeToken<List<UserNewsCom>>(){}.getType());
+                    myNewsComs = gson.fromJson(result, new TypeToken<List<MyNewsCom>>(){}.getType());
                     runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
                         @Override
                         public void run(){
                             LinearLayoutManager manager=new LinearLayoutManager(User_comments.this);
                             recyclerView.setLayoutManager(manager);
-                    userNewsComAdapter = new UserNewsComAdapter(newsComs,user_id,User_comments.this);
-                    recyclerView.setAdapter(userNewsComAdapter);
+                            myNewsComAdapter = new MyNewsComAdapter(myNewsComs,user_id,User_comments.this,session);
+                            recyclerView.setAdapter(myNewsComAdapter);
                         }
                     });
                 }

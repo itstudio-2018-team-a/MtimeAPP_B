@@ -36,6 +36,7 @@ public class ChangeName extends AppCompatActivity {
 
     private String url;
     private String session;
+    private String newName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class ChangeName extends AppCompatActivity {
         Button btn_out = (Button) findViewById(R.id.btn_out);
         final String user_id;
         //获取到修改后的用户名以便发送到服务器
-        final String newName = et_newName.getText().toString();
+        newName = et_newName.getText().toString();
 //        user_id = intent.getStringExtra("nickName");
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,32 +61,32 @@ public class ChangeName extends AppCompatActivity {
             public void onClick(View v) {
 
                 url = "http://132.232.78.106:8001/api/changeNickName/";
-                SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
-                session = sharedPreferences.getString("session","");
+                SharedPreferences sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+                session = sharedPreferences.getString("session", "");
                 sendRequestWithOkHttp(newName);  //发起网络请求从服务器获取相关用户数据
 
             }
         });
     }
 
-    private void sendRequestWithOkHttp(final String name){
+    private void sendRequestWithOkHttp(final String name) {
         //开启现线程发起网络请求
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
-            public void run(){
-                try{
+            public void run() {
+                try {
 
                     OkHttpClient client = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)  //网查解决end of the stream问题
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(10,TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
                             .build();
 
 
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
-                            .addFormDataPart("nickName",name)
-                            .addFormDataPart("session",session)
+                            .addFormDataPart("nickName", name)
+                            .addFormDataPart("session", session)
                             .build();
                     Request request = new Request.Builder()
                             .post(requestBody)
@@ -94,43 +95,50 @@ public class ChangeName extends AppCompatActivity {
 
                     Call call = client.newCall(request);
                     String responseDate = "";
-                    try{
-                        Response response = call.execute();
-                        responseDate = response.body().string();
-                        Log.d("ZGH",responseDate);
-                        JSONObject jsonObject = new JSONObject(responseDate);
-                        String state = jsonObject.getString("state");
-                        String msg = jsonObject.getString("msg");
 
-                        showResponse(msg);
+                    Response response = call.execute();
+                    responseDate = response.body().string();
+                    Log.d("ZGH", responseDate);
 
 
-                    }catch (final Exception e){
-                        e.printStackTrace();
-                        if (e instanceof SocketTimeoutException){
-                            Toast.makeText(ChangeName.this,"连接超时",Toast.LENGTH_SHORT).show();
-                        }
-                        if (e instanceof ConnectException){
-                            Toast.makeText(ChangeName.this,"连接异常",Toast.LENGTH_SHORT).show();
-                        }
+                    showResponse(responseDate);
 
-                        if (e instanceof ProtocolException) {
-                            Toast.makeText(ChangeName.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
-                        }
-                    }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
+                    if (e instanceof SocketTimeoutException) {
+                        Toast.makeText(ChangeName.this, "连接超时", Toast.LENGTH_SHORT).show();
+                    }
+                    if (e instanceof ConnectException) {
+                        Toast.makeText(ChangeName.this, "连接异常", Toast.LENGTH_SHORT).show();
+                    }
+                    if (e instanceof ProtocolException) {
+                        Toast.makeText(ChangeName.this, "未知异常，请稍后再试", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }).start();
     }
 
-    private void showResponse(final String msg){
+    private void showResponse(final String responseDate) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(ChangeName.this,msg,Toast.LENGTH_SHORT).show();
+
+                JSONObject jsonObject = null;
+                try {
+                    jsonObject = new JSONObject(responseDate);
+                    String state = jsonObject.getString("state");
+                    String msg = jsonObject.getString("msg");
+                    if (state.equals("1")) {
+                        Toast.makeText(ChangeName.this, msg, Toast.LENGTH_SHORT).show();
+                        SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
+                        editor.putString("nickName", newName);
+                        editor.apply();
+                    }else Toast.makeText(ChangeName.this, msg, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

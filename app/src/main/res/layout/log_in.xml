@@ -114,6 +114,16 @@
         android:layout_weight="0.5"
         android:orientation="vertical">
         <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="不想登陆？随便逛逛"
+            android:textSize="15sp"
+            android:textColor="#040b25"
+            android:bottomRightRadius="50dp"
+            android:background="@drawable/rounded_btn"
+            android:id="@+id/btn_back"/>
+        <Button
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

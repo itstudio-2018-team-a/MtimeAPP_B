@@ -58,6 +58,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     TextView textView_time;
     TextView textView_releaseDate;
     TextView textView_mark;
+    TextView tv_isMark;
     private String title;
     private String image;
     private String mark;
@@ -67,6 +68,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     private String time;
     private String id;
     private String replyNum;
+    Boolean isMark;
 
 
     @Override
@@ -82,6 +84,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
         textView_releaseDate = findViewById(R.id.tv_releaseDate);
         textView_mark = findViewById(R.id.tv_mark);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        tv_isMark = (TextView) findViewById(R.id.tv_isMark);
 
         final Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
@@ -105,6 +108,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     intent1.putExtra("user_id",user_id);
                     intent1.putExtra("movie_id",movie_id);
                     intent1.putExtra("session",session);
+                    intent1.putExtra("isMark",isMark);
                     startActivity(intent1);
                 }
             }
@@ -196,6 +200,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 time = jsonObject1.getString("time");
                 id = jsonObject1.getString("id");
                 replyNum = jsonObject1.getString("replyNum");
+                isMark = jsonObject1.getBoolean("isMark");
                 replys = jsonObject1.getJSONArray("replys").toString();
                 parseJSONWithGSON(replys);
 //                movie_details = gson.fromJson(list, Movie_details.class);
@@ -208,6 +213,8 @@ public class Movie_Details_Activity extends AppCompatActivity {
                         textView_releaseDate.setText(relase_date);
                         textView_time.setText(time);
                         textView_title.setText(title);
+                        if(isMark) tv_isMark.setText("已评");
+                        else tv_isMark.setText("未评");
 
                     }
                 });
