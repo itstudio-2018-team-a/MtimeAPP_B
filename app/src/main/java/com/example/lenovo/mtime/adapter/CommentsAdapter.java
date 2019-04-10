@@ -2,6 +2,7 @@ package com.example.lenovo.mtime.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -36,16 +39,57 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     private Context context;
     public String user_id;
     private String session;
+    private int normalType = 0;
+    private int footType = 1;
 
     private boolean hasMore = true;   // 变量，是否有更多数据
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
+    //private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public CommentsAdapter(List<Comments> list, String user_id, Context context,String session){
+    public CommentsAdapter(List<Comments> list, String user_id, Context context,String session,boolean hasMore){
         this.session = session;
         this.user_id = user_id;
         this.list = list;
         this.context = context;
+        this.hasMore = hasMore;
     }
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+    // 自定义方法，获取列表中数据源的最后一个位置，比getItemCount少1，因为不计上footView
+    public int getRealLastPosition() {
+        return list.size();
+    }
+    // 根据条目位置返回ViewType，以供onCreateViewHolder方法内获取不同的Holder
+    @Override
+    public int getItemViewType(int position) {
+        if (position == getItemCount() - 1) {
+            return footType;
+        } else {
+            return normalType;
+        }
+    }
+    // 正常item的ViewHolder，用以缓存findView操作
+    class NormalHolder extends CommentsAdapter.ViewHolder {
+        private LinearLayout textView;
+
+        public NormalHolder(View itemView) {
+            super(itemView);
+            textView = (LinearLayout) itemView.findViewById(R.id.tv);
+        }
+    }
+
+    // // 底部footView的ViewHolder，用以缓存findView操作
+    class FootHolder extends CommentsAdapter.ViewHolder {
+        private TextView tips;
+
+        public FootHolder(View itemView) {
+            super(itemView);
+            tips = (TextView) itemView.findViewById(R.id.tips);
+        }
+    }
+
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -77,11 +121,21 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     @NonNull
     @Override
     public CommentsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        // 根据返回的ViewType，绑定不同的布局文件，这里只有两种
+
         if (context == null){
             context = viewGroup.getContext();
         }
-        final View view = LayoutInflater.from(context)
-                .inflate(R.layout.item_comments, viewGroup, false);
+        final View view;
+        if (i == normalType) {
+            view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_comments, viewGroup, false);
+        } else {
+            view = LayoutInflater.from(context)
+                    .inflate(R.layout.footview, viewGroup, false);
+        }
+
+
         final CommentsAdapter.ViewHolder holder = new CommentsAdapter.ViewHolder(view);
         holder.commentsView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,30 +178,67 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 return true;
             }
         });
-        return holder;
+        if (i == normalType) {
+            return new NormalHolder(LayoutInflater.from(context).inflate(R.layout.item_comments, null));
+        } else {
+            return new FootHolder(LayoutInflater.from(context).inflate(R.layout.footview, null));
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentsAdapter.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final CommentsAdapter.ViewHolder viewHolder, int i) {
         Comments comments = list.get(i);
         //viewHolder.tv_movieTitle.setText(comments.get);
-        Log.d("hhh",comments.getAuthor_head());
-        Glide.with(context).load("http://132.232.78.106:8001"+comments.getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
-        Glide.with(context).load("http://132.232.78.106:8001"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
-        viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
-        viewHolder.tv_commentsTitle.setText(comments.getTitle());
-        viewHolder.tv_summary.setText("“"+comments.getSubtitle()+"”");
+
+        //原始方法
+        //Log.d("hhh",comments.getAuthor_head());
+        //Glide.with(context).load("http://132.232.78.106:8001"+comments.getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+        //Glide.with(context).load("http://132.232.78.106:8001"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        //viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
+        //viewHolder.tv_commentsTitle.setText(comments.getTitle());
+        //viewHolder.tv_summary.setText("“"+comments.getSubtitle()+"”");
+        //上拉加载
+        // 如果是正常的imte，直接设置TextView的值
+        if (viewHolder instanceof NormalHolder) {
+            ((NormalHolder) viewHolder).tv_commentsAuthor.setText(list.get(i).getAuthor_name());
+            ((NormalHolder) viewHolder).tv_commentsTitle.setText(list.get(i).getTitle());
+            ((NormalHolder) viewHolder).tv_summary.setText("“"+list.get(i).getSubtitle()+"”");
+            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        } else {
+            // 之所以要设置可见，是因为我在没有更多数据时会隐藏了这个footView
+            ((FootHolder) viewHolder).tips.setVisibility(View.VISIBLE);
+            // 只有获取数据为空时，hasMore为false，所以当我们拉到底部时基本都会首先显示“正在加载更多...”
+            if (hasMore == true) {
+                // 不隐藏footView提示
+                fadeTips = false;
+                if (list.size() > 0) {
+                    // 如果查询数据发现增加之后，就显示正在加载更多
+                    ((FootHolder) viewHolder).tips.setText("正在加载更多...");
+                }
+            } else {
+                if (list.size() > 0) {
+                    // 如果查询数据发现并没有增加时，就显示没有更多数据了
+                    ((FootHolder) viewHolder).tips.setText("没有更多数据了");
+
+                    // 然后通过延时加载模拟网络请求的时间，在500ms后执行
+                    //mHandler.postDelayed(new Runnable() {
+                        //@Override
+                        //public void run() {
+                            // 隐藏提示条
+                          //  ((FootHolder) viewHolder).tips.setVisibility(View.GONE);
+                            // 将fadeTips设置true
+                           // fadeTips = true;
+                            // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
+                          //  hasMore = true;
+                       // }
+                    //}, 500);
+                }
+            }
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        if(null==list) return 0;
-        else return list.size();
-    }
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+
 
     private void sendRequestWithOkHttp(final Comments comments,final View view){
         //开启现线程发起网络请求
@@ -215,4 +306,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     public boolean isFadeTips() {
         return fadeTips;
     }
+
+
+
 }

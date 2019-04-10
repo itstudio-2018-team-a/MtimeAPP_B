@@ -2,56 +2,67 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="这里是标题"
-            android:id="@+id/tv_commentsTitle"
-            android:textColor="#000000"
-            android:textSize="21sp"
-            android:layout_margin="8dp"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="这里是内容总结"
-            android:id="@+id/tv_summary"
-            android:layout_margin="8dp"
-            android:textSize="13sp"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="8dp"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/iv_author"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical"
+            android:id="@+id/tv">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="这里是评论者"
-                android:id="@+id/tv_commentsAuthor"
-                android:textSize="13sp"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"/>
-        </LinearLayout>
+                android:text="这里是标题"
+                android:id="@+id/tv_commentsTitle"
+                android:textColor="#000000"
+                android:textSize="21sp"
+                android:layout_margin="8dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="这里是内容总结"
+                android:id="@+id/tv_summary"
+                android:layout_margin="8dp"
+                android:textSize="13sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_margin="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/iv_author"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="这里是评论者"
+                    android:id="@+id/tv_commentsAuthor"
+                    android:textSize="13sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
 
+        </LinearLayout>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/iv_movie"
+            android:layout_margin="6dp"
+            android:background="@drawable/code_128"
+            android:scaleType="fitXY"/>
     </LinearLayout>
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/iv_movie"
-        android:layout_margin="6dp"
-        android:background="@drawable/code_128"
-        android:scaleType="fitXY"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="20dp"
+        android:background="#2A000000"/>
 </LinearLayout>
