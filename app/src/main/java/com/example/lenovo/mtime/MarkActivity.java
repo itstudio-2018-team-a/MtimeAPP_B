@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,6 +74,7 @@ public class MarkActivity extends AppCompatActivity {
                 intent1.putExtra("user_id",user_id);
                 intent1.putExtra("movie_id",movie_id);
                 intent1.putExtra("session",session);
+                finish();
                 startActivity(intent1);
             }
         });
@@ -80,6 +86,7 @@ public class MarkActivity extends AppCompatActivity {
                 intent1.putExtra("user_id",user_id);
                 intent1.putExtra("movie_id",movie_id);
                 intent1.putExtra("session",session);
+                finish();
                 startActivity(intent1);
             }
         });
@@ -111,7 +118,11 @@ public class MarkActivity extends AppCompatActivity {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",movie_id)
                             .add("score",score)
@@ -145,8 +156,23 @@ public class MarkActivity extends AppCompatActivity {
                     else if(state == -4)
                         Toast.makeText(MarkActivity.this,"您已经评过分了",Toast.LENGTH_LONG).show();
                     Looper.loop();
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(MarkActivity.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(MarkActivity.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(MarkActivity.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

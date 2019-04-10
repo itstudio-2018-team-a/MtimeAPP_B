@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,6 +41,7 @@ public class MovieComingFragment extends Fragment {
     private MovieAdapter movieAdapter;
     private String user_id;
     private String session;
+    SwipeRefreshLayout swipeRefresh;
 
     @Nullable
     @Override
@@ -47,7 +49,7 @@ public class MovieComingFragment extends Fragment {
         view = inflater.inflate(R.layout.moviecomingfragment,container,false);
         movies.clear();
 
-        recyclerView = view.findViewById(R.id.Recycleview);
+        recyclerView = view.findViewById(R.id.Recyclerview);
         return view;
     }
 
@@ -60,6 +62,16 @@ public class MovieComingFragment extends Fragment {
             user_id = bundle.getString("user_id");
             session = bundle.getString("session");
         }
+        //下拉刷新功能
+        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
+                android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshNews();
+            }
+        });
 
         //测试用
 //        for (int i = 0; i <= 10 ; i++){
@@ -76,6 +88,29 @@ public class MovieComingFragment extends Fragment {
 //        movieAdapter = new MovieAdapter(getContext(), movies);
 //        recyclerView.setAdapter(movieAdapter);
         sendRequestWithOkHttp();
+    }
+
+    //下拉刷新
+    private void refreshNews(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(2000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        movies.clear();
+                        sendRequestWithOkHttp();
+                        movieAdapter.notifyDataSetChanged();
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
     }
 
     private void sendRequestWithOkHttp(){

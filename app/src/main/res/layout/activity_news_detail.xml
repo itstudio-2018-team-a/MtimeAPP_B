@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="作者"
+                android:text="..."
                 android:textColor="#F7FFFFFF"
                 android:textSize="20sp"
                 android:id="@+id/tv_author"/>
@@ -41,23 +41,22 @@
                         android:id="@+id/tv_newsTitle"
                         android:textColor="#000000"
                         android:gravity="start"
-                        android:text="勇气可嘉！毕志飞导演来领金扫帚奖"
+                        android:text="......"
                         android:layout_margin="10dp"
                         android:textSize="23sp"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="31分钟前"
+                        android:text="......"
                         android:gravity="start"
                         android:layout_margin="10dp"
                         android:id="@+id/tv_pubTime"/>
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:scaleType="fitXY"
                         android:layout_margin="10dp"
-                        android:id="@+id/iv_photo"
-                        android:background="@drawable/eg"/>
+                        android:id="@+id/iv_photo" />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

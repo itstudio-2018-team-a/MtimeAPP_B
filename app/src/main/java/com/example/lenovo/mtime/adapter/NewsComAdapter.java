@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.lenovo.mtime.NewsComActivity;
+import com.example.lenovo.mtime.NewsDetail;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.bean.Comments;
 import com.example.lenovo.mtime.bean.News;
@@ -26,7 +27,11 @@ import com.example.lenovo.mtime.register_Infor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -127,7 +132,11 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("session",session)
                             .add("id",String.valueOf(newsCom.getId()))
@@ -151,6 +160,11 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                     Looper.prepare();
                     if (state == 1){
                         Toast.makeText(view.getContext(),"删除成功",Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(view.getContext(), NewsDetail.class);
+//                        intent.putExtra("user_id",userName);
+//                        intent.putExtra("session",session);
+//                        intent.putExtra("newsId",newsId);
+//                        view.getContext().startActivity(intent);
                     }else if (state == -1) {
                         Toast.makeText(view.getContext(), "您还没有登录，请先登录", Toast.LENGTH_LONG).show();
                     }else if (state == -2) {
@@ -159,6 +173,18 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
                 }catch (Exception e){
                     e.printStackTrace();
+                    Looper.prepare();
+                    if (e instanceof SocketTimeoutException){
+                        Toast.makeText(view.getContext(),"连接超时",Toast.LENGTH_SHORT).show();
+                    }
+                    if (e instanceof ConnectException){
+                        Toast.makeText(view.getContext(),"连接异常",Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (e instanceof ProtocolException) {
+                        Toast.makeText(view.getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                    }
+                    Looper.loop();
                 }
             }
         }).start();

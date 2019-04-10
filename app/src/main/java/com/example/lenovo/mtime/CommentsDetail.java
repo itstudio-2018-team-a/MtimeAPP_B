@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
@@ -26,8 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -103,7 +108,11 @@ public class CommentsDetail extends AppCompatActivity {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",commentsId)
                             .add("session",session)
@@ -127,8 +136,23 @@ public class CommentsDetail extends AppCompatActivity {
                     JSONTokener(responseDate);
                     Log.d("hahaha",responseDate);
 
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(CommentsDetail.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(CommentsDetail.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(CommentsDetail.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

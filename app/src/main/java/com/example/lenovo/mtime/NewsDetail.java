@@ -30,8 +30,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -104,6 +108,7 @@ public class NewsDetail extends AppCompatActivity {
                     intent1.putExtra("user_id",user_id);
                     intent1.putExtra("newsId",newsId);
                     intent1.putExtra("session",session);
+
                     startActivity(intent1);
                 }
             }
@@ -111,9 +116,16 @@ public class NewsDetail extends AppCompatActivity {
 
         struct();
 
-        sendRequestWithOkHttp();
+        //sendRequestWithOkHttp();
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        sendRequestWithOkHttp();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
@@ -140,6 +152,7 @@ public class NewsDetail extends AppCompatActivity {
 
                     intent.putExtra("replys", replys);
                     intent.putExtra("session", session);
+
                     startActivity(intent);
                 }
                 break;
@@ -155,7 +168,11 @@ public class NewsDetail extends AppCompatActivity {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     FormBody.Builder builder = new FormBody.Builder();
                     Log.d("联网时的新闻id",newsId);
                     builder.add("id", newsId);
@@ -180,8 +197,23 @@ public class NewsDetail extends AppCompatActivity {
 
                     parseJSONWithGSON(result);
 
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(NewsDetail.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(NewsDetail.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(NewsDetail.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

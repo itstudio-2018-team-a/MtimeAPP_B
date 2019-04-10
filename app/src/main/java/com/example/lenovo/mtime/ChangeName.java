@@ -149,6 +149,7 @@ public class ChangeName extends AppCompatActivity {
                         editor.apply();
                         Intent intent = new Intent(ChangeName.this,UserFragment.class);
                         intent.putExtra("user_id",et_newName.getText().toString());
+                        finish();
                         startActivity(intent);
                     }else Toast.makeText(ChangeName.this, msg, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {

@@ -13,6 +13,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -72,7 +77,11 @@ public class MakeLongCom extends AppCompatActivity {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",movie_id)
                             .add("content",ed_content.getText().toString())
@@ -98,6 +107,7 @@ public class MakeLongCom extends AppCompatActivity {
                         intent.putExtra("user_id",user_id);
                         intent.putExtra("movie_id",movie_id);
                         intent.putExtra("session",session);
+                        finish();
                         startActivity(intent);
                         Toast.makeText(MakeLongCom.this,"发表成功",Toast.LENGTH_SHORT).show();
                     }
@@ -107,8 +117,23 @@ public class MakeLongCom extends AppCompatActivity {
                         Toast.makeText(MakeLongCom.this,"当前帖子不存在",Toast.LENGTH_SHORT).show();
                     else if(state == -3)
                         Toast.makeText(MakeLongCom.this,"啊哦，出错啦",Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(MakeLongCom.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(MakeLongCom.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(MakeLongCom.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

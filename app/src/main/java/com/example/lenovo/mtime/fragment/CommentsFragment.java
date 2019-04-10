@@ -62,7 +62,16 @@ public class CommentsFragment extends Fragment {
 
         //下拉刷新功能
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
+                android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshNews();
+            }
+        });
         Bundle bundle = getArguments();
         if(bundle != null){
             user_id = bundle.getString("user_id");
@@ -71,72 +80,95 @@ public class CommentsFragment extends Fragment {
 
 
         sendRequestWithOkHttp();
-        initRefreshLayout();
+        //initRefreshLayout();
 
     }
-    private void initRecyclerView() {
-        commentsAdapter = new CommentsAdapter(getDatas(0, PAGE_COUNT), user_id,getContext(),session, getDatas(0, PAGE_COUNT).size() > 0 ? true : false);
-        mLayoutManager = new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(commentsAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    //下拉刷新
+    private void refreshNews(){
+        new Thread(new Runnable() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (commentsAdapter.isFadeTips() == false && lastVisibleItem + 1 == commentsAdapter.getItemCount()) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
-                            }
-                        }, 500);
-                    }
-
-                    if (commentsAdapter.isFadeTips() == true && lastVisibleItem + 2 == commentsAdapter.getItemCount()) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
-                            }
-                        }, 500);
-                    }
+            public void run() {
+                try{
+                    Thread.sleep(2000);
+                }catch (InterruptedException e){
+                    e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-            }
-        });
-    }
-
-
-    private void initRefreshLayout() {
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
-                android.R.color.holo_orange_light, android.R.color.holo_green_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // 设置可见
-                swipeRefresh.setRefreshing(true);
-                // 重置adapter的数据源为空
-                commentsAdapter.resetDatas();
-                // 获取第第0条到第PAGE_COUNT（值为10）条的数据
-                updateRecyclerView(0, PAGE_COUNT);
-                mHandler.postDelayed(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // 模拟网络加载时间，设置不可见
+                        commentsList.clear();
+                        sendRequestWithOkHttp();
+                        commentsAdapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
                     }
-                }, 1000);
+                });
             }
-        });
+        }).start();
     }
+//    private void initRecyclerView() {
+//        commentsAdapter = new CommentsAdapter(getDatas(0, PAGE_COUNT), user_id,getContext(),session, getDatas(0, PAGE_COUNT).size() > 0 ? true : false);
+//        mLayoutManager = new GridLayoutManager(getContext(), 1);
+//        recyclerView.setLayoutManager(mLayoutManager);
+//        recyclerView.setAdapter(commentsAdapter);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//
+//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    if (commentsAdapter.isFadeTips() == false && lastVisibleItem + 1 == commentsAdapter.getItemCount()) {
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
+//                            }
+//                        }, 500);
+//                    }
+//
+//                    if (commentsAdapter.isFadeTips() == true && lastVisibleItem + 2 == commentsAdapter.getItemCount()) {
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
+//                            }
+//                        }, 500);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+//            }
+//        });
+//    }
+
+
+//    private void initRefreshLayout() {
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
+//                android.R.color.holo_orange_light, android.R.color.holo_green_light);
+//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                // 设置可见
+//                swipeRefresh.setRefreshing(true);
+//                // 重置adapter的数据源为空
+//                commentsAdapter.resetDatas();
+//                // 获取第第0条到第PAGE_COUNT（值为10）条的数据
+//                updateRecyclerView(0, PAGE_COUNT);
+//                mHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // 模拟网络加载时间，设置不可见
+//                        swipeRefresh.setRefreshing(false);
+//                    }
+//                }, 1000);
+//            }
+//        });
+//    }
     private List<Comments> getDatas(final int firstIndex, final int lastIndex) {
         List<Comments> resList = new ArrayList<>();
         for (int i = firstIndex; i < lastIndex; i++) {
@@ -146,14 +178,14 @@ public class CommentsFragment extends Fragment {
         }
         return resList;
     }
-    private void updateRecyclerView(int fromIndex, int toIndex) {
-        List<Comments> newDatas = getDatas(fromIndex, toIndex);
-        if (newDatas.size() > 0) {
-            commentsAdapter.updateList(newDatas, true);
-        } else {
-            commentsAdapter.updateList(null, false);
-        }
-    }
+//    private void updateRecyclerView(int fromIndex, int toIndex) {
+//        List<Comments> newDatas = getDatas(fromIndex, toIndex);
+//        if (newDatas.size() > 0) {
+//            commentsAdapter.updateList(newDatas, true);
+//        } else {
+//            commentsAdapter.updateList(null, false);
+//        }
+//    }
 
     private void sendRequestWithOkHttp(){
         //开启现线程发起网络请求
@@ -198,12 +230,12 @@ public class CommentsFragment extends Fragment {
             public void run(){
                 //设置ui
 
-                initRecyclerView();
-                //LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                //recyclerView.setLayoutManager(manager);
-                //commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
+                //initRecyclerView();
+                LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(manager);
+                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
 
-                //recyclerView.setAdapter(commentsAdapter);
+                recyclerView.setAdapter(commentsAdapter);
             }
         });
     }

@@ -31,4 +31,5 @@ public class SpaceFilter implements InputFilter {
         };
         editText.setFilters(new InputFilter[]{filter});
     }
+
 }

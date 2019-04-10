@@ -46,12 +46,12 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     private boolean fadeTips = false; // 变量，是否隐藏了底部的提示
     //private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public CommentsAdapter(List<Comments> list, String user_id, Context context,String session,boolean hasMore){
+    public CommentsAdapter(List<Comments> list, String user_id, Context context,String session){
         this.session = session;
         this.user_id = user_id;
         this.list = list;
         this.context = context;
-        this.hasMore = hasMore;
+        //this.hasMore = hasMore;
     }
     @Override
     public int getItemCount() {
@@ -62,47 +62,47 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         return list.size();
     }
     // 根据条目位置返回ViewType，以供onCreateViewHolder方法内获取不同的Holder
-    @Override
-    public int getItemViewType(int position) {
-        if (position == getItemCount() - 1) {
-            return footType;
-        } else {
-            return normalType;
-        }
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (position == getItemCount() - 1) {
+//            return footType;
+//        } else {
+//            return normalType;
+//        }
+//    }
     // 正常item的ViewHolder，用以缓存findView操作
-    class NormalHolder extends CommentsAdapter.ViewHolder {
-        ImageView iv_movie;
-        TextView tv_commentsTitle;
-        TextView tv_summary;
-        TextView tv_movieTitle;
-        ImageView iv_author;
-        TextView tv_commentsAuthor;
-        View commentsView;
-
-
-        public NormalHolder(View view) {
-            super(view);
-            commentsView = view;
-            iv_movie = (ImageView) view.findViewById(R.id.iv_movie);
-            iv_author = (ImageView) view.findViewById(R.id.iv_author);
-            tv_commentsAuthor = (TextView) view.findViewById(R.id.tv_commentsAuthor);
-            tv_commentsTitle = (TextView) view.findViewById(R.id.tv_commentsTitle);
-            tv_summary = (TextView) view.findViewById(R.id.tv_summary);
-            tv_movieTitle = (TextView) view.findViewById(R.id.tv_movieTitle);
-
-        }
-    }
-
-    // // 底部footView的ViewHolder，用以缓存findView操作
-    class FootHolder extends CommentsAdapter.ViewHolder {
-        private TextView tips;
-
-        public FootHolder(View itemView) {
-            super(itemView);
-            tips = (TextView) itemView.findViewById(R.id.tips);
-        }
-    }
+//    class NormalHolder extends CommentsAdapter.ViewHolder {
+//        ImageView iv_movie;
+//        TextView tv_commentsTitle;
+//        TextView tv_summary;
+//        TextView tv_movieTitle;
+//        ImageView iv_author;
+//        TextView tv_commentsAuthor;
+//        View commentsView;
+//
+//
+//        public NormalHolder(View view) {
+//            super(view);
+//            commentsView = view;
+//            iv_movie = (ImageView) view.findViewById(R.id.iv_movie);
+//            iv_author = (ImageView) view.findViewById(R.id.iv_author);
+//            tv_commentsAuthor = (TextView) view.findViewById(R.id.tv_commentsAuthor);
+//            tv_commentsTitle = (TextView) view.findViewById(R.id.tv_commentsTitle);
+//            tv_summary = (TextView) view.findViewById(R.id.tv_summary);
+//            tv_movieTitle = (TextView) view.findViewById(R.id.tv_movieTitle);
+//
+//        }
+//    }
+//
+//    // // 底部footView的ViewHolder，用以缓存findView操作
+//    class FootHolder extends CommentsAdapter.ViewHolder {
+//        private TextView tips;
+//
+//        public FootHolder(View itemView) {
+//            super(itemView);
+//            tips = (TextView) itemView.findViewById(R.id.tips);
+//        }
+//    }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -136,20 +136,20 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     @Override
     public CommentsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         // 根据返回的ViewType，绑定不同的布局文件，这里只有两种
-
         if (context == null){
             context = viewGroup.getContext();
         }
         final View view;
-        if (i == normalType) {
-            view = LayoutInflater.from(context)
+//        if (i == normalType) {
+//            view = LayoutInflater.from(context)
+//                    .inflate(R.layout.item_comments, viewGroup, false);
+//        } else {
+//            view = LayoutInflater.from(context)
+//                    .inflate(R.layout.footview, viewGroup, false);
+//        }
+
+        view = LayoutInflater.from(context)
                     .inflate(R.layout.item_comments, viewGroup, false);
-        } else {
-            view = LayoutInflater.from(context)
-                    .inflate(R.layout.footview, viewGroup, false);
-        }
-
-
         final CommentsAdapter.ViewHolder holder = new CommentsAdapter.ViewHolder(view);
         holder.commentsView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,33 +170,34 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 }
             }
         });
-        holder.commentsView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                int position = holder.getAdapterPosition();
-                final Comments comments = list.get(position);
-                String authorName = comments.getAuthor_name();
-                if(user_id.equals(authorName))
-                {
-                    Snackbar.make(view,"确定要删除这条影论吗",Snackbar.LENGTH_SHORT)
-                            .setAction("确定", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    sendRequestWithOkHttp(comments,view);
-                                }
-                            })
-                            .show();
-                }
-                else if (user_id.equals("")) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(v .getContext(), "不是您的评论，不能删除", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
-        if (i == normalType) {
-            return new NormalHolder(LayoutInflater.from(context).inflate(R.layout.item_comments, null));
-        } else {
-            return new FootHolder(LayoutInflater.from(context).inflate(R.layout.footview, null));
-        }
+//        holder.commentsView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                int position = holder.getAdapterPosition();
+//                final Comments comments = list.get(position);
+//                String authorName = comments.getAuthor_name();
+//                if(user_id.equals(authorName))
+//                {
+//                    Snackbar.make(view,"确定要删除这条影论吗",Snackbar.LENGTH_SHORT)
+//                            .setAction("确定", new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    sendRequestWithOkHttp(comments,view);
+//                                }
+//                            })
+//                            .show();
+//                }
+//                else if (user_id.equals("")) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
+//                else Toast.makeText(v .getContext(), "不是您的评论，不能删除", Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
+//        if (i == normalType) {
+//            return new NormalHolder(LayoutInflater.from(context).inflate(R.layout.item_comments, null));
+//        } else {
+//            return new FootHolder(LayoutInflater.from(context).inflate(R.layout.footview, null));
+//        }
+        return holder;
     }
 
     @Override
@@ -205,51 +206,51 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         //viewHolder.tv_movieTitle.setText(comments.get);
 
         //原始方法
-        //Log.d("hhh",comments.getAuthor_head());
-        //Glide.with(context).load("http://132.232.78.106:8001"+comments.getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
-        //Glide.with(context).load("http://132.232.78.106:8001"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
-        //viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
-        //viewHolder.tv_commentsTitle.setText(comments.getTitle());
-        //viewHolder.tv_summary.setText("“"+comments.getSubtitle()+"”");
+        Log.d("hhh",comments.getAuthor_head());
+        Glide.with(context).load("http://132.232.78.106:8001"+comments.getPoster()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_movie);
+        Glide.with(context).load("http://132.232.78.106:8001"+comments.getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+        viewHolder.tv_commentsAuthor.setText(comments.getAuthor_name());
+        viewHolder.tv_commentsTitle.setText(comments.getTitle());
+        viewHolder.tv_summary.setText("“"+comments.getSubtitle()+"”");
         //上拉加载
         // 如果是正常的imte，直接设置TextView的值
-        if (viewHolder instanceof NormalHolder) {
-            ((NormalHolder) viewHolder).tv_commentsAuthor.setText(list.get(i).getAuthor_name());
-            ((NormalHolder) viewHolder).tv_commentsTitle.setText(list.get(i).getTitle());
-            ((NormalHolder) viewHolder).tv_summary.setText("“"+list.get(i).getSubtitle()+"”");
-            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
-            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
-        } else {
-            // 之所以要设置可见，是因为我在没有更多数据时会隐藏了这个footView
-            ((FootHolder) viewHolder).tips.setVisibility(View.VISIBLE);
-            // 只有获取数据为空时，hasMore为false，所以当我们拉到底部时基本都会首先显示“正在加载更多...”
-            if (hasMore == true) {
-                // 不隐藏footView提示
-                fadeTips = false;
-                if (list.size() > 0) {
-                    // 如果查询数据发现增加之后，就显示正在加载更多
-                    ((FootHolder) viewHolder).tips.setText("正在加载更多...");
-                }
-            } else {
-                if (list.size() > 0) {
-                    // 如果查询数据发现并没有增加时，就显示没有更多数据了
-                    ((FootHolder) viewHolder).tips.setText("没有更多数据了");
-
-                    // 然后通过延时加载模拟网络请求的时间，在500ms后执行
-                    //mHandler.postDelayed(new Runnable() {
-                        //@Override
-                        //public void run() {
-                            // 隐藏提示条
-                          //  ((FootHolder) viewHolder).tips.setVisibility(View.GONE);
-                            // 将fadeTips设置true
-                           // fadeTips = true;
-                            // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
-                          //  hasMore = true;
-                       // }
-                    //}, 500);
-                }
-            }
-        }
+//        if (viewHolder instanceof NormalHolder) {
+//            ((NormalHolder) viewHolder).tv_commentsAuthor.setText(list.get(i).getAuthor_name());
+//            ((NormalHolder) viewHolder).tv_commentsTitle.setText(list.get(i).getTitle());
+//            ((NormalHolder) viewHolder).tv_summary.setText("“"+list.get(i).getSubtitle()+"”");
+//            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getPoster()).placeholder(R.drawable.eg).error(R.drawable.code_128).into(viewHolder.iv_movie);
+//            Glide.with(context).load("http://132.232.78.106:8001"+list.get(i).getAuthor_head()).placeholder(R.drawable.eg).error(R.drawable.eg).into(viewHolder.iv_author);
+//        } else {
+//            // 之所以要设置可见，是因为我在没有更多数据时会隐藏了这个footView
+//            ((FootHolder) viewHolder).tips.setVisibility(View.VISIBLE);
+//            // 只有获取数据为空时，hasMore为false，所以当我们拉到底部时基本都会首先显示“正在加载更多...”
+//            if (hasMore == true) {
+//                // 不隐藏footView提示
+//                fadeTips = false;
+//                if (list.size() > 0) {
+//                    // 如果查询数据发现增加之后，就显示正在加载更多
+//                    ((FootHolder) viewHolder).tips.setText("正在加载更多...");
+//                }
+//            } else {
+//                if (list.size() > 0) {
+//                    // 如果查询数据发现并没有增加时，就显示没有更多数据了
+//                    ((FootHolder) viewHolder).tips.setText("没有更多数据了");
+//
+//                    // 然后通过延时加载模拟网络请求的时间，在500ms后执行
+//                    //mHandler.postDelayed(new Runnable() {
+//                        //@Override
+//                        //public void run() {
+//                            // 隐藏提示条
+//                          //  ((FootHolder) viewHolder).tips.setVisibility(View.GONE);
+//                            // 将fadeTips设置true
+//                           // fadeTips = true;
+//                            // hasMore设为true是为了让再次拉到底时，会先显示正在加载更多
+//                          //  hasMore = true;
+//                       // }
+//                    //}, 500);
+//                }
+//            }
+//        }
     }
 
 
@@ -304,22 +305,22 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         return in;
     }
 
-    public void resetDatas() {
-        list = new ArrayList<>();
-    }
-    // 暴露接口，更新数据源，并修改hasMore的值，如果有增加数据，hasMore为true，否则为false
-    public void updateList(List<Comments> newDatas, boolean hasMore) {
-        // 在原有的数据之上增加新数据
-        if (newDatas != null) {
-            list.addAll(newDatas);
-        }
-        this.hasMore = hasMore;
-        notifyDataSetChanged();
-    }
-    // 暴露接口，改变fadeTips的方法
-    public boolean isFadeTips() {
-        return fadeTips;
-    }
+//    public void resetDatas() {
+//        list = new ArrayList<>();
+//    }
+//    // 暴露接口，更新数据源，并修改hasMore的值，如果有增加数据，hasMore为true，否则为false
+//    public void updateList(List<Comments> newDatas, boolean hasMore) {
+//        // 在原有的数据之上增加新数据
+//        if (newDatas != null) {
+//            list.addAll(newDatas);
+//        }
+//        this.hasMore = hasMore;
+//        notifyDataSetChanged();
+//    }
+//    // 暴露接口，改变fadeTips的方法
+//    public boolean isFadeTips() {
+//        return fadeTips;
+//    }
 
 
 

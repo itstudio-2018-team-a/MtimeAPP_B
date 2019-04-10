@@ -73,6 +73,9 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
         ed_password = findViewById(R.id.ed_password);
         checkBox = findViewById(R.id.remember_password);
 
+        setEditTextInhibitInputSpace(ed_account);
+        setEditTextInhibitInputSpace(ed_password);
+
         preferences = getSharedPreferences("data",MODE_PRIVATE);
         boolean isremember = preferences.getBoolean("remember_paeeword",false);
         if (isremember){

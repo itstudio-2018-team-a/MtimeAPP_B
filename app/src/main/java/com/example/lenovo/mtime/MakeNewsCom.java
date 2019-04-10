@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,7 +74,11 @@ public class MakeNewsCom extends AppCompatActivity {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .retryOnConnectionFailure(true)  //网查解决end of the stream问题
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
                     RequestBody requestBody = new FormBody.Builder()
                             .add("id",newsId)
                             .add("content",comments)
@@ -91,6 +100,10 @@ public class MakeNewsCom extends AppCompatActivity {
                     if(state==1)
                     {
                         Intent intent = new Intent(MakeNewsCom.this,NewsDetail.class);
+                        intent.putExtra("user_id",user_id);
+                        intent.putExtra("session",session);
+                        intent.putExtra("newsId",newsId);
+                        finish();
                         startActivity(intent);
                         Toast.makeText(MakeNewsCom.this,"发表成功",Toast.LENGTH_LONG).show();
                     }
@@ -101,8 +114,23 @@ public class MakeNewsCom extends AppCompatActivity {
                     else if(state == -3)
                         Toast.makeText(MakeNewsCom.this,"啊哦，出错啦",Toast.LENGTH_LONG).show();
                     Looper.loop();
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(MakeNewsCom.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(MakeNewsCom.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(MakeNewsCom.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

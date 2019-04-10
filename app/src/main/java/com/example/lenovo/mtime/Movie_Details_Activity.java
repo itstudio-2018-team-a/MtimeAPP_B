@@ -31,6 +31,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -158,9 +161,23 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     Log.d("hahaha",responseDate);
                     showResponse(responseDate);
 
-                }catch (Exception e){
-                    e.printStackTrace();
-                    sendRequestWithOkHttp();
+                }catch (final Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(Movie_Details_Activity.this,"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(Movie_Details_Activity.this,"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(Movie_Details_Activity.this,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();
@@ -238,7 +255,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 LinearLayoutManager manager=new LinearLayoutManager(context);
                 recyclerView.setLayoutManager(manager);
 
-                movieComAdapter = new MovieComAdapter(movieComList,user_id,context);
+                movieComAdapter = new MovieComAdapter(movieComList,user_id,context,session,movie_id);
 
                 recyclerView.setAdapter(movieComAdapter);
             }
