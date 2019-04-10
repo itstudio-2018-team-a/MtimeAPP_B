@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +38,17 @@ public class MakeShortCom extends AppCompatActivity {
         movie_id = intent.getStringExtra("movie_id");
         user_id = intent.getStringExtra("user_id");
         session = intent.getStringExtra("session");
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         ed_comments = (EditText) findViewById(R.id.ed_content);
         btn_publish = (Button) findViewById(R.id.btn_publish);
@@ -81,6 +93,7 @@ public class MakeShortCom extends AppCompatActivity {
                         intent.putExtra("movie_id",movie_id);
                         intent.putExtra("session",session);
                         startActivity(intent);
+                        finish();
                         Toast.makeText(MakeShortCom.this,"发表成功",Toast.LENGTH_LONG).show();
                     }
                     else if(state == -1)

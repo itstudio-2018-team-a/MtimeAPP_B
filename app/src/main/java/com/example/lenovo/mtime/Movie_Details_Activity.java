@@ -94,6 +94,14 @@ public class Movie_Details_Activity extends AppCompatActivity {
         sendRequestWithOkHttp();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,31 +124,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
 
 
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
-        final MenuItem item = menu.findItem(R.id.comment);
-        item.getActionView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(item);
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.comment:
-                //Intent intent = new Intent(Movie_Details_Activity.this, .class);
-                //intent.putExtra("user_id",user_id);
-                //startActivity(intent);
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
+
 
     private void sendRequestWithOkHttp(){
         //开启现线程发起网络请求

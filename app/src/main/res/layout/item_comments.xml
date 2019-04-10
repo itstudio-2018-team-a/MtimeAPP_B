@@ -22,13 +22,13 @@
                 android:id="@+id/tv_commentsTitle"
                 android:textColor="#000000"
                 android:textSize="21sp"
-                android:layout_margin="8dp"/>
+                android:layout_margin="10dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="这里是内容总结"
                 android:id="@+id/tv_summary"
-                android:layout_margin="8dp"
+                android:layout_margin="10dp"
                 android:textSize="13sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_margin="8dp"
+                    android:layout_margin="9dp"
                     android:layout_gravity="center_vertical"
                     android:id="@+id/iv_author"/>
                 <TextView
@@ -47,7 +47,7 @@
                     android:id="@+id/tv_commentsAuthor"
                     android:textSize="13sp"
                     android:layout_gravity="center_vertical"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="9dp"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -56,13 +56,13 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/iv_movie"
-            android:layout_margin="6dp"
+            android:layout_margin="10dp"
             android:background="@drawable/code_128"
             android:scaleType="fitXY"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:background="#2A000000"/>
 </LinearLayout>

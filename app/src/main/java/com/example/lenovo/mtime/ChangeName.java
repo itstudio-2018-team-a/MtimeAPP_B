@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -37,18 +38,29 @@ public class ChangeName extends AppCompatActivity {
     private String url;
     private String session;
     private String newName;
+    EditText et_newName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_name);
-        EditText et_newName = findViewById(R.id.et_newName);
+        et_newName = findViewById(R.id.et_newName);
         Button btn_reset = (Button) findViewById(R.id.btn_reset);
         Button btn_out = (Button) findViewById(R.id.btn_out);
         final String user_id;
         //获取到修改后的用户名以便发送到服务器
         newName = et_newName.getText().toString();
 //        user_id = intent.getStringExtra("nickName");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +75,7 @@ public class ChangeName extends AppCompatActivity {
                 url = "http://132.232.78.106:8001/api/changeNickName/";
                 SharedPreferences sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
                 session = sharedPreferences.getString("session", "");
-                sendRequestWithOkHttp(newName);  //发起网络请求从服务器获取相关用户数据
+                sendRequestWithOkHttp(et_newName.getText().toString());  //发起网络请求从服务器获取相关用户数据
 
             }
         });
@@ -133,8 +145,11 @@ public class ChangeName extends AppCompatActivity {
                     if (state.equals("1")) {
                         Toast.makeText(ChangeName.this, msg, Toast.LENGTH_SHORT).show();
                         SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-                        editor.putString("nickName", newName);
+                        editor.putString("nickName", et_newName.getText().toString());
                         editor.apply();
+                        Intent intent = new Intent(ChangeName.this,UserFragment.class);
+                        intent.putExtra("user_id",et_newName.getText().toString());
+                        startActivity(intent);
                     }else Toast.makeText(ChangeName.this, msg, Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();

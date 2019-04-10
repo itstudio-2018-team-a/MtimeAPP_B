@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.method.PasswordTransformationMethod;
@@ -56,6 +57,17 @@ public class ChangePassword extends AppCompatActivity {
         Button btn_out = (Button) findViewById(R.id.btn_out);
         Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
         setEditTextInhibitInputSpace(et_newPassword);

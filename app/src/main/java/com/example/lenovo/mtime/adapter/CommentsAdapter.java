@@ -72,11 +72,25 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
     }
     // 正常item的ViewHolder，用以缓存findView操作
     class NormalHolder extends CommentsAdapter.ViewHolder {
-        private LinearLayout textView;
+        ImageView iv_movie;
+        TextView tv_commentsTitle;
+        TextView tv_summary;
+        TextView tv_movieTitle;
+        ImageView iv_author;
+        TextView tv_commentsAuthor;
+        View commentsView;
 
-        public NormalHolder(View itemView) {
-            super(itemView);
-            textView = (LinearLayout) itemView.findViewById(R.id.tv);
+
+        public NormalHolder(View view) {
+            super(view);
+            commentsView = view;
+            iv_movie = (ImageView) view.findViewById(R.id.iv_movie);
+            iv_author = (ImageView) view.findViewById(R.id.iv_author);
+            tv_commentsAuthor = (TextView) view.findViewById(R.id.tv_commentsAuthor);
+            tv_commentsTitle = (TextView) view.findViewById(R.id.tv_commentsTitle);
+            tv_summary = (TextView) view.findViewById(R.id.tv_summary);
+            tv_movieTitle = (TextView) view.findViewById(R.id.tv_movieTitle);
+
         }
     }
 

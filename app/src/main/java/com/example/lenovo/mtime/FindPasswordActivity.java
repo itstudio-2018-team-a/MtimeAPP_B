@@ -3,6 +3,7 @@ package com.example.lenovo.mtime;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +42,17 @@ public class FindPasswordActivity extends AppCompatActivity implements View.OnCl
         btn_sendCode = findViewById(R.id.send_code);
         btn_Reset = findViewById(R.id.btn_reset);
         btn_Cancel = findViewById(R.id.btn_out);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         btn_sendCode.setOnClickListener(this);
         btn_Reset.setOnClickListener(this);

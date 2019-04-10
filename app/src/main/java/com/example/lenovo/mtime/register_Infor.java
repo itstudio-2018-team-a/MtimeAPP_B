@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.View;
@@ -90,7 +91,16 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
         btn_register = findViewById(R.id.btn_register);
         btn_get_code = findViewById(R.id.btn_get_code);
 
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
         btn_register.setOnClickListener(this);
