@@ -60,8 +60,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //写到item点击事件，可以参考知乎日报
-
                 if (Login_Activity.flag==null||Login_Activity.flag.equals("0"))
                     Toast.makeText(context,"请先登录",Toast.LENGTH_SHORT).show();
                 else {

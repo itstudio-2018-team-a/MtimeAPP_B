@@ -147,7 +147,7 @@ public class ChangeName extends AppCompatActivity {
                         SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
                         editor.putString("nickName", et_newName.getText().toString());
                         editor.apply();
-                        Intent intent = new Intent(ChangeName.this,UserFragment.class);
+                        Intent intent = new Intent(ChangeName.this,MainActivity.class);
                         intent.putExtra("user_id",et_newName.getText().toString());
                         finish();
                         startActivity(intent);

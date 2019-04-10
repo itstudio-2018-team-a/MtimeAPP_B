@@ -13,7 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.adapter.MovieAdapter;
 import com.example.lenovo.mtime.bean.Movie;
@@ -23,8 +25,14 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -125,28 +133,72 @@ public class MovieComingFragment extends Fragment {
                             .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
-                    HttpUrl url= HttpUrl.parse("http://132.232.78.106:8001/api/getFilmList/");
-                    url.newBuilder()
-                            .addQueryParameter("head","1")
-                            .addQueryParameter("type","0")
-                            .addQueryParameter("number","12")
-                            .build();
+                    String url = "http://132.232.78.106:8001/api/getFilmList/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", "0");
+                    map.put("type", "0");
+                    map.put("number", "10");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     Request request = new Request.Builder()
                             .url(url)
                             .build();
 
                     Response response = client.newCall(request).execute();
-//                    String cookie = response.header("Set-Cookie");  //获取cookie
 
                     String responseDate = response.body().string();
                     showResponse(responseDate);
 
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(getContext(),"连接超时，请检查网络设置",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(getContext(),"连接异常，请检查网络设置",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();
     }
+
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
+    }
+
 
     private void showResponse(final String response){
 
