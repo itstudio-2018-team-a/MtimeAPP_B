@@ -76,6 +76,16 @@ public class CommentsDetail extends AppCompatActivity {
         userImg = intent.getStringExtra("userImg");
         poster = intent.getStringExtra("poster");
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         tv_author = (TextView) findViewById(R.id.tv_author);
         tv_content = (TextView) findViewById(R.id.tv_content);

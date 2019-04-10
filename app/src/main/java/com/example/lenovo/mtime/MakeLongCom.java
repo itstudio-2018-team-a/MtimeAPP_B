@@ -3,6 +3,7 @@ package com.example.lenovo.mtime;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,17 @@ public class MakeLongCom extends AppCompatActivity {
         ed_subTitle.setFilters(new InputFilter[] { new InputFilter.LengthFilter(50) });
         ed_title.setFilters(new InputFilter[] { new InputFilter.LengthFilter(30) });
         ed_content.setFilters(new InputFilter[] { new InputFilter.LengthFilter(2000) });
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         Intent intent = getIntent();
         movie_id = intent.getStringExtra("movie_id");

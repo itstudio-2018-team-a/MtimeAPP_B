@@ -25,4 +25,9 @@
         android:text="这里是评论时间"
         android:layout_margin="8dp"
         android:id="@+id/tv_time"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="#2A000000"/>
 </LinearLayout>

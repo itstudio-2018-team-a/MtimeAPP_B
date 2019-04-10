@@ -82,6 +82,14 @@ public class NewsDetail extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +131,7 @@ public class NewsDetail extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.comment:
                 TextView tv_comment = (TextView)findViewById(R.id.tv_comment);
-                if (session.equals(""))
+                if (session ==null)
                     Toast.makeText(NewsDetail.this,"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
                 else {
                     Intent intent = new Intent(NewsDetail.this, NewsComActivity.class);

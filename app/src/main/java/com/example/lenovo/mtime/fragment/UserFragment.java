@@ -74,6 +74,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static android.app.Activity.RESULT_OK;
+import static com.example.lenovo.mtime.uitl.BitMaptoFile.getFile;
 
 public class UserFragment extends Fragment {
     View view;
@@ -136,7 +137,7 @@ public class UserFragment extends Fragment {
             session = sharedPreferences.getString("session", "");
 
             if (headImage.equals("default/1.png")) {
-                user_image.setImageResource(R.drawable.user_128);//R.drawable.firstheadimage
+                user_image.setImageResource(R.drawable.firstheadimage);
             } else {
 //                 headImage = "http://132.232.78.106:8001/media/"+headImage;
                 Glide.with(this).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.firstheadimage).into(user_image);
@@ -307,6 +308,7 @@ public class UserFragment extends Fragment {
                         e.printStackTrace();
                     }
                     Bitmap Bit = compressImage(bitmap);
+                    final File file = getFile(Bit);
 //                    user_image.setImageBitmap(Bit);
                     flag = 1;
                     new Thread(new Runnable() {
@@ -320,7 +322,7 @@ public class UserFragment extends Fragment {
                                         .readTimeout(10, TimeUnit.SECONDS)
                                         .build();
 
-                                RequestBody image = RequestBody.create(MediaType.parse("image/png"), outputImage);
+                                RequestBody image = RequestBody.create(MediaType.parse("image/png"), file);
                                 RequestBody requestBody = new MultipartBody.Builder()
                                         .setType(MultipartBody.FORM)
                                         .addFormDataPart("headImage", "output_image.jpg", image)
@@ -413,7 +415,7 @@ public class UserFragment extends Fragment {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         int options = 100;
-        while (baos.toByteArray().length / 1024 > 100) { //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+        while (baos.toByteArray().length / 1024 > 1000) { //循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset();//重置baos即清空baos
             image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
             options -= 10;//每次都减少10
@@ -538,7 +540,9 @@ public class UserFragment extends Fragment {
 
     public void uploadFile(final String filePath) {
 
-        final File file = new File(filePath);
+        Bitmap bitmap=BitmapFactory.decodeFile(filePath);
+        bitmap = compressImage(bitmap);
+        final File file = getFile(bitmap);
         new Thread(new Runnable() {
             @Override
             public void run() {

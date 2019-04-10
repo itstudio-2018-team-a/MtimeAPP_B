@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,14 +41,17 @@ public class CommentsFragment extends Fragment {
     String user_id;
     String session;
     SwipeRefreshLayout swipeRefresh;
+    private GridLayoutManager mLayoutManager;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
+    private int lastVisibleItem = 0;
+    private final int PAGE_COUNT = 10;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_comments,container,false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
+
 
         return view;
     }
@@ -57,18 +62,58 @@ public class CommentsFragment extends Fragment {
 
         //下拉刷新功能
         swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
-
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         Bundle bundle = getArguments();
         if(bundle != null){
             user_id = bundle.getString("user_id");
             session = bundle.getString("session");
         }
-        initRefreshLayout();
+
 
         sendRequestWithOkHttp();
+        initRefreshLayout();
 
     }
+    private void initRecyclerView() {
+        commentsAdapter = new CommentsAdapter(getDatas(0, PAGE_COUNT), user_id,getContext(),session, getDatas(0, PAGE_COUNT).size() > 0 ? true : false);
+        mLayoutManager = new GridLayoutManager(getContext(), 1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(commentsAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (commentsAdapter.isFadeTips() == false && lastVisibleItem + 1 == commentsAdapter.getItemCount()) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
+                            }
+                        }, 500);
+                    }
+
+                    if (commentsAdapter.isFadeTips() == true && lastVisibleItem + 2 == commentsAdapter.getItemCount()) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
+                            }
+                        }, 500);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+    }
+
 
     private void initRefreshLayout() {
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
@@ -81,7 +126,7 @@ public class CommentsFragment extends Fragment {
                 // 重置adapter的数据源为空
                 commentsAdapter.resetDatas();
                 // 获取第第0条到第PAGE_COUNT（值为10）条的数据
-                updateRecyclerView(0, 10);
+                updateRecyclerView(0, PAGE_COUNT);
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -139,6 +184,7 @@ public class CommentsFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             Log.e("response",response);
             String list = jsonObject.getString("result");
+            Log.d("commentsList",list);
 
             commentsList = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
 
@@ -151,12 +197,13 @@ public class CommentsFragment extends Fragment {
             @Override
             public void run(){
                 //设置ui
-                LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
 
-                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
+                initRecyclerView();
+                //LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                //recyclerView.setLayoutManager(manager);
+                //commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
 
-                recyclerView.setAdapter(commentsAdapter);
+                //recyclerView.setAdapter(commentsAdapter);
             }
         });
     }

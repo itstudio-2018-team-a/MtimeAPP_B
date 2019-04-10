@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +44,17 @@ public class MarkActivity extends AppCompatActivity {
         btn_shortComment = (Button) findViewById(R.id.btn_shortComment);
         tv_mark = (TextView) findViewById(R.id.tv_mark);
         btn_publish = (Button) findViewById(R.id.btn_publish);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);//左侧添加一个默认的返回图标
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
@@ -84,9 +96,12 @@ public class MarkActivity extends AppCompatActivity {
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                score = tv_mark.getText().toString();
-                score=score.substring(0,score.lastIndexOf('.'));
-                sendRequestWithOkHttp();
+                if (isMark) Toast.makeText(MarkActivity.this,"当前电影您已评分",Toast.LENGTH_SHORT).show();
+                else {
+                    score = tv_mark.getText().toString();
+                    score = score.substring(0,score.lastIndexOf('.'));
+                    sendRequestWithOkHttp();
+                }
             }
         });
     }
