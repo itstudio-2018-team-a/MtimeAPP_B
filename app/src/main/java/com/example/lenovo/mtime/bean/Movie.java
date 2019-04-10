@@ -12,7 +12,7 @@ public class Movie {
 
     private int film_id;
 
-    private int mark;
+    private double mark;
 
     private int marked_members;
 
@@ -58,7 +58,7 @@ public class Movie {
         this.film_id = film_id;
     }
 
-    public int getMark() {
+    public double getMark() {
         return mark;
     }
 

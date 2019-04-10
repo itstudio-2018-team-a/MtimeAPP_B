@@ -21,20 +21,18 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class okhttp_plus {
-    public static String responseDate;
-    public static String sendRequestwithOkHttp(final String url, final RequestBody requestBody, String user_id, final Context context){
+    public static String responseDate = "";
+    public static String sendRequestwithOkHttp(final String url, final RequestBody requestBody, String user_id, final Context context) {
         //开启现线程发起网络请求
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
-            public void run(){
-                try{
-
+            public void run() {
+                try {
                     OkHttpClient client = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)  //网查解决end of the stream问题
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(10,TimeUnit.SECONDS)
+                            .readTimeout(10, TimeUnit.SECONDS)
                             .build();
-
 
 //                    RequestBody requestBody = new MultipartBody.Builder()
 //                            .setType(MultipartBody.FORM)
@@ -48,25 +46,25 @@ public class okhttp_plus {
 
                     Call call = client.newCall(request);
                     responseDate = "";
-                    try{
+                    try {
                         Response response = call.execute();
                         responseDate = response.body().string();
-                        Log.d("ZGH", responseDate);
-                    }catch (final Exception e){
+                        Log.d("ZGH", "这是工具类里面的responsedata"+responseDate);
+                    } catch (final Exception e) {
                         e.printStackTrace();
-                        if (e instanceof SocketTimeoutException){
-                            Toast.makeText(context,"连接超时",Toast.LENGTH_SHORT).show();
+                        if (e instanceof SocketTimeoutException) {
+                            Toast.makeText(context, "连接超时", Toast.LENGTH_SHORT).show();
                         }
-                        if (e instanceof ConnectException){
-                            Toast.makeText(context,"连接异常",Toast.LENGTH_SHORT).show();
+                        if (e instanceof ConnectException) {
+                            Toast.makeText(context, "连接异常", Toast.LENGTH_SHORT).show();
                         }
 
                         if (e instanceof ProtocolException) {
-                            Toast.makeText(context,"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "未知异常，请稍后再试", Toast.LENGTH_SHORT).show();
                         }
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

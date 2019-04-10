@@ -72,7 +72,7 @@ public class NewsDetail extends AppCompatActivity {
         newsId = intent.getStringExtra("newsId");
         user_id = intent.getStringExtra("user_id");
         session = intent.getStringExtra("session");
-        Log.d("评论时的新闻id",newsId);
+//        Log.d("评论时的新闻id",newsId);
 
         tv_author = (TextView) findViewById(R.id.tv_author);
         tv_content = (TextView) findViewById(R.id.tv_content);
