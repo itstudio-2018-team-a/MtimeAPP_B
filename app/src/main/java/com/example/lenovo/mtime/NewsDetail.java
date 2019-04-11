@@ -1,6 +1,7 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -75,8 +76,10 @@ public class NewsDetail extends AppCompatActivity {
         Intent intent = getIntent();
         newsId = intent.getStringExtra("newsId");
         user_id = intent.getStringExtra("user_id");
-        session = intent.getStringExtra("session");
+//        session = intent.getStringExtra("session");
 //        Log.d("评论时的新闻id",newsId);
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
 
         tv_author = (TextView) findViewById(R.id.tv_author);
         tv_content = (TextView) findViewById(R.id.tv_content);

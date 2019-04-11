@@ -91,7 +91,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
                 int position = holder.getAdapterPosition();
                 Comments comments = list.get(position);
                 String commentId = String.valueOf(comments.getComment_id());
-                if(Login_Activity.flag==null||Login_Activity.flag.equals("0")) Toast.makeText(view.getContext(),"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
+                if(Login_Activity.flag == null||Login_Activity.flag.equals("0")) Toast.makeText(view.getContext(),"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
                 else {
                     Intent intent = new Intent();
                     intent.setClass(view .getContext(), CommentsDetail.class );

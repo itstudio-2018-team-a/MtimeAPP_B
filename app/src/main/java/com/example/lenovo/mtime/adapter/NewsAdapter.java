@@ -71,7 +71,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
                 int position = holder.getAdapterPosition();
                 News news = list.get(position);
                 String newsId = String.valueOf(news.getId());
-                if(Login_Activity.flag==null||Login_Activity.flag.equals("0")) Toast.makeText(view.getContext(),"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
+
+                //将判断条件由session改为了flag
+                if(Login_Activity.flag == null||Login_Activity.flag.equals("0")) Toast.makeText(view.getContext(),"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
                 else {
                     Intent intent = new Intent();
                     intent.setClass(view .getContext(), NewsDetail.class );

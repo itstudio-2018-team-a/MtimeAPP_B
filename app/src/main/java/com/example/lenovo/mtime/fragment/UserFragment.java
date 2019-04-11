@@ -125,7 +125,7 @@ public class UserFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (Login_Activity.flag == null) {
+        if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
             tv_userName.setText("未登录");
 
         } else {
@@ -166,7 +166,7 @@ public class UserFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                             } else
                                 openAlbum();
                         }
@@ -210,7 +210,7 @@ public class UserFragment extends Fragment {
         btn_movieComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Login_Activity.flag == null) {
+                if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
                     Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(getContext(), User_comments.class);
@@ -224,7 +224,7 @@ public class UserFragment extends Fragment {
         btn_newsComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Login_Activity.flag == null) {
+                if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
                     Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(getContext(), User_comments.class);
@@ -238,7 +238,7 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (Login_Activity.flag == null) {
+                if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
                     Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
                 } else {
                     //弹出一个确认框
@@ -256,6 +256,7 @@ public class UserFragment extends Fragment {
                             Intent intent = new Intent(getContext(), Login_Activity.class);
                             startActivity(intent);
                             Login_Activity.flag = "0";
+                            user_image.setImageResource(R.drawable.user_128);
                             getActivity().finish();
                         }
                     });
@@ -269,7 +270,7 @@ public class UserFragment extends Fragment {
         btn_changeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Login_Activity.flag == null) {
+                if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
                     Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -283,7 +284,7 @@ public class UserFragment extends Fragment {
         btn_changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Login_Activity.flag == null) {
+                if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
                     Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
                 } else {
 
@@ -353,10 +354,11 @@ public class UserFragment extends Fragment {
                                                 editor = getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
                                                 editor.putString("headImage","http://132.232.78.106:8001/media/"+headImage);
                                                 editor.apply();
+                                                Glide.with(getContext()).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.firstheadimage).into(user_image);
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }
-//                Glide.with(this).load(headImages).placeholder(R.drawable.user_128).error(R.drawable.user_128).into(user_image);
+
                                         }
                                     });
 
