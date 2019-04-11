@@ -62,7 +62,10 @@ public class MakeShortCom extends AppCompatActivity {
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendRequestWithOkHttp();
+                if (ed_comments.getText().toString().equals(""))
+                    Toast.makeText(MakeShortCom.this,"评论不能为空！",Toast.LENGTH_SHORT).show();
+                else
+                    sendRequestWithOkHttp();
             }
         });
     }

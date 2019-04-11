@@ -120,6 +120,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     intent1.putExtra("movie_id",movie_id);
                     intent1.putExtra("session",session);
                     intent1.putExtra("isMark",isMark);
+                    finish();
                     startActivity(intent1);
                 }
             }

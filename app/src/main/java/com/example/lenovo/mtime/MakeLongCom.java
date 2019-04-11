@@ -67,7 +67,10 @@ public class MakeLongCom extends AppCompatActivity {
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendRequestWithOkHttp();
+                if (ed_content.getText().toString().equals("") || ed_subTitle.getText().toString().equals("")||ed_title.getText().toString().equals(""))
+                    Toast.makeText(MakeLongCom.this,"以上内容不能为空！",Toast.LENGTH_SHORT).show();
+                else
+                    sendRequestWithOkHttp();
             }
         });
     }

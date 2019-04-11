@@ -258,7 +258,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     startActivity(intent);
                     finish();
                 }else {
-                            Toast.makeText(Login_Activity.this,msg,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login_Activity.this,"用户名或密码错误",Toast.LENGTH_SHORT).show();
                 }
             }
         });

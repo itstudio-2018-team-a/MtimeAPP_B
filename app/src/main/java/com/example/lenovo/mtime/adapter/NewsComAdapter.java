@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.lenovo.mtime.Login_Activity;
 import com.example.lenovo.mtime.NewsComActivity;
 import com.example.lenovo.mtime.NewsDetail;
 import com.example.lenovo.mtime.R;
@@ -89,7 +90,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                 final NewsCom newsCom = list.get(position);
                 String authorName = newsCom.getAuthor();
 
-                if (userName == null) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
+                if (Login_Activity.flag==null||Login_Activity.flag.equals("0")) Toast.makeText(v .getContext(), "您还没有登录，请先登录", Toast.LENGTH_SHORT).show();
                 else
                 {
                     Snackbar.make(view,"确定要删除这条评论吗",Snackbar.LENGTH_LONG)
