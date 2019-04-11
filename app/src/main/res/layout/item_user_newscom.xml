@@ -18,6 +18,8 @@
         android:layout_height="wrap_content"
         android:text="“这里是评论内容”"
         android:layout_margin="8dp"
+        android:ellipsize="end"
+        android:lines="1"
         android:id="@+id/tv_title"/>
     <TextView
         android:layout_width="match_parent"

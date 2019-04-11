@@ -71,6 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 intent.putExtra("user_id",user_id);
                 intent.putExtra("session",session);
                 intent.putExtra("movie_id",movie_id);
+                intent.putExtra("information",movie.getInfo());
                 context.startActivity(intent);
                 }
             }

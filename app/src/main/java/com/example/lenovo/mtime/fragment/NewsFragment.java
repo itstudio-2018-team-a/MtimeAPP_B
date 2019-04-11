@@ -49,7 +49,7 @@ import okhttp3.Response;
 public class NewsFragment extends Fragment {
     View view;
     private RecyclerView recyclerView;
-    private List<News> newsList;
+    private List<News> newsList = new ArrayList<>();
     private NewsAdapter newsAdapter;
     String user_id;
     String session;
@@ -230,7 +230,10 @@ public class NewsFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             String list = jsonObject.getString("result");
             String state = jsonObject.getString("state");
-            newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
+            List<News> li = new ArrayList<News>();
+            li = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
+
+            newsList.addAll(li);
             Log.d("listhhh",newsList.toString());
 
         } catch (JSONException e) {
@@ -240,20 +243,20 @@ public class NewsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
             @Override
             public void run(){
-                if (newsNum == 0)
-                {
+                //if (newsNum == 0)
+               // {
                     //设置ui
                     LinearLayoutManager manager=new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(manager);
                     newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
                     recyclerView.setAdapter(newsAdapter);
-                }
-                else {
-                    //LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                    //recyclerView.setLayoutManager(manager);
-                    newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
-                    newsAdapter.notifyDataSetChanged();
-                }
+              //  }
+//                else {
+//                    //LinearLayoutManager manager=new LinearLayoutManager(getContext());
+//                    //recyclerView.setLayoutManager(manager);
+//                    newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
+//                    newsAdapter.notifyDataSetChanged();
+//                }
             }
         });
     }

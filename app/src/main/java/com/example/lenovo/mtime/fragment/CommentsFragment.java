@@ -21,8 +21,11 @@ import com.example.lenovo.mtime.Movie_Details_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.adapter.CommentsAdapter;
 import com.example.lenovo.mtime.bean.Comments;
+import com.example.lenovo.mtime.bean.News;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jwenfeng.library.pulltorefresh.BaseRefreshListener;
+import com.jwenfeng.library.pulltorefresh.PullToRefreshLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +34,10 @@ import java.net.ConnectException;
 import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -42,11 +48,12 @@ public class CommentsFragment extends Fragment {
 
     View view;
     RecyclerView recyclerView;
-    private List<Comments> commentsList;
+    private List<Comments> commentsList = new ArrayList<>();
     private CommentsAdapter commentsAdapter;
     String user_id;
     String session;
     SwipeRefreshLayout swipeRefresh;
+    PullToRefreshLayout pullToRefreshLayout;
 
     @Nullable
     @Override
@@ -61,6 +68,8 @@ public class CommentsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        sendRequestWithOkHttp(0);
+
 //        //下拉刷新功能
 //        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
 //
@@ -73,6 +82,35 @@ public class CommentsFragment extends Fragment {
 //                refreshNews();
 //            }
 //        });
+        pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.activity_main);
+
+        pullToRefreshLayout.setRefreshListener(new BaseRefreshListener() {
+            @Override
+            public void refresh() {
+                commentsList.clear();
+                sendRequestWithOkHttp(0);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        // 结束刷新
+                        pullToRefreshLayout.finishRefresh();
+                    }
+                }, 2000);
+            }
+
+            @Override
+            public void loadMore() {
+                sendRequestWithOkHttp(commentsAdapter.getItemCount()+1);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 结束加载更多
+                        pullToRefreshLayout.finishLoadMore();
+                    }
+                }, 2000);
+            }
+        });
         Bundle bundle = getArguments();
         if(bundle != null){
             user_id = bundle.getString("user_id");
@@ -80,34 +118,12 @@ public class CommentsFragment extends Fragment {
         }
 
 
-        sendRequestWithOkHttp();
+
 
     }
 
-    //下拉刷新
-    private void refreshNews(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    Thread.sleep(1000);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        commentsList.clear();
-                        sendRequestWithOkHttp();
-                        commentsAdapter.notifyDataSetChanged();
-                        swipeRefresh.setRefreshing(false);
-                    }
-                });
-            }
-        }).start();
-    }
 
-    private void sendRequestWithOkHttp(){
+    private void sendRequestWithOkHttp(final int newsNum){
         //开启现线程发起网络请求
         new Thread(new Runnable(){
             @Override
@@ -118,8 +134,17 @@ public class CommentsFragment extends Fragment {
                             .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
+                    String url = "http://132.232.78.106:8001/api/getHotFilmReview/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", String.valueOf(newsNum));
+                    map.put("number", "5");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/getHotFilmReview/")   //网址有待改动
+                            .url(url)   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
@@ -149,6 +174,31 @@ public class CommentsFragment extends Fragment {
         }).start();
     }
 
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
+    }
+
     private void showResponse(final String response){
         Gson gson = new Gson();
         try {
@@ -156,8 +206,9 @@ public class CommentsFragment extends Fragment {
             Log.e("response",response);
             String list = jsonObject.getString("result");
             Log.d("commentsList",list);
-
-            commentsList = gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
+            List<Comments> li = new ArrayList<Comments>();
+            li= gson.fromJson(list, new TypeToken<List<Comments>>(){}.getType());
+            commentsList.addAll(li);
 
 
         } catch (JSONException e) {

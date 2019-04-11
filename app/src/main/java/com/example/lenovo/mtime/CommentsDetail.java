@@ -99,6 +99,7 @@ public class CommentsDetail extends AppCompatActivity {
         iv_movie = (ImageView) findViewById(R.id.iv_movie);
 
         struct();
+        if (session!= null)
 
         sendRequestWithOkHttp();
     }
