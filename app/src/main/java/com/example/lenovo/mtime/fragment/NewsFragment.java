@@ -85,7 +85,7 @@ public class NewsFragment extends Fragment {
                         // 结束刷新
                         pullToRefreshLayout.finishRefresh();
                     }
-                }, 2000);
+                }, 1000);
             }
 
             @Override
@@ -97,7 +97,7 @@ public class NewsFragment extends Fragment {
                         // 结束加载更多
                         pullToRefreshLayout.finishLoadMore();
                     }
-                }, 2000);
+                }, 1000);
             }
         });
         Bundle bundle = getArguments();
@@ -155,7 +155,7 @@ public class NewsFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient.Builder()
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(20,TimeUnit.SECONDS)
+                            .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
                     String url = "http://132.232.78.106:8001/api/getNewsList/";

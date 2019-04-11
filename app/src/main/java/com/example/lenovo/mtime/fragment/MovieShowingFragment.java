@@ -89,7 +89,7 @@ public class MovieShowingFragment extends Fragment {
             @Override
             public void run() {
                 try{
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 }catch (InterruptedException e){
                     e.printStackTrace();
                 }
@@ -114,7 +114,7 @@ public class MovieShowingFragment extends Fragment {
                 try{
                     OkHttpClient client = new OkHttpClient.Builder()
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(20,TimeUnit.SECONDS)
+                            .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
                     String url = "http://132.232.78.106:8001/api/getFilmList/";
