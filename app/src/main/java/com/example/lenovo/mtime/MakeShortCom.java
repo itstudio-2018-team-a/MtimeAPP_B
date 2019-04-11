@@ -1,6 +1,7 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class MakeShortCom extends AppCompatActivity {
         movie_id = intent.getStringExtra("movie_id");
         user_id = intent.getStringExtra("user_id");
         session = intent.getStringExtra("session");
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

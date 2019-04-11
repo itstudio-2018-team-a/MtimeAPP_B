@@ -82,10 +82,10 @@ public class UserFragment extends Fragment {
     RelativeLayout btn_login;
     Button btn_newsComments;
     Button btn_movieComments;
-    LinearLayout btn_findPassword;
-    LinearLayout btn_logout;
-    LinearLayout btn_changePassword;
-    LinearLayout btn_changeName;
+    RelativeLayout btn_findPassword;
+    RelativeLayout btn_logout;
+    RelativeLayout btn_changePassword;
+    RelativeLayout btn_changeName;
     TextView tv_userName;
     String userName;
     private String user_id;
@@ -112,10 +112,10 @@ public class UserFragment extends Fragment {
         btn_login = (RelativeLayout) view.findViewById(R.id.btn_login);
         btn_movieComments = (Button) view.findViewById(R.id.btn_movieComments);
         btn_newsComments = (Button) view.findViewById(R.id.btn_newsComments);
-        btn_logout = (LinearLayout) view.findViewById(R.id.btn_logout);
-        btn_findPassword = (LinearLayout) view.findViewById(R.id.btn_findPassword);
-        btn_changeName = (LinearLayout) view.findViewById(R.id.btn_changeName);
-        btn_changePassword = (LinearLayout) view.findViewById(R.id.btn_changePassword);
+        btn_logout =  view.findViewById(R.id.btn_logout);
+        btn_findPassword =  view.findViewById(R.id.btn_findPassword);
+        btn_changeName =  view.findViewById(R.id.btn_changeName);
+        btn_changePassword =  view.findViewById(R.id.btn_changePassword);
         tv_userName = (TextView) view.findViewById(R.id.tv_userName);
         return view;
 

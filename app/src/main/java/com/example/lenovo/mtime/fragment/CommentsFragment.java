@@ -150,7 +150,7 @@ public class CommentsFragment extends Fragment {
                     Response response = client.newCall(request).execute();
                     Log.e("response",response.toString());
                     String responseDate = response.body().string();
-                    showResponse(responseDate);
+                    showResponse(responseDate,newsNum);
 
                 }catch (final Exception e){
                     getActivity().runOnUiThread(new Runnable() {
@@ -199,7 +199,7 @@ public class CommentsFragment extends Fragment {
         return url;
     }
 
-    private void showResponse(final String response){
+    private void showResponse(final String response, final int newsNum){
         Gson gson = new Gson();
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -219,12 +219,14 @@ public class CommentsFragment extends Fragment {
             @Override
             public void run(){
                 //设置ui
+                if (newsNum == 0){
+                    LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(manager);
+                    commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
 
-                LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-                commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);
+                    recyclerView.setAdapter(commentsAdapter);
+                }
 
-                recyclerView.setAdapter(commentsAdapter);
             }
         });
     }

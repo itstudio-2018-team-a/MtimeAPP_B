@@ -2,6 +2,7 @@ package com.example.lenovo.mtime;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -99,8 +100,9 @@ public class CommentsDetail extends AppCompatActivity {
         iv_movie = (ImageView) findViewById(R.id.iv_movie);
 
         struct();
-        if (session!= null)
-
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
+        if (!session.equals(""))
         sendRequestWithOkHttp();
     }
     private void sendRequestWithOkHttp(){

@@ -2,6 +2,7 @@ package com.example.lenovo.mtime;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.lenovo.mtime.adapter.NewsAdapter;
 import com.example.lenovo.mtime.adapter.NewsComAdapter;
@@ -33,18 +35,21 @@ public class NewsComActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     String user_id;
     String newsId;
+    TextView tv_hint;
     private List<NewsCom> newsComList;
     private NewsComAdapter newsComAdapter;
     private Context context;
 
     String replys;
     String session;
+    int replyNum;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_comments);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        tv_hint = findViewById(R.id.tv_hint);
 
         context = this;
 
@@ -64,6 +69,9 @@ public class NewsComActivity extends AppCompatActivity {
         newsId = intent.getStringExtra("newsId");
         replys = intent.getStringExtra("replys");
         session = intent.getStringExtra("session");
+        replyNum = intent.getIntExtra("replyNum",0);
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
 
         parseJSONWithGSON(replys);
 
@@ -84,6 +92,8 @@ public class NewsComActivity extends AppCompatActivity {
             @Override
             public void run(){
                 //设置ui
+                if (replyNum==0)
+                    tv_hint.setText("当前新闻没有评论");
                 LinearLayoutManager manager=new LinearLayoutManager(context);
                 recyclerView.setLayoutManager(manager);
 
