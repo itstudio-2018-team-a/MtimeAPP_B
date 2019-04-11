@@ -54,6 +54,7 @@ public class NewsDetail extends AppCompatActivity {
     TextView tv_pubTime;
     ImageView iv_photo;
     TextView tv_content;
+    TextView tv_hint;
 
     int id;
     String author;
@@ -86,6 +87,7 @@ public class NewsDetail extends AppCompatActivity {
         tv_newsTitle = (TextView) findViewById(R.id.tv_newsTitle);
         tv_pubTime = (TextView) findViewById(R.id.tv_pubTime);
         iv_photo = (ImageView) findViewById(R.id.iv_photo);
+        //tv_hint = findViewById(R.id.tv_hint);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -155,6 +157,7 @@ public class NewsDetail extends AppCompatActivity {
 
                     intent.putExtra("replys", replys);
                     intent.putExtra("session", session);
+                    intent.putExtra("replyNum",replyNum);
 
                     startActivity(intent);
                 }
@@ -285,6 +288,7 @@ public class NewsDetail extends AppCompatActivity {
                 iv_photo.setImageBitmap(bitmap);
                 TextView tv_comment = (TextView)findViewById(R.id.tv_comment);
                 if(!String.valueOf(replyNum).equals("")) tv_comment.setText(String.valueOf(replyNum));
+                //if (replyNum == 0) tv_hint.setText("当前新闻没有评论");
             }
         });
     }

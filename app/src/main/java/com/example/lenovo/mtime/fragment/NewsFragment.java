@@ -243,14 +243,14 @@ public class NewsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
             @Override
             public void run(){
-                //if (newsNum == 0)
-               // {
+                if (newsNum == 0)
+                {
                     //设置ui
                     LinearLayoutManager manager=new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(manager);
                     newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
                     recyclerView.setAdapter(newsAdapter);
-              //  }
+                }
 //                else {
 //                    //LinearLayoutManager manager=new LinearLayoutManager(getContext());
 //                    //recyclerView.setLayoutManager(manager);

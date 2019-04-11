@@ -63,6 +63,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     TextView textView_mark;
     TextView tv_isMark;
     TextView tv_information;
+    TextView tv_hint;
     private String title;
     private String image;
     private String mark;
@@ -71,7 +72,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     private String displayTime;
     private String time;
     private String id;
-    private String replyNum;
+    private int replyNum;
     Boolean isMark;
     String information;
 
@@ -91,6 +92,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         tv_isMark = (TextView) findViewById(R.id.tv_isMark);
         tv_information = findViewById(R.id.tv_information);
+        tv_hint = findViewById(R.id.tv_hint);
 
         final Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
@@ -98,10 +100,11 @@ public class Movie_Details_Activity extends AppCompatActivity {
         session = intent.getStringExtra("session");
         information = intent.getStringExtra("information");
 
-        if (session!=null)
+
 //        session = intent.getStringExtra("session");
         SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
         session = sharedPreferences.getString("session","");
+        if (!session.equals(""))
         sendRequestWithOkHttp();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -209,7 +212,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 displayTime = jsonObject1.getString("displayTime");
                 time = jsonObject1.getString("time");
                 id = jsonObject1.getString("id");
-                replyNum = jsonObject1.getString("replyNum");
+                replyNum = jsonObject1.getInt("replyNum");
                 isMark = jsonObject1.getBoolean("isMark");
                 replys = jsonObject1.getJSONArray("replys").toString();
                 parseJSONWithGSON(replys);
@@ -226,6 +229,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                         tv_information.setText(information);
                         if(isMark) tv_isMark.setText("已评");
                         else tv_isMark.setText("未评");
+                        if (replyNum == 0) tv_hint.setText("当前电影没有评论");
 
                     }
                 });

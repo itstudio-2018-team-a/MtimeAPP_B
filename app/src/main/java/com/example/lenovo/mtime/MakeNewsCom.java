@@ -1,6 +1,7 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -53,6 +54,9 @@ public class MakeNewsCom extends AppCompatActivity {
         user_id = intent.getStringExtra("user_id");
         newsId = intent.getStringExtra("newsId");
         session = intent.getStringExtra("session");
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
+
 
         btn_publish = (Button) findViewById(R.id.btn_publish);
         et_comments = (EditText) findViewById(R.id.et_comments);

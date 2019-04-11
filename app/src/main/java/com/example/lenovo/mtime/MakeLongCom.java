@@ -1,6 +1,7 @@
 package com.example.lenovo.mtime;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -63,6 +64,8 @@ public class MakeLongCom extends AppCompatActivity {
         movie_id = intent.getStringExtra("movie_id");
         user_id = intent.getStringExtra("user_id");
         session = intent.getStringExtra("session");
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
 
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override

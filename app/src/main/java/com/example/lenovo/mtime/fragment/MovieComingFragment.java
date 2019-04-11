@@ -153,7 +153,7 @@ public class MovieComingFragment extends Fragment {
                     Response response = client.newCall(request).execute();
 
                     String responseDate = response.body().string();
-                    showResponse(responseDate);
+                    showResponse(responseDate,newsNum);
 
                 }catch (final Exception e){
                     getActivity().runOnUiThread(new Runnable() {
@@ -203,7 +203,7 @@ public class MovieComingFragment extends Fragment {
     }
 
 
-    private void showResponse(final String response){
+    private void showResponse(final String response,final int newsNum){
 
         Gson gson = new Gson();
         try {
@@ -225,10 +225,12 @@ public class MovieComingFragment extends Fragment {
             @Override
             public void run(){
                 //设置ui
-                LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-                movieAdapter = new MovieAdapter(getContext(), movies,user_id,session);
-                recyclerView.setAdapter(movieAdapter);
+                if (newsNum == 0){
+                    LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(manager);
+                    movieAdapter = new MovieAdapter(getContext(), movies,user_id,session);
+                    recyclerView.setAdapter(movieAdapter);
+                }
             }
         });
     }
