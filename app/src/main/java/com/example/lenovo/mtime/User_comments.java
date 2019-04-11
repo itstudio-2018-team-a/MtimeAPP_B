@@ -174,6 +174,19 @@ public class User_comments extends AppCompatActivity {
                     });
                 }
 
+            }else if(state.equals("-1")){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(User_comments.this,Login_Activity.class);
+                        startActivity(intent);
+                        Login_Activity.flag = "0";
+                        finish();
+
+                        //还没写完
+                        Toast.makeText(User_comments.this,"登陆已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }else {
                 final String msg = jsonObject.getString("msg");
                 runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；

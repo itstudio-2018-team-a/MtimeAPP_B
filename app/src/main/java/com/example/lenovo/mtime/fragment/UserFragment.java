@@ -127,6 +127,7 @@ public class UserFragment extends Fragment {
 
         if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
             tv_userName.setText("未登录");
+            user_image.setImageResource(R.drawable.user_128);
 
         } else {
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE);
@@ -297,6 +298,36 @@ public class UserFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Login_Activity.flag == null||Login_Activity.flag.equals("0")) {
+            tv_userName.setText("未登录");
+            user_image.setImageResource(R.drawable.user_128);
+
+        } else {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE);
+            user_id = sharedPreferences.getString("user_id", "");
+            String nickName = sharedPreferences.getString("nickName", "");
+            String headImage = sharedPreferences.getString("headImage", "");
+            String email = sharedPreferences.getString("email", "");
+            session = sharedPreferences.getString("session", "");
+
+            if (headImage.equals("default/1.png")) {
+                user_image.setImageResource(R.drawable.firstheadimage);
+            } else {
+//                 headImage = "http://132.232.78.106:8001/media/"+headImage;
+                Glide.with(this).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.firstheadimage).into(user_image);
+                editor = getActivity().getSharedPreferences("data", Context.MODE_PRIVATE).edit();
+                editor.putString("headImage", headImage);
+                editor.apply();
+            }
+            tv_userName.setText(nickName);
+//            }
+
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -351,8 +382,9 @@ public class UserFragment extends Fragment {
                                             try {
                                                 Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                                                 String headImage = jsonObject.getString("imageHead");
+                                                headImage = "http://132.232.78.106:8001/media/"+headImage;
                                                 editor = getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
-                                                editor.putString("headImage","http://132.232.78.106:8001/media/"+headImage);
+                                                editor.putString("headImage",headImage);
                                                 editor.apply();
                                                 Glide.with(getContext()).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.firstheadimage).into(user_image);
                                             } catch (JSONException e) {
@@ -586,9 +618,10 @@ public class UserFragment extends Fragment {
                                 String headImage = null;
 
                                     headImage = jsonObject.getString("imageHead");
-
+                                    headImage = "http://132.232.78.106:8001/media/"+headImage;
+                                    Glide.with(getContext()).load(headImage).placeholder(R.drawable.user_128).error(R.drawable.firstheadimage).into(user_image);
                                 editor = getActivity().getSharedPreferences("data",Context.MODE_PRIVATE).edit();
-                                editor.putString("headImage","http://132.232.78.106:8001/media/"+headImage);
+                                editor.putString("headImage",headImage);
                                 editor.apply();
 
                                 } catch (JSONException e) {

@@ -238,6 +238,10 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Intent intent = new Intent(Movie_Details_Activity.this,Login_Activity.class);
+                        startActivity(intent);
+                        Login_Activity.flag = "0";
+                        finish();
+
                         //还没写完
                         Toast.makeText(Movie_Details_Activity.this,"登陆已过期，请重新登录",Toast.LENGTH_SHORT).show();
                     }

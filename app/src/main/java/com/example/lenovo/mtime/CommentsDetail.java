@@ -132,10 +132,30 @@ public class CommentsDetail extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseDate);
                     Log.d("hahaha",responseDate);
                     int state = jsonObject.getInt("state");
-                    String result = jsonObject.getString("result");
-
-                    parseJSONWithGSON(result);
-
+                    if (state == 1) {
+                        String result = jsonObject.getString("result");
+                        parseJSONWithGSON(result);
+                    }else if (state == -1){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = new Intent(CommentsDetail.this,Login_Activity.class);
+                                startActivity(intent);
+                                Login_Activity.flag = "0";
+                                finish();
+                                //还没写完
+                                Toast.makeText(CommentsDetail.this,"登陆已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else {
+                        final String msg = jsonObject.getString("msg");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(CommentsDetail.this, msg, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                     JSONTokener(responseDate);
                     Log.d("hahaha",responseDate);
 

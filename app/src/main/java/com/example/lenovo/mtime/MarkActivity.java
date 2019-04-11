@@ -109,8 +109,11 @@ public class MarkActivity extends AppCompatActivity {
                 if (isMark) Toast.makeText(MarkActivity.this,"当前电影您已评分",Toast.LENGTH_SHORT).show();
                 else {
                     score = tv_mark.getText().toString();
-                    score = score.substring(0,score.lastIndexOf('.'));
-                    sendRequestWithOkHttp();
+                    if (!score.equals("")){
+                        score = score.substring(0,score.lastIndexOf('.'));
+                        sendRequestWithOkHttp();
+                    }
+
                 }
             }
         });
