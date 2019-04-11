@@ -35,7 +35,11 @@ import org.json.JSONObject;
 import java.net.ConnectException;
 import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -64,17 +68,20 @@ public class NewsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        sendRequestWithOkHttp(0);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
         pullToRefreshLayout = (PullToRefreshLayout) view.findViewById(R.id.activity_main);
+
         pullToRefreshLayout.setRefreshListener(new BaseRefreshListener() {
             @Override
             public void refresh() {
+                newsList.clear();
+                sendRequestWithOkHttp(0);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        newsList.clear();
-                        sendRequestWithOkHttp();
-                        newsAdapter.notifyDataSetChanged();
+
                         // 结束刷新
                         pullToRefreshLayout.finishRefresh();
                     }
@@ -83,6 +90,7 @@ public class NewsFragment extends Fragment {
 
             @Override
             public void loadMore() {
+                sendRequestWithOkHttp(newsAdapter.getItemCount()+1);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -93,19 +101,53 @@ public class NewsFragment extends Fragment {
             }
         });
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if(bundle != null) {
             user_id = bundle.getString("user_id");
             session = bundle.getString("session");
         }
-
-
-
-        sendRequestWithOkHttp();
-
     }
 
+    private void updateRecyclerView(int fromIndex, int toIndex) {
+        List<News> newDatas = getDatas(fromIndex, toIndex);
+        if (newDatas.size() > 0) {
+            newsAdapter.updateList(newDatas, true);
+        } else {
+            newsAdapter.updateList(null, false);
+        }
+    }
+    private List<News> getDatas(final int firstIndex, final int lastIndex) {
+        List<News> resList = new ArrayList<>();
+        for (int i = firstIndex; i < lastIndex; i++) {
+            if (i < newsList.size()) {
+                resList.add(newsList.get(i));
+            }
+        }
+        return resList;
+    }
+//    //下拉刷新
+//    private void refreshNews(){
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try{
+//                    Thread.sleep(2000);
+//                }catch (InterruptedException e){
+//                    e.printStackTrace();
+//                }
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        newsList.clear();
+//                        sendRequestWithOkHttp();
+//                        newsAdapter.notifyDataSetChanged();
+//                        swipeRefresh.setRefreshing(false);
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
 
-    private void sendRequestWithOkHttp(){
+    private void sendRequestWithOkHttp(final int newsNum){
         //开启现线程发起网络请求
         new Thread(new Runnable(){
             @Override
@@ -116,13 +158,23 @@ public class NewsFragment extends Fragment {
                             .readTimeout(20,TimeUnit.SECONDS)
                             .build();
 
+                    String url = "http://132.232.78.106:8001/api/getNewsList/";
+                    List<Map<String, String>> list_url = new ArrayList<>();
+                    Map<String, String> map = new HashMap<>();
+                    map.put("head", String.valueOf(newsNum));
+                    map.put("type", "0");
+                    map.put("number", "5");
+                    list_url.add(map);
+
+                    url = getUrl(url, list_url);
+
                     Request request = new Request.Builder()
-                            .url("http://132.232.78.106:8001/api/getNewsList/")   //网址有待改动
+                            .url(url)   //网址有待改动
                             .build();
 
                     Response response = client.newCall(request).execute();
                     String responseDate = response.body().string();
-                    showResponse(responseDate);
+                    showResponse(responseDate,newsNum);
 
                 }catch (final Exception e){
                     getActivity().runOnUiThread(new Runnable() {
@@ -146,7 +198,32 @@ public class NewsFragment extends Fragment {
         }).start();
     }
 
-    private void showResponse(final String response){
+    private String getUrl(String url, List<Map<String, String>> list_url) {
+        for (int i = 0; i < list_url.size(); i++) {
+            Map<String, String> params = list_url.get(i);
+            if (params != null) {
+                Iterator<String> it = params.keySet().iterator();
+                StringBuffer sb = null;
+                while (it.hasNext()) {
+                    String key = it.next();
+                    String value = params.get(key);
+                    if (sb == null) {
+                        sb = new StringBuffer();
+                        sb.append("?");
+                    } else {
+                        sb.append("&");
+                    }
+                    sb.append(key);
+                    sb.append("=");
+                    sb.append(value);
+                }
+                url += sb.toString();
+            }
+        }
+        return url;
+    }
+
+    private void showResponse(final String response, final int newsNum){
 
         Gson gson = new Gson();
         try {
@@ -163,11 +240,20 @@ public class NewsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
             @Override
             public void run(){
-                //设置ui
-                LinearLayoutManager manager=new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(manager);
-                newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
-                recyclerView.setAdapter(newsAdapter);
+                if (newsNum == 0)
+                {
+                    //设置ui
+                    LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(manager);
+                    newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
+                    recyclerView.setAdapter(newsAdapter);
+                }
+                else {
+                    //LinearLayoutManager manager=new LinearLayoutManager(getContext());
+                    //recyclerView.setLayoutManager(manager);
+                    newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
+                    newsAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

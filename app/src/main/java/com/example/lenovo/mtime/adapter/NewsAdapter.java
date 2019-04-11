@@ -27,6 +27,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     private Context context;
     public String user_id;
     public String session;
+    private boolean hasMore = true;
 
 
     public NewsAdapter(List<News> list,String userName1,Context context,String session){
@@ -101,5 +102,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder>{
     @Override
     public long getItemId(int position) {
         return position;
+    }
+    // 暴露接口，更新数据源，并修改hasMore的值，如果有增加数据，hasMore为true，否则为false
+    public void updateList(List<News> newDatas, boolean hasMore) {
+        // 在原有的数据之上增加新数据
+        if (newDatas != null) {
+            list.addAll(newDatas);
+        }
+        this.hasMore = hasMore;
+        notifyDataSetChanged();
     }
 }
