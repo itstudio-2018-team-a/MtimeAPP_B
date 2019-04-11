@@ -32,6 +32,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.lenovo.mtime.uitl.SpaceFilter.setEditTextInhibitInputSpace;
+
 public class ChangePassword extends AppCompatActivity {
     public String realName;
     public String realPassword;
@@ -57,6 +59,13 @@ public class ChangePassword extends AppCompatActivity {
         Button btn_out = (Button) findViewById(R.id.btn_out);
         Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
+
+        setEditTextInhibitInputSpace(et_oldPassword);
+        setEditTextInhibitInputSpace(et_newPassword);
+        setEditTextInhibitInputSpace(et_repeatPassword);
+        et_oldPassword.setFilters( new InputFilter[]{new InputFilter.LengthFilter(10)});
+        et_newPassword.setFilters( new InputFilter[]{new InputFilter.LengthFilter(10)});
+        et_repeatPassword.setFilters( new InputFilter[]{new InputFilter.LengthFilter(10)});
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

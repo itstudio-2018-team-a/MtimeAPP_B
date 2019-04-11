@@ -33,6 +33,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.lenovo.mtime.uitl.SpaceFilter.setEditTextInhibitInputSpace;
+
 public class ChangeName extends AppCompatActivity {
 
     private String url;
@@ -48,8 +50,9 @@ public class ChangeName extends AppCompatActivity {
         Button btn_reset = (Button) findViewById(R.id.btn_reset);
         Button btn_out = (Button) findViewById(R.id.btn_out);
         final String user_id;
-        //获取到修改后的用户名以便发送到服务器
-        newName = et_newName.getText().toString();
+
+        setEditTextInhibitInputSpace(et_newName);
+        et_newName.setFilters( new InputFilter[]{new InputFilter.LengthFilter(10)});
 //        user_id = intent.getStringExtra("nickName");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

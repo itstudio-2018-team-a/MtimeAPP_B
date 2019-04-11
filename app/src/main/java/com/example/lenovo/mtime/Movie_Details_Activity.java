@@ -92,8 +92,9 @@ public class Movie_Details_Activity extends AppCompatActivity {
         final Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         movie_id = intent.getStringExtra("movie_id");
-        session = intent.getStringExtra("session");
-
+//        session = intent.getStringExtra("session");
+        SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
+        session = sharedPreferences.getString("session","");
         sendRequestWithOkHttp();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

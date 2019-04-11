@@ -168,7 +168,7 @@ public class register_Infor extends AppCompatActivity implements View.OnClickLis
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
                             .addFormDataPart("username",user_id)
-                            .addFormDataPart("nickname","一位不愿透露姓名的网友")
+                            .addFormDataPart("nickname","陆仁甲")
                             .addFormDataPart("password",password)
                             .addFormDataPart("vericode",code)
                             .addFormDataPart("email",email)

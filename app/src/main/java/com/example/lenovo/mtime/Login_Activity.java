@@ -155,7 +155,7 @@ public class Login_Activity extends AppCompatActivity implements View.OnClickLis
                     OkHttpClient client = new OkHttpClient.Builder()
                             .retryOnConnectionFailure(true)  //网查解决end of the stream问题
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(20,TimeUnit.SECONDS)
+                            .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
                     RequestBody requestBody = new MultipartBody.Builder()

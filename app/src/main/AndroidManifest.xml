@@ -12,27 +12,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MakeLongCom"></activity>
-        <activity android:name=".MakeShortCom" />
-        <activity android:name=".MarkActivity" />
-        <activity android:name=".CommentsDetail" />
-        <activity android:name=".User_comments" />
-        <activity android:name=".Login_Activity" />
-        <activity android:name=".Movie_Details_Activity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MakeLongCom"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".MakeShortCom"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MarkActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CommentsDetail"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".User_comments"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Login_Activity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Movie_Details_Activity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".register_Infor" />
-        <activity android:name=".MakeNewsCom" />
-        <activity android:name=".ChangePassword" />
-        <activity android:name=".ChangeName" />
-        <activity android:name=".NewsDetail" />
-        <activity android:name=".FindPasswordActivity" />
-        <activity android:name=".NewsComActivity" />
+        <activity android:name=".register_Infor"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MakeNewsCom"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChangePassword"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ChangeName"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NewsDetail"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FindPasswordActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".NewsComActivity"
+            android:screenOrientation="portrait"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
