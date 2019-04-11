@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.lenovo.mtime.Movie_Details_Activity;
 import com.example.lenovo.mtime.R;
 import com.example.lenovo.mtime.adapter.CommentsAdapter;
 import com.example.lenovo.mtime.bean.Comments;
@@ -25,8 +27,12 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,11 +47,6 @@ public class CommentsFragment extends Fragment {
     String user_id;
     String session;
     SwipeRefreshLayout swipeRefresh;
-    private GridLayoutManager mLayoutManager;
-
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private int lastVisibleItem = 0;
-    private final int PAGE_COUNT = 10;
 
     @Nullable
     @Override
@@ -60,18 +61,18 @@ public class CommentsFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //下拉刷新功能
-        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
-
+//        //下拉刷新功能
+//        swipeRefresh = (SwipeRefreshLayout) view.findViewById(R.id.refreshLayout);
+//
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview);
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
-                android.R.color.holo_orange_light, android.R.color.holo_green_light);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshNews();
-            }
-        });
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
+//                android.R.color.holo_orange_light, android.R.color.holo_green_light);
+//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                refreshNews();
+//            }
+//        });
         Bundle bundle = getArguments();
         if(bundle != null){
             user_id = bundle.getString("user_id");
@@ -80,7 +81,6 @@ public class CommentsFragment extends Fragment {
 
 
         sendRequestWithOkHttp();
-        //initRefreshLayout();
 
     }
 
@@ -106,86 +106,6 @@ public class CommentsFragment extends Fragment {
             }
         }).start();
     }
-//    private void initRecyclerView() {
-//        commentsAdapter = new CommentsAdapter(getDatas(0, PAGE_COUNT), user_id,getContext(),session, getDatas(0, PAGE_COUNT).size() > 0 ? true : false);
-//        mLayoutManager = new GridLayoutManager(getContext(), 1);
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setAdapter(commentsAdapter);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    if (commentsAdapter.isFadeTips() == false && lastVisibleItem + 1 == commentsAdapter.getItemCount()) {
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
-//                            }
-//                        }, 500);
-//                    }
-//
-//                    if (commentsAdapter.isFadeTips() == true && lastVisibleItem + 2 == commentsAdapter.getItemCount()) {
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                updateRecyclerView(commentsAdapter.getRealLastPosition(), commentsAdapter.getRealLastPosition() + PAGE_COUNT);
-//                            }
-//                        }, 500);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-//            }
-//        });
-//    }
-
-
-//    private void initRefreshLayout() {
-//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light,
-//                android.R.color.holo_orange_light, android.R.color.holo_green_light);
-//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                // 设置可见
-//                swipeRefresh.setRefreshing(true);
-//                // 重置adapter的数据源为空
-//                commentsAdapter.resetDatas();
-//                // 获取第第0条到第PAGE_COUNT（值为10）条的数据
-//                updateRecyclerView(0, PAGE_COUNT);
-//                mHandler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        // 模拟网络加载时间，设置不可见
-//                        swipeRefresh.setRefreshing(false);
-//                    }
-//                }, 1000);
-//            }
-//        });
-//    }
-    private List<Comments> getDatas(final int firstIndex, final int lastIndex) {
-        List<Comments> resList = new ArrayList<>();
-        for (int i = firstIndex; i < lastIndex; i++) {
-            if (i < commentsList.size()) {
-                resList.add(commentsList.get(i));
-            }
-        }
-        return resList;
-    }
-//    private void updateRecyclerView(int fromIndex, int toIndex) {
-//        List<Comments> newDatas = getDatas(fromIndex, toIndex);
-//        if (newDatas.size() > 0) {
-//            commentsAdapter.updateList(newDatas, true);
-//        } else {
-//            commentsAdapter.updateList(null, false);
-//        }
-//    }
 
     private void sendRequestWithOkHttp(){
         //开启现线程发起网络请求
@@ -193,7 +113,11 @@ public class CommentsFragment extends Fragment {
             @Override
             public void run(){
                 try{
-                    OkHttpClient client = new OkHttpClient();
+                    OkHttpClient client = new OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(20,TimeUnit.SECONDS)
+                            .build();
+
                     Request request = new Request.Builder()
                             .url("http://132.232.78.106:8001/api/getHotFilmReview/")   //网址有待改动
                             .build();
@@ -203,8 +127,23 @@ public class CommentsFragment extends Fragment {
                     String responseDate = response.body().string();
                     showResponse(responseDate);
 
-                }catch (Exception e){
-                    e.printStackTrace();
+                }catch (final Exception e){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            e.printStackTrace();
+                            if (e instanceof SocketTimeoutException){
+                                Toast.makeText(getContext(),"连接超时",Toast.LENGTH_SHORT).show();
+                            }
+                            if (e instanceof ConnectException){
+                                Toast.makeText(getContext(),"连接异常",Toast.LENGTH_SHORT).show();
+                            }
+
+                            if (e instanceof ProtocolException) {
+                                Toast.makeText(getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();
@@ -230,7 +169,6 @@ public class CommentsFragment extends Fragment {
             public void run(){
                 //设置ui
 
-                //initRecyclerView();
                 LinearLayoutManager manager=new LinearLayoutManager(getContext());
                 recyclerView.setLayoutManager(manager);
                 commentsAdapter = new CommentsAdapter(commentsList,user_id,getContext(),session);

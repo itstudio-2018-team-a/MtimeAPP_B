@@ -56,12 +56,14 @@ public class MakeNewsCom extends AppCompatActivity {
 
         btn_publish = (Button) findViewById(R.id.btn_publish);
         et_comments = (EditText) findViewById(R.id.et_comments);
-        et_comments.setFilters(new InputFilter[] { new InputFilter.LengthFilter(1000) });
+        et_comments.setFilters(new InputFilter[] { new InputFilter.LengthFilter(200) });
         btn_publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 comments = et_comments.getText().toString();
-                sendRequestWithOkHttp();
+                if (comments.equals("")) Toast.makeText(MakeNewsCom.this,"评论内容不能为空！",Toast.LENGTH_SHORT).show();
+                else
+                    sendRequestWithOkHttp();
             }
         });
     }

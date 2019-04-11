@@ -184,14 +184,14 @@ public class CommentsDetail extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(response);
             id = jsonObject.getInt("id");
             author = jsonObject.getString("author");
-            photo = jsonObject.getString("photo");
+            //photo = jsonObject.getString("photo");
             Time = jsonObject.getString("Time");
             Title = jsonObject.getString("Title");
             replyNum = jsonObject.getInt("replyNum");
             content = jsonObject.getString("content");
             isGood = jsonObject.getBoolean("isGood");
             replys = jsonObject.getJSONArray("replys").toString();
-            bitmap = getHttpBitmap("http://132.232.78.106:8001/media/"+photo);
+            //bitmap = getHttpBitmap("http://132.232.78.106:8001/media/"+photo);
             Log.d("hhh",content);
             showResponse();
             //newsList = gson.fromJson(list, new TypeToken<List<News>>(){}.getType());
@@ -215,7 +215,7 @@ public class CommentsDetail extends AppCompatActivity {
                 tv_content.setMovementMethod(ScrollingMovementMethod.getInstance());// 设置可滚动
                 tv_content.setMovementMethod(LinkMovementMethod.getInstance());//设置超链接可以打开网页
                 tv_content.setText(Html.fromHtml(content, imgGetter, null));
-                tv_author.setText(author);
+                tv_author.setText(author+"（作者）");
                 tv_title.setText(Title);
 
                 Glide.with(context).load("http://132.232.78.106:8001"+poster).placeholder(R.drawable.eg).error(R.drawable.code_128).into(iv_movie);

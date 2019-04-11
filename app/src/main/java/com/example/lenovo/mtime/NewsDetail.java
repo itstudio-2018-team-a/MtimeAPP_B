@@ -146,7 +146,7 @@ public class NewsDetail extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.comment:
                 TextView tv_comment = (TextView)findViewById(R.id.tv_comment);
-                if (session ==null)
+                if (Login_Activity.flag==null||Login_Activity.flag.equals("0"))
                     Toast.makeText(NewsDetail.this,"您还未登录，请先登录",Toast.LENGTH_SHORT).show();
                 else {
                     Intent intent = new Intent(NewsDetail.this, NewsComActivity.class);
