@@ -124,28 +124,6 @@ public class NewsFragment extends Fragment {
         }
         return resList;
     }
-//    //下拉刷新
-//    private void refreshNews(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try{
-//                    Thread.sleep(2000);
-//                }catch (InterruptedException e){
-//                    e.printStackTrace();
-//                }
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        newsList.clear();
-//                        sendRequestWithOkHttp();
-//                        newsAdapter.notifyDataSetChanged();
-//                        swipeRefresh.setRefreshing(false);
-//                    }
-//                });
-//            }
-//        }).start();
-//    }
 
     private void sendRequestWithOkHttp(final int newsNum){
         //开启现线程发起网络请求
@@ -243,20 +221,11 @@ public class NewsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable(){           //fragment中好像不能直接使用该方法，故加了getactivity（）；
             @Override
             public void run(){
-                //if (newsNum == 0)
-               // {
                     //设置ui
                     LinearLayoutManager manager=new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(manager);
                     newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
                     recyclerView.setAdapter(newsAdapter);
-              //  }
-//                else {
-//                    //LinearLayoutManager manager=new LinearLayoutManager(getContext());
-//                    //recyclerView.setLayoutManager(manager);
-//                    newsAdapter = new NewsAdapter(newsList,user_id,getContext(),session);
-//                    newsAdapter.notifyDataSetChanged();
-//                }
             }
         });
     }

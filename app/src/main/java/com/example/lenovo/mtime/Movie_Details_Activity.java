@@ -98,10 +98,11 @@ public class Movie_Details_Activity extends AppCompatActivity {
         session = intent.getStringExtra("session");
         information = intent.getStringExtra("information");
 
-        if (session!=null)
+
 //        session = intent.getStringExtra("session");
         SharedPreferences sharedPreferences = getSharedPreferences("data",MODE_PRIVATE);
         session = sharedPreferences.getString("session","");
+        if (session!=null)
         sendRequestWithOkHttp();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -146,7 +147,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                 try{
                     OkHttpClient client = new OkHttpClient.Builder()
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(20,TimeUnit.SECONDS)
+                            .readTimeout(10,TimeUnit.SECONDS)
                             .build();
 
 
@@ -229,6 +230,15 @@ public class Movie_Details_Activity extends AppCompatActivity {
 
                     }
                 });
+            }else if(state == -1){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Movie_Details_Activity.this,Login_Activity.class);
+                        //还没写完
+                        Toast.makeText(Movie_Details_Activity.this,"登陆已过期，请重新登录",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }else {
                 final String msg = jsonObject.getString("msg");
                 runOnUiThread(new Runnable() {
@@ -238,6 +248,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     }
                 });
             }
+
 
 
         } catch (JSONException e) {
