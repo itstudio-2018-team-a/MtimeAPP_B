@@ -62,6 +62,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     TextView textView_releaseDate;
     TextView textView_mark;
     TextView tv_isMark;
+    TextView tv_information;
     private String title;
     private String image;
     private String mark;
@@ -72,6 +73,7 @@ public class Movie_Details_Activity extends AppCompatActivity {
     private String id;
     private String replyNum;
     Boolean isMark;
+    String information;
 
 
     @Override
@@ -88,12 +90,15 @@ public class Movie_Details_Activity extends AppCompatActivity {
         textView_mark = findViewById(R.id.tv_mark);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         tv_isMark = (TextView) findViewById(R.id.tv_isMark);
+        tv_information = findViewById(R.id.tv_information);
 
         final Intent intent = getIntent();
         user_id = intent.getStringExtra("user_id");
         movie_id = intent.getStringExtra("movie_id");
         session = intent.getStringExtra("session");
+        information = intent.getStringExtra("information");
 
+        if (session!=null)
         sendRequestWithOkHttp();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -212,9 +217,10 @@ public class Movie_Details_Activity extends AppCompatActivity {
                     public void run(){
                         Glide.with(Movie_Details_Activity.this).load(image).placeholder(R.drawable.firstheadimage).error(R.drawable.user_128).into(imageView);
                         textView_mark.setText(mark);
-                        textView_releaseDate.setText(relase_date);
-                        textView_time.setText(time);
+                        textView_releaseDate.setText("上映："+relase_date);
+                        textView_time.setText("时长："+displayTime+"分钟");
                         textView_title.setText(title);
+                        tv_information.setText(information);
                         if(isMark) tv_isMark.setText("已评");
                         else tv_isMark.setText("未评");
 

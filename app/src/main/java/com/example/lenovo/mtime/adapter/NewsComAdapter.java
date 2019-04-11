@@ -86,7 +86,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
         holder.newsComView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                int position = holder.getAdapterPosition();
+                final int position = holder.getAdapterPosition();
                 final NewsCom newsCom = list.get(position);
                 String authorName = newsCom.getAuthor();
 
@@ -97,7 +97,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
                             .setAction("确定", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    sendRequestWithOkHttp(newsCom,view);
+                                    sendRequestWithOkHttp(newsCom,view,position);
                                 }
                             })
                             .show();
@@ -127,7 +127,7 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
         return position;
     }
 
-    private void sendRequestWithOkHttp(final NewsCom newsCom,final View view){
+    private void sendRequestWithOkHttp(final NewsCom newsCom,final View view,final int position){
         //开启现线程发起网络请求
         new Thread(new Runnable(){
             @Override
@@ -174,18 +174,6 @@ public class NewsComAdapter extends RecyclerView.Adapter<NewsComAdapter.ViewHold
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    Looper.prepare();
-                    if (e instanceof SocketTimeoutException){
-                        Toast.makeText(view.getContext(),"连接超时",Toast.LENGTH_SHORT).show();
-                    }
-                    if (e instanceof ConnectException){
-                        Toast.makeText(view.getContext(),"连接异常",Toast.LENGTH_SHORT).show();
-                    }
-
-                    if (e instanceof ProtocolException) {
-                        Toast.makeText(view.getContext(),"未知异常，请稍后再试",Toast.LENGTH_SHORT).show();
-                    }
-                    Looper.loop();
                 }
             }
         }).start();

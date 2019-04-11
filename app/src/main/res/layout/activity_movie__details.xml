@@ -12,127 +12,165 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     </android.support.v7.widget.Toolbar>
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
-        <LinearLayout
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/iv_movieImg"
-                        android:layout_width="60dp"
-                        android:layout_height="120dp"
-                        android:layout_margin="10dp"
-                        android:layout_gravity="center_vertical"/>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tv_movieTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:text="电影标题"
-                            android:layout_margin="10dp"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="#000000" />
-
-                        <TextView
-                            android:id="@+id/tv_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text = "时长"
-                            android:layout_gravity="center_vertical" />
-
-                        <TextView
-                            android:id="@+id/tv_releaseDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:text="上映时间"
-                            android:layout_gravity="center_vertical"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_gravity="end"
-                        android:gravity="end">
-                        <TextView
-                            android:id="@+id/tv_mark"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_margin="10dp"
-                            android:background="#FF7900"
-                            android:gravity="end"
-                            android:text="评分"
-                            android:textColor="#FFFFFF" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_gravity="end"
-                        android:gravity="end">
-                        <TextView
-                            android:id="@+id/tv_isMark"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_margin="10dp"
-                            android:gravity="end"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/iv_movieImg"
+                                    android:layout_width="60dp"
+                                    android:layout_height="120dp"
+                                    android:layout_margin="10dp"
+                                    android:layout_gravity="center_vertical"/>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_movieTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="20sp"
+                                        android:text="电影标题"
+                                        android:layout_margin="10dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:textColor="#000000" />
+
+                                    <TextView
+                                        android:id="@+id/tv_time"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10dp"
+                                        android:text = "时长"
+                                        android:layout_gravity="center_vertical" />
+
+                                    <TextView
+                                        android:id="@+id/tv_releaseDate"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10dp"
+                                        android:text="上映时间"
+                                        android:layout_gravity="center_vertical"/>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.3"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:layout_gravity="end"
+                                    android:gravity="end">
+                                    <TextView
+                                        android:id="@+id/tv_mark"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="end"
+                                        android:layout_margin="10dp"
+                                        android:background="#FF7900"
+                                        android:gravity="end"
+                                        android:text="评分"
+                                        android:textColor="#FFFFFF" />
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_weight="0.3"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:layout_gravity="end"
+                                    android:gravity="end">
+                                    <TextView
+                                        android:id="@+id/tv_isMark"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="start"
+                                        android:layout_margin="10dp"
+                                        android:gravity="end"/>
+                                </LinearLayout>
+
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_margin="10dp"
+                                android:background="#2A000000"/>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:id="@+id/tv_information"
+                                android:lineSpacingExtra = "10dp"/>
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:gravity="center_vertical"
-
-                        android:textColor="#000000"
-                        android:text="   短评 ："
-                        android:lineSpacingExtra = "5dp"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerview"
+                        android:layout_height="10dp" />
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="30dp"
+                                android:gravity="center_vertical"
+
+                                android:textColor="#000000"
+                                android:text="   短评 ："
+                                android:lineSpacingExtra = "5dp"/>
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/recyclerview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
+            </android.support.design.widget.CoordinatorLayout>
+        </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/fab"
-            android:layout_margin="20dp"
-            android:layout_gravity="bottom|end"
-            android:src="@drawable/comment_64"
-            app:elevation="8dp"
-            app:backgroundTint="#FF7900"/>
-    </android.support.design.widget.CoordinatorLayout>
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab"
+                android:layout_margin="20dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/comment_64"
+                app:elevation="8dp"
+                app:backgroundTint="#FF7900"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
 </LinearLayout>
